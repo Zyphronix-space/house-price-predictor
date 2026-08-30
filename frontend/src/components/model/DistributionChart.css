@@ -1,0 +1,36 @@
+.distribution-chart {
+  padding: 22px 22px 18px;
+}
+
+.distribution-chart__svg {
+  width: 100%;
+  height: auto;
+  margin-top: 12px;
+  overflow: visible;
+}
+
+.distribution-chart__axis {
+  stroke: var(--hv-axis);
+  stroke-width: 1;
+}
+
+.distribution-chart__bar {
+  fill: var(--hv-accent);
+  transition: fill 0.15s ease;
+}
+
+.distribution-chart__bar:hover {
+  fill: var(--hv-text);
+}
+
+.distribution-chart__tick {
+  font-size: 10px;
+  fill: var(--hv-text-tertiary);
+  text-anchor: middle;
+}
+
+.distribution-chart__caption {
+  margin: 10px 0 0;
+  font-size: 0.76rem;
+  color: var(--hv-text-tertiary);
+}

@@ -1,0 +1,61 @@
+.what-if {
+  padding: 24px;
+}
+
+.what-if__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.what-if__note {
+  font-size: 0.85rem;
+  color: var(--hv-text-secondary);
+  margin: 8px 0 20px;
+  line-height: 1.5;
+}
+
+.what-if__fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.what-if__error {
+  color: var(--hv-critical);
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+.what-if__result {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hv-border);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  text-align: center;
+}
+
+.what-if__figure {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--hv-text);
+}
+
+.what-if__figure.is-positive {
+  color: var(--hv-positive);
+}
+
+.what-if__figure.is-negative {
+  color: var(--hv-negative);
+}
+
+@media (max-width: 520px) {
+  .what-if__fields {
+    grid-template-columns: 1fr;
+  }
+}

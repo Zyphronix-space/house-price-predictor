@@ -1,0 +1,35 @@
+.limitations {
+  padding: 18px 22px;
+}
+
+.limitations__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+}
+
+.limitations__summary::-webkit-details-marker {
+  display: none;
+}
+
+.limitations__chevron {
+  color: var(--hv-text-tertiary);
+  transition: transform 0.2s ease;
+}
+
+.limitations[open] .limitations__chevron {
+  transform: rotate(180deg);
+}
+
+.limitations__list {
+  margin: 16px 0 4px;
+  padding-left: 20px;
+  color: var(--hv-text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

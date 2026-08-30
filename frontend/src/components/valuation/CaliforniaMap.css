@@ -1,0 +1,44 @@
+.ca-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ca-map__svg {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 320 / 420;
+  cursor: crosshair;
+  touch-action: manipulation;
+}
+
+.ca-map__outline {
+  fill: var(--hv-accent-soft);
+  stroke: var(--hv-accent-border);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  transition: fill 0.15s ease;
+}
+
+.ca-map__svg:hover .ca-map__outline {
+  fill: color-mix(in srgb, var(--hv-accent) 16%, transparent);
+}
+
+.ca-map__marker-halo {
+  fill: color-mix(in srgb, var(--hv-accent) 25%, transparent);
+}
+
+.ca-map__marker-dot {
+  fill: var(--hv-accent);
+  stroke: var(--hv-bg-elevated);
+  stroke-width: 2;
+}
+
+.ca-map__caption {
+  font-size: 0.78rem;
+  color: var(--hv-text-tertiary);
+  text-align: center;
+  max-width: 320px;
+  margin: 0;
+}

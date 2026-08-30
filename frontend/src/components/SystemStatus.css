@@ -1,0 +1,33 @@
+.system-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--hv-text-secondary);
+}
+
+.system-status__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.system-status__dot.is-ready {
+  background: var(--hv-positive);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hv-positive) 20%, transparent);
+}
+
+.system-status__dot.is-offline {
+  background: var(--hv-critical);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hv-critical) 20%, transparent);
+}
+
+.system-status__state {
+  font-weight: 600;
+  color: var(--hv-text);
+}
+
+.system-status--compact .hv-label {
+  display: none;
+}

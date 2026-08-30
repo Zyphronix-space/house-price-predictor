@@ -1,0 +1,132 @@
+.hv-topnav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--hv-border);
+  background: var(--hv-surface);
+  backdrop-filter: blur(var(--hv-blur));
+  -webkit-backdrop-filter: blur(var(--hv-blur));
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.hv-brand {
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: none;
+  border: none;
+  color: var(--hv-text);
+  cursor: pointer;
+  padding: 0;
+}
+
+.hv-brand__accent {
+  color: var(--hv-accent);
+}
+
+.hv-topnav__links {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.hv-topnav__link {
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  color: var(--hv-text-secondary);
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.hv-topnav__link:hover {
+  color: var(--hv-text);
+  background: var(--hv-surface-solid);
+}
+
+.hv-topnav__link.is-active {
+  color: var(--hv-text);
+  background: var(--hv-accent-soft);
+}
+
+.hv-topnav__meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.hv-theme-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--hv-border-strong);
+  background: var(--hv-bg-elevated);
+  color: var(--hv-text-secondary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: grid;
+  place-items: center;
+}
+
+.hv-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+  box-sizing: border-box;
+}
+
+.hv-bottomnav {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .hv-topnav__links {
+    display: none;
+  }
+
+  .hv-main {
+    padding: 0 16px 96px;
+  }
+
+  .hv-bottomnav {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    background: var(--hv-surface);
+    backdrop-filter: blur(var(--hv-blur));
+    -webkit-backdrop-filter: blur(var(--hv-blur));
+    border-top: 1px solid var(--hv-border);
+    z-index: 20;
+  }
+
+  .hv-bottomnav__link {
+    font-family: inherit;
+    background: none;
+    border: none;
+    color: var(--hv-text-tertiary);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .hv-bottomnav__link.is-active {
+    color: var(--hv-accent);
+  }
+}

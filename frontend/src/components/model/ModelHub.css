@@ -1,0 +1,34 @@
+.model-hub {
+  padding: 32px 0 40px;
+}
+
+.model-hub__tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.model-hub__tab {
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--hv-surface-solid);
+  border: 1px solid var(--hv-border);
+  color: var(--hv-text-secondary);
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.model-hub__tab.is-active {
+  background: var(--hv-accent);
+  border-color: transparent;
+  color: var(--hv-accent-contrast);
+}
+
+.model-hub__limitations {
+  margin-top: 24px;
+}

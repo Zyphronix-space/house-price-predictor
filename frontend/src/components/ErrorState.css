@@ -1,0 +1,44 @@
+.error-state {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  border-color: var(--hv-critical);
+}
+
+.error-state__icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--hv-critical);
+  color: #fff;
+  font-weight: 700;
+}
+
+.error-state__title {
+  color: var(--hv-critical);
+  margin-bottom: 4px;
+}
+
+.error-state__message {
+  color: var(--hv-text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.error-state .hv-btn {
+  margin-left: auto;
+}
+
+@media (max-width: 520px) {
+  .error-state {
+    flex-wrap: wrap;
+  }
+  .error-state .hv-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+}

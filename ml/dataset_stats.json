@@ -1,0 +1,133 @@
+{
+  "n_records": 20640,
+  "n_features": 8,
+  "features": {
+    "MedInc": {
+      "label": "Median Income",
+      "unit": "$10k / household",
+      "min": 0.5,
+      "p1": 1.07,
+      "mean": 3.871,
+      "p99": 10.597,
+      "max": 15.0
+    },
+    "HouseAge": {
+      "label": "House Age",
+      "unit": "years",
+      "min": 1.0,
+      "p1": 4.0,
+      "mean": 28.639,
+      "p99": 52.0,
+      "max": 52.0
+    },
+    "AveRooms": {
+      "label": "Average Rooms",
+      "unit": "rooms / household",
+      "min": 0.846,
+      "p1": 2.581,
+      "mean": 5.429,
+      "p99": 10.357,
+      "max": 141.909
+    },
+    "AveBedrms": {
+      "label": "Average Bedrooms",
+      "unit": "bedrooms / household",
+      "min": 0.333,
+      "p1": 0.873,
+      "mean": 1.097,
+      "p99": 2.128,
+      "max": 34.067
+    },
+    "Population": {
+      "label": "Population",
+      "unit": "people",
+      "min": 3.0,
+      "p1": 88.0,
+      "mean": 1425.477,
+      "p99": 5805.83,
+      "max": 35682.0
+    },
+    "AveOccup": {
+      "label": "Average Occupancy",
+      "unit": "people / household",
+      "min": 0.692,
+      "p1": 1.537,
+      "mean": 3.071,
+      "p99": 5.395,
+      "max": 1243.333
+    },
+    "Latitude": {
+      "label": "Latitude",
+      "unit": "degrees",
+      "min": 32.54,
+      "p1": 32.68,
+      "mean": 35.632,
+      "p99": 40.626,
+      "max": 41.95
+    },
+    "Longitude": {
+      "label": "Longitude",
+      "unit": "degrees",
+      "min": -124.35,
+      "p1": -123.22,
+      "mean": -119.57,
+      "p99": -116.29,
+      "max": -114.31
+    }
+  },
+  "target": {
+    "label": "Median House Value",
+    "unit": "USD",
+    "min_usd": 14999.0,
+    "max_usd": 500001.0,
+    "mean_usd": 206855.82,
+    "capped_at_usd": 500001,
+    "histogram": {
+      "bin_edges_usd": [
+        14999.0,
+        39249.1,
+        63499.2,
+        87749.3,
+        111999.4,
+        136249.5,
+        160499.6,
+        184749.7,
+        208999.8,
+        233249.9,
+        257500.0,
+        281750.1,
+        306000.2,
+        330250.3,
+        354500.4,
+        378750.5,
+        403000.6,
+        427250.7,
+        451500.8,
+        475750.9,
+        500001.0
+      ],
+      "counts": [
+        36,
+        841,
+        1628,
+        1984,
+        1878,
+        2221,
+        2153,
+        1618,
+        1591,
+        1208,
+        1075,
+        694,
+        567,
+        672,
+        435,
+        317,
+        244,
+        235,
+        144,
+        1099
+      ]
+    }
+  }
+}

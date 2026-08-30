@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-08-30T15:24:50.766077+00:00",
+  "dataset": "California Housing",
+  "test_size": 0.2,
+  "random_state": 42,
+  "models": {
+    "linear_regression": {
+      "name": "Linear Regression",
+      "mae_usd": 53320.01,
+      "r2": 0.5758
+    },
+    "random_forest": {
+      "name": "Random Forest",
+      "mae_usd": 32776.57,
+      "r2": 0.8047
+    }
+  },
+  "served_model": "random_forest",
+  "rationale": "Random Forest is served because it measured $32,777 MAE (vs $53,320 for Linear Regression, a 38.5% reduction) and R^2 0.8047 (vs 0.5758) on the same held-out test split. Linear Regression is kept as the interpretable baseline.",
+  "feature_importance": [
+    {
+      "feature": "MedInc",
+      "label": "Median Income",
+      "importance": 0.525
+    },
+    {
+      "feature": "AveOccup",
+      "label": "Average Occupancy",
+      "importance": 0.1384
+    },
+    {
+      "feature": "Latitude",
+      "label": "Latitude",
+      "importance": 0.089
+    },
+    {
+      "feature": "Longitude",
+      "label": "Longitude",
+      "importance": 0.0885
+    },
+    {
+      "feature": "HouseAge",
+      "label": "House Age",
+      "importance": 0.0546
+    },
+    {
+      "feature": "AveRooms",
+      "label": "Average Rooms",
+      "importance": 0.0442
+    },
+    {
+      "feature": "Population",
+      "label": "Population",
+      "importance": 0.0307
+    },
+    {
+      "feature": "AveBedrms",
+      "label": "Average Bedrooms",
+      "importance": 0.0297
+    }
+  ]
+}

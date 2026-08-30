@@ -1,0 +1,46 @@
+import { api } from '../../lib/api'
+import { useAsync } from '../../lib/hooks'
+import ErrorState from '../ErrorState'
+import './ModelLab.css'
+
+export default function ModelLab() {
+  const { data, error, loading } = useAsync(() => api.modelComparison(), [])
+
+  if (loading) return <div className="model-lab model-lab--loading" aria-hidden="true" />
+  if (error) return <ErrorState message={error.message} />
+
+  const entries = Object.entries(data.models)
+
+  return (
+    <section className="model-lab">
+      <p className="model-lab__intro">
+        Measured on the same held-out 20% test split ({data.test_size * 100}%, seed{' '}
+        {data.random_state}) of the {data.dataset} dataset.
+      </p>
+
+      <div className="model-lab__cards">
+        {entries.map(([key, model]) => (
+          <div key={key} className={`hv-card model-lab__card ${key === data.served_model ? 'is-served' : ''}`}>
+            {key === data.served_model && <span className="model-lab__badge">Currently served</span>}
+            <p className="model-lab__name">{model.name}</p>
+            <div className="model-lab__metrics">
+              <div>
+                <p className="hv-label">MAE</p>
+                <p className="model-lab__metric-value">${model.mae_usd.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="hv-label">R²</p>
+                <p className="model-lab__metric-value">{model.r2}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hv-card model-lab__rationale">
+        <p className="hv-label">Why this model is served</p>
+        <p>{data.rationale}</p>
+      </div>
+    </section>
+  )
+}

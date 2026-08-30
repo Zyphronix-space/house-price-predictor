@@ -1,0 +1,68 @@
+.model-lab--loading {
+  min-height: 240px;
+}
+
+.model-lab__intro {
+  color: var(--hv-text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 20px;
+}
+
+.model-lab__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.model-lab__card {
+  padding: 22px;
+  position: relative;
+}
+
+.model-lab__card.is-served {
+  border-color: var(--hv-accent-border);
+  box-shadow: var(--hv-shadow-md);
+}
+
+.model-lab__badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hv-accent-contrast);
+  background: var(--hv-accent);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.model-lab__name {
+  font-size: 1.15rem;
+  font-weight: 650;
+  margin: 0 0 16px;
+}
+
+.model-lab__metrics {
+  display: flex;
+  gap: 28px;
+}
+
+.model-lab__metric-value {
+  font-size: 1.3rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  margin: 2px 0 0;
+}
+
+.model-lab__rationale {
+  padding: 20px 22px;
+}
+
+.model-lab__rationale p:last-child {
+  margin: 8px 0 0;
+  color: var(--hv-text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
