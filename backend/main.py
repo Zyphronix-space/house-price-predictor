@@ -29,12 +29,12 @@ FEATURE_ORDER = [
 
 app = FastAPI(title="House Price Predictor API")
 
-# Allow the React dev server to call this API from the browser. Vite falls
-# back to the next free port when 5173 is taken, so match any localhost
-# port rather than a single hardcoded one.
+# Allow the React dev server (any localhost port, since Vite falls back
+# when 5173 is taken) and the deployed Vercel frontend (including preview
+# deployments, which get their own *.vercel.app subdomain).
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://localhost:\d+",
+    allow_origin_regex=r"http://localhost:\d+|https://.*\.vercel\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
