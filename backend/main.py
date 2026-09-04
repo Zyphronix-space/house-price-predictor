@@ -14,7 +14,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-ML_DIR = Path(__file__).resolve().parent.parent / "ml"
+_here = Path(__file__).resolve().parent
+# Local dev: backend/main.py with a sibling ../ml/. Azure zip deploy flattens
+# main.py to the app root with ml/ copied alongside it, so fall back to that.
+ML_DIR = _here.parent / "ml" if (_here.parent / "ml").exists() else _here / "ml"
 model = joblib.load(ML_DIR / "house_price_model.joblib")
 scaler = joblib.load(ML_DIR / "scaler.joblib")
 
