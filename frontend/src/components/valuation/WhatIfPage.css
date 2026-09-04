@@ -1,0 +1,30 @@
+.whatif-page {
+  padding: 32px 0 40px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.whatif-page--empty {
+  text-align: center;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: none;
+}
+
+.whatif-page__empty-copy {
+  color: var(--hv-text-secondary);
+  max-width: 380px;
+}
+
+.whatif-page__title {
+  margin-bottom: 4px;
+}
+
+.whatif-page__note {
+  font-size: 0.85rem;
+  color: var(--hv-text-secondary);
+  margin: 0 0 16px;
+}

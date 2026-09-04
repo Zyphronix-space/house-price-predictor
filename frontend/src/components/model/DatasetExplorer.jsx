@@ -1,7 +1,6 @@
 import { api } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
 import ErrorState from '../ErrorState'
-import DistributionChart from './DistributionChart'
 import './DatasetExplorer.css'
 
 export default function DatasetExplorer() {
@@ -50,7 +49,10 @@ export default function DatasetExplorer() {
         ))}
       </div>
 
-      <DistributionChart stats={data} />
+      <p className="dataset-explorer__see-also">
+        See the Analysis dashboard for the value distribution, feature correlations, and
+        scatter plots built from this data.
+      </p>
     </section>
   )
 }

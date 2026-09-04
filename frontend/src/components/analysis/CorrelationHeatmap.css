@@ -1,0 +1,45 @@
+.correlation-heatmap {
+  padding: 20px;
+}
+
+.correlation-heatmap__note {
+  font-size: 0.8rem;
+  color: var(--hv-text-secondary);
+  margin: 6px 0 16px;
+}
+
+.correlation-heatmap__scroll {
+  overflow-x: auto;
+}
+
+.correlation-heatmap__table {
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+
+.correlation-heatmap__table th,
+.correlation-heatmap__table td {
+  padding: 6px 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.correlation-heatmap__table thead th {
+  color: var(--hv-text-tertiary);
+  font-weight: 600;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding-bottom: 6px;
+}
+
+.correlation-heatmap__table tbody th {
+  color: var(--hv-text-tertiary);
+  font-weight: 600;
+  text-align: right;
+}
+
+.correlation-heatmap__table td {
+  font-variant-numeric: tabular-nums;
+  color: var(--hv-text);
+  border-radius: 3px;
+}

@@ -1,0 +1,39 @@
+.residual-histogram {
+  padding: 20px;
+}
+
+.residual-histogram__note {
+  font-size: 0.8rem;
+  color: var(--hv-text-secondary);
+  margin: 6px 0 12px;
+  max-width: 560px;
+}
+
+.residual-histogram__svg {
+  width: 100%;
+  height: auto;
+}
+
+.residual-histogram__axis {
+  stroke: var(--hv-axis);
+  stroke-width: 1;
+}
+
+.residual-histogram__zero {
+  stroke: var(--hv-border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.residual-histogram__bar.is-over {
+  fill: var(--hv-warning);
+}
+
+.residual-histogram__bar.is-under {
+  fill: var(--hv-accent);
+}
+
+.residual-histogram__tick {
+  font-size: 9px;
+  fill: var(--hv-text-tertiary);
+}

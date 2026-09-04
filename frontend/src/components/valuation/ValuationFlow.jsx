@@ -4,9 +4,10 @@ import CaliforniaMap from './CaliforniaMap'
 import PropertySummary from './PropertySummary'
 import PredictionResult from './PredictionResult'
 import LoadingStages from './LoadingStages'
-import ModelExplainability from './ModelExplainability'
+import WhyThisPrice from './WhyThisPrice'
 import WhatIfSimulator from './WhatIfSimulator'
 import ValuationReport from './ValuationReport'
+import DescribePropertyInput from './DescribePropertyInput'
 import Limitations from '../Limitations'
 import ErrorState from '../ErrorState'
 import { STEPS, EXAMPLE_PROPERTY, FALLBACK_RANGES } from '../../lib/fields'
@@ -33,6 +34,7 @@ export default function ValuationFlow({ setView }) {
   const [showWhatIf, setShowWhatIf] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [savedNotice, setSavedNotice] = useState(null)
+  const [entryMode, setEntryMode] = useState('guided') // 'guided' | 'describe'
 
   const { data: datasetStats } = useAsync(() => api.datasetStats(), [])
   const ranges = toRangeMap(datasetStats)
@@ -115,13 +117,13 @@ export default function ValuationFlow({ setView }) {
             onClose={() => setShowWhatIf(false)}
           />
         )}
-        <ModelExplainability />
+        <WhyThisPrice explanation={result.explanation} />
         <div className="valuation-flow__footer-actions">
+          <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('comparables')}>
+            View Comparable Properties →
+          </button>
           <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('model')}>
             View Model Performance →
-          </button>
-          <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('compare')}>
-            Compare Properties →
           </button>
         </div>
         <Limitations />
@@ -142,7 +144,36 @@ export default function ValuationFlow({ setView }) {
       <div className="hv-card valuation-flow__panel">
         <h2 className="valuation-flow__step-title">{step.title}</h2>
 
-        {!isReview && (
+        {stepIndex === 0 && (
+          <div className="valuation-flow__mode-toggle" role="tablist" aria-label="Input method">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={entryMode === 'guided'}
+              className={`valuation-flow__mode-btn ${entryMode === 'guided' ? 'is-active' : ''}`}
+              onClick={() => setEntryMode('guided')}
+            >
+              Guided form
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={entryMode === 'describe'}
+              className={`valuation-flow__mode-btn ${entryMode === 'describe' ? 'is-active' : ''}`}
+              onClick={() => setEntryMode('describe')}
+            >
+              Describe your property
+            </button>
+          </div>
+        )}
+
+        {stepIndex === 0 && entryMode === 'describe' && (
+          <DescribePropertyInput
+            onExtracted={(fields) => setValues((prev) => ({ ...prev, ...fields }))}
+          />
+        )}
+
+        {!isReview && !(stepIndex === 0 && entryMode === 'describe') && (
           <>
             {step.key === 'location' && (
               <CaliforniaMap

@@ -25,14 +25,33 @@ export default function ModelLab() {
             <p className="model-lab__name">{model.name}</p>
             <div className="model-lab__metrics">
               <div>
-                <p className="hv-label">MAE</p>
+                <p className="hv-label">MAE (held-out)</p>
                 <p className="model-lab__metric-value">${model.mae_usd.toLocaleString()}</p>
               </div>
               <div>
-                <p className="hv-label">R²</p>
+                <p className="hv-label">R² (held-out)</p>
                 <p className="model-lab__metric-value">{model.r2}</p>
               </div>
             </div>
+            {model.cv_r2_mean !== undefined && (
+              <div className="model-lab__cv">
+                <p className="hv-label">{model.cv_folds}-fold cross-validation (train split)</p>
+                <div className="model-lab__metrics">
+                  <div>
+                    <p className="model-lab__cv-label">MAE</p>
+                    <p className="model-lab__cv-value">
+                      ${model.cv_mae_usd_mean.toLocaleString()} ± ${model.cv_mae_usd_std.toLocaleString()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="model-lab__cv-label">R²</p>
+                    <p className="model-lab__cv-value">
+                      {model.cv_r2_mean} ± {model.cv_r2_std}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

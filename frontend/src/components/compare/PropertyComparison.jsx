@@ -39,7 +39,7 @@ export default function PropertyComparison({ setView }) {
           Run a valuation and choose "Save to Comparison" to line up to{' '}
           {MAX_COMPARISON_PROPERTIES} properties side by side.
         </p>
-        <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('valuate')}>
+        <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
           Start Valuation
         </button>
       </section>
@@ -49,10 +49,15 @@ export default function PropertyComparison({ setView }) {
   return (
     <section className="comparison">
       <div className="comparison__header">
-        <p className="hv-label">Compare Properties</p>
-        <button type="button" className="hv-btn hv-btn-ghost" onClick={clear}>
-          Clear all
-        </button>
+        <p className="hv-label">Compare Saved Properties</p>
+        <div className="comparison__header-actions">
+          <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('history')}>
+            ← Back to History
+          </button>
+          <button type="button" className="hv-btn hv-btn-ghost" onClick={clear}>
+            Clear all
+          </button>
+        </div>
       </div>
 
       <div className="comparison__cards">

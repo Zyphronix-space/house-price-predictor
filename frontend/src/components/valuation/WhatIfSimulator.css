@@ -8,6 +8,11 @@
   justify-content: space-between;
 }
 
+.what-if__header-actions {
+  display: flex;
+  gap: 4px;
+}
+
 .what-if__note {
   font-size: 0.85rem;
   color: var(--hv-text-secondary);

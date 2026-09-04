@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import ModelLab from './ModelLab'
 import DatasetExplorer from './DatasetExplorer'
-import ModelCheck from './ModelCheck'
 import ErrorAnalysis from './ErrorAnalysis'
 import Limitations from '../Limitations'
 import './ModelHub.css'
 
+// ModelCheck (actual-vs-predicted) lives under Analysis > Model Fit instead
+// of here, alongside the residual histogram -- avoids showing the same
+// chart in two different nav sections.
 const SECTIONS = [
   { key: 'lab', label: 'Model Lab', Component: ModelLab },
   { key: 'dataset', label: 'Dataset', Component: DatasetExplorer },
-  { key: 'check', label: 'Model Check', Component: ModelCheck },
   { key: 'errors', label: 'Error Analysis', Component: ErrorAnalysis },
 ]
 

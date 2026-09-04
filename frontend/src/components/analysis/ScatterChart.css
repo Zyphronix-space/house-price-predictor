@@ -1,0 +1,35 @@
+.scatter-chart {
+  padding: 20px;
+}
+
+.scatter-chart__svg {
+  width: 100%;
+  height: auto;
+  margin-top: 12px;
+}
+
+.scatter-chart__axis {
+  stroke: var(--hv-axis);
+  stroke-width: 1;
+}
+
+.scatter-chart__dot {
+  fill: var(--hv-accent);
+  opacity: 0.55;
+}
+
+.scatter-chart__tick {
+  font-size: 9px;
+  fill: var(--hv-text-tertiary);
+}
+
+.scatter-chart__axis-label {
+  font-size: 10px;
+  fill: var(--hv-text-tertiary);
+}
+
+.scatter-chart__caption {
+  margin-top: 8px;
+  font-size: 0.74rem;
+  color: var(--hv-text-tertiary);
+}

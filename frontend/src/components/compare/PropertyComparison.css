@@ -21,6 +21,13 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.comparison__header-actions {
+  display: flex;
+  gap: 4px;
 }
 
 .comparison__cards {

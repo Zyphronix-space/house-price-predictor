@@ -1,0 +1,36 @@
+.describe-input {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.describe-input__note {
+  font-size: 0.85rem;
+  color: var(--hv-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.describe-input__textarea {
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+}
+
+.describe-input__error {
+  font-size: 0.85rem;
+  color: var(--hv-critical);
+  margin: 0;
+}
+
+.describe-input__success {
+  font-size: 0.85rem;
+  color: var(--hv-positive);
+  margin: 0;
+}
+
+.describe-input__notes {
+  font-size: 0.8rem;
+  color: var(--hv-text-tertiary);
+  margin: 0;
+}

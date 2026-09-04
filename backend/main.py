@@ -1,34 +1,26 @@
 """
-FastAPI backend that serves predictions from the trained house price model.
+FastAPI backend that serves predictions (with SHAP explanations, an
+error-based range, and real comparable properties) from the trained house
+price model, plus an optional Gemini-assisted natural-language input mode.
 
 Run with:
     uvicorn main:app --reload
 """
 
-import json
-from pathlib import Path
-
-import joblib
-import numpy as np
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
 
-_here = Path(__file__).resolve().parent
-# Local dev: backend/main.py with a sibling ../ml/. Azure zip deploy flattens
-# main.py to the app root with ml/ copied alongside it, so fall back to that.
-ML_DIR = _here.parent / "ml" if (_here.parent / "ml").exists() else _here / "ml"
-model = joblib.load(ML_DIR / "house_price_model.joblib")
-scaler = joblib.load(ML_DIR / "scaler.joblib")
-
-model_comparison = json.loads((ML_DIR / "model_comparison.json").read_text())
-dataset_stats = json.loads((ML_DIR / "dataset_stats.json").read_text())
-evaluation_results = json.loads((ML_DIR / "evaluation_results.json").read_text())
-
-FEATURE_ORDER = [
-    "MedInc", "HouseAge", "AveRooms", "AveBedrms",
-    "Population", "AveOccup", "Latitude", "Longitude",
-]
+import llm_service
+import ml_service
+from schemas import (
+    Comparable,
+    ComparablesResponse,
+    DatasetSampleResponse,
+    ExtractedFeatures,
+    HouseFeatures,
+    ParseDescriptionRequest,
+    PredictionResponse,
+)
 
 app = FastAPI(title="House Price Predictor API")
 
@@ -43,22 +35,6 @@ app.add_middleware(
 )
 
 
-class HouseFeatures(BaseModel):
-    MedInc: float = Field(..., description="Median income in block group (10k USD)")
-    HouseAge: float = Field(..., description="Median house age in block group")
-    AveRooms: float = Field(..., description="Average rooms per household")
-    AveBedrms: float = Field(..., description="Average bedrooms per household")
-    Population: float = Field(..., description="Block group population")
-    AveOccup: float = Field(..., description="Average household occupancy")
-    Latitude: float
-    Longitude: float
-
-
-class PredictionResponse(BaseModel):
-    predicted_price_usd: float
-    warnings: list[str] = []
-
-
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -66,50 +42,91 @@ def health():
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(features: HouseFeatures):
-    values = {name: getattr(features, name) for name in FEATURE_ORDER}
-
-    warnings = []
-    for name, value in values.items():
-        stats = dataset_stats["features"][name]
-        if value < stats["p1"] or value > stats["p99"]:
-            warnings.append(
-                f"{stats['label']} ({value:g}) is outside the range seen in the "
-                f"training dataset ({stats['p1']:g} to {stats['p99']:g} {stats['unit']})."
-            )
-
-    x = np.array([[values[name] for name in FEATURE_ORDER]])
-    x_scaled = scaler.transform(x)
-    prediction = model.predict(x_scaled)[0]
+    values = features.model_dump()
+    price_usd, warnings = ml_service.predict(values)
+    explanation = ml_service.explain(values)
+    estimated_range = ml_service.estimate_range(price_usd)
     return PredictionResponse(
-        predicted_price_usd=round(float(prediction) * 100_000, 2),
+        predicted_price_usd=price_usd,
         warnings=warnings,
+        explanation=explanation,
+        estimated_range=estimated_range,
     )
+
+
+@app.post("/comparables", response_model=ComparablesResponse)
+def comparables(features: HouseFeatures, k: int = Query(8, ge=5, le=10)):
+    values = features.model_dump()
+    rows = ml_service.find_comparables(values, k=k)
+    return ComparablesResponse(comparables=[Comparable(**row) for row in rows])
+
+
+@app.get("/dataset-sample", response_model=DatasetSampleResponse)
+def dataset_sample(n: int = Query(500, ge=50, le=2000)):
+    rows = ml_service.dataset_sample(n=n)
+    return DatasetSampleResponse(rows=[{"features": r["features"], "price_usd": r["price_usd"]} for r in rows])
+
+
+@app.post("/parse-description", response_model=ExtractedFeatures)
+async def parse_description(body: ParseDescriptionRequest):
+    if not llm_service.is_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="Natural-language input isn't configured on this server (missing GEMINI_API_KEY).",
+        )
+
+    system_instruction = (
+        "You extract structured data from a free-text property/neighborhood "
+        "description for a machine learning model trained on the California "
+        "Housing census dataset. That model's 8 features describe a census "
+        "block group (a neighborhood-sized cluster), not a single house: "
+        "median household income (MedInc, in $10,000s), median house age "
+        "(HouseAge, years), average rooms per household (AveRooms), average "
+        "bedrooms per household (AveBedrms), population (Population), average "
+        "occupants per household (AveOccup), and latitude/longitude within "
+        "California. Only fill a field when the text gives you a reasonable "
+        "basis for it -- leave anything else null. Never invent a value, and "
+        "never output a price. If the text mentions things this dataset can't "
+        "represent (bedroom/bathroom count of a single house, garage, square "
+        "footage, year built, condition, quality), do not map them to any "
+        "field -- instead note them briefly in unrecognized_notes."
+    )
+
+    try:
+        return await llm_service.generate_structured(
+            body.text,
+            schema=ExtractedFeatures,
+            system_instruction=system_instruction,
+        )
+    except llm_service.LLMError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
 
 
 @app.get("/model-info")
 def model_info():
-    served_key = model_comparison["served_model"]
-    served = model_comparison["models"][served_key]
+    mc = ml_service.model_comparison
+    served_key = mc["served_model"]
+    served = mc["models"][served_key]
     return {
         "served_model": served_key,
         "model_name": served["name"],
-        "dataset": model_comparison["dataset"],
+        "dataset": mc["dataset"],
         "metrics": {"mae_usd": served["mae_usd"], "r2": served["r2"]},
-        "rationale": model_comparison["rationale"],
-        "feature_importance": model_comparison["feature_importance"],
+        "rationale": mc["rationale"],
+        "feature_importance": mc["feature_importance"],
     }
 
 
 @app.get("/model-comparison")
 def get_model_comparison():
-    return model_comparison
+    return ml_service.model_comparison
 
 
 @app.get("/dataset-stats")
 def get_dataset_stats():
-    return dataset_stats
+    return ml_service.dataset_stats
 
 
 @app.get("/evaluation-sample")
 def get_evaluation_sample():
-    return evaluation_results
+    return ml_service.evaluation_results

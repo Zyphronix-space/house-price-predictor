@@ -1,0 +1,97 @@
+.investment {
+  padding: 32px 0 40px;
+}
+
+.investment__note {
+  font-size: 0.85rem;
+  color: var(--hv-text-secondary);
+  line-height: 1.5;
+  margin: 8px 0 24px;
+  max-width: 640px;
+}
+
+.investment__grid {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.investment__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.investment__field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--hv-text);
+}
+
+.investment__field-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.investment__field-control .hv-input {
+  padding-right: 80px;
+}
+
+.investment__field-unit {
+  position: absolute;
+  right: 14px;
+  font-size: 0.78rem;
+  color: var(--hv-text-tertiary);
+  pointer-events: none;
+}
+
+.investment__results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.investment__stat {
+  padding: 18px;
+  text-align: center;
+}
+
+.investment__stat-value {
+  font-size: 1.3rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  margin-top: 4px;
+}
+
+.investment__stat-value.is-positive {
+  color: var(--hv-positive);
+}
+
+.investment__stat-value.is-negative {
+  color: var(--hv-negative);
+}
+
+.investment__disclaimer {
+  margin-top: 24px;
+  font-size: 0.78rem;
+  color: var(--hv-text-tertiary);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .investment__grid {
+    grid-template-columns: 1fr;
+  }
+  .investment__results {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .investment__results {
+    grid-template-columns: 1fr;
+  }
+}

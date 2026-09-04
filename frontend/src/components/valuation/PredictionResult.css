@@ -29,6 +29,20 @@
   display: block;
 }
 
+.prediction-result__range {
+  margin-top: 14px;
+  font-size: 0.95rem;
+  color: var(--hv-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.prediction-result__range-basis {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.74rem;
+  color: var(--hv-text-tertiary);
+}
+
 .prediction-result__meta {
   display: flex;
   justify-content: center;

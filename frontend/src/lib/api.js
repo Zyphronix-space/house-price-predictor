@@ -8,9 +8,9 @@ class ApiError extends Error {
   }
 }
 
-async function request(path, options = {}) {
+async function request(path, options = {}, timeoutMs = 8000) {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 8000)
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
   let res
   try {
@@ -25,7 +25,15 @@ async function request(path, options = {}) {
   }
 
   if (!res.ok) {
-    throw new ApiError(`The model engine responded with an error (${res.status}).`)
+    // FastAPI error bodies are {"detail": "..."} -- surface that when present,
+    // it's usually more useful than a bare status code.
+    let detail = null
+    try {
+      detail = (await res.json())?.detail
+    } catch {
+      // body wasn't JSON -- fall through to the generic message
+    }
+    throw new ApiError(typeof detail === 'string' ? detail : `The model engine responded with an error (${res.status}).`)
   }
 
   try {
@@ -62,10 +70,23 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(features),
     }),
+  comparables: (features, k = 8) =>
+    request(`/comparables?k=${k}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(features),
+    }),
+  parseDescription: (text) =>
+    request(
+      '/parse-description',
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) },
+      20000, // Gemini call with retry/backoff can take longer than the default timeout
+    ),
   modelInfo: cached('model-info', '/model-info'),
   modelComparison: cached('model-comparison', '/model-comparison'),
   datasetStats: cached('dataset-stats', '/dataset-stats'),
   evaluationSample: cached('evaluation-sample', '/evaluation-sample'),
+  datasetSample: cached('dataset-sample', '/dataset-sample?n=600'),
 }
 
 export { ApiError, API_URL }

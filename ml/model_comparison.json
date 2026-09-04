@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-30T15:24:50.766077+00:00",
+  "generated_at": "2026-09-04T05:21:39.589742+00:00",
   "dataset": "California Housing",
   "test_size": 0.2,
   "random_state": 42,
@@ -7,12 +7,22 @@
     "linear_regression": {
       "name": "Linear Regression",
       "mae_usd": 53320.01,
-      "r2": 0.5758
+      "r2": 0.5758,
+      "cv_folds": 5,
+      "cv_r2_mean": 0.6115,
+      "cv_r2_std": 0.0124,
+      "cv_mae_usd_mean": 52906.07,
+      "cv_mae_usd_std": 938.31
     },
     "random_forest": {
       "name": "Random Forest",
       "mae_usd": 32776.57,
-      "r2": 0.8047
+      "r2": 0.8047,
+      "cv_folds": 5,
+      "cv_r2_mean": 0.8047,
+      "cv_r2_std": 0.0063,
+      "cv_mae_usd_mean": 33489.89,
+      "cv_mae_usd_std": 545.8
     }
   },
   "served_model": "random_forest",
@@ -58,5 +68,11 @@
       "label": "Average Bedrooms",
       "importance": 0.0297
     }
-  ]
+  ],
+  "error_distribution": {
+    "n_test": 4128,
+    "p10_usd": -50569.59,
+    "p50_usd": 4986.5,
+    "p90_usd": 49133.81
+  }
 }

@@ -24,7 +24,7 @@ from sklearn.datasets import fetch_california_housing
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, r2_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.preprocessing import StandardScaler
 
 FEATURE_META = {
@@ -61,6 +61,12 @@ models = {
 print(f"{'Model':<20} {'MAE ($)':>12} {'R^2':>8}")
 print("-" * 42)
 
+
+# 5-fold cross-validation on the training split only (test set stays held
+# out for the metrics above) -- gives a mean +/- std that's less sensitive
+# to this one particular train/test split than a single score is.
+cv = KFold(n_splits=5, shuffle=True, random_state=42)
+
 results = {}
 fitted = {}
 for key, (name, model) in models.items():
@@ -68,11 +74,20 @@ for key, (name, model) in models.items():
     predictions = model.predict(X_test_scaled)
     mae = mean_absolute_error(y_test, predictions)
     r2 = r2_score(y_test, predictions)
+
+    cv_r2 = cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring="r2")
+    cv_mae = -cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring="neg_mean_absolute_error")
+
     print(f"{name:<20} {mae * 100000:>12,.0f} {r2:>8.3f}")
     results[key] = {
         "name": name,
         "mae_usd": round(mae * 100_000, 2),
         "r2": round(r2, 4),
+        "cv_folds": cv.get_n_splits(),
+        "cv_r2_mean": round(float(cv_r2.mean()), 4),
+        "cv_r2_std": round(float(cv_r2.std()), 4),
+        "cv_mae_usd_mean": round(float(cv_mae.mean()) * 100_000, 2),
+        "cv_mae_usd_std": round(float(cv_mae.std()) * 100_000, 2),
     }
     fitted[key] = (model, predictions)
 
@@ -100,6 +115,19 @@ feature_importance = sorted(
     reverse=True,
 )
 
+# Signed residuals (predicted - actual) for the served model on the held-out
+# test set. Their empirical quantiles are the basis for /predict's
+# "estimated range" -- an honest, computed-from-real-errors range, not a
+# fabricated confidence interval.
+_served_model, _served_predictions = fitted[served_key]
+_residuals_usd = (_served_predictions - y_test) * 100_000
+error_distribution = {
+    "n_test": int(len(y_test)),
+    "p10_usd": round(float(np.percentile(_residuals_usd, 10)), 2),
+    "p50_usd": round(float(np.percentile(_residuals_usd, 50)), 2),
+    "p90_usd": round(float(np.percentile(_residuals_usd, 90)), 2),
+}
+
 model_comparison = {
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "dataset": "California Housing",
@@ -109,6 +137,7 @@ model_comparison = {
     "served_model": served_key,
     "rationale": rationale,
     "feature_importance": feature_importance,
+    "error_distribution": error_distribution,
 }
 
 with open("model_comparison.json", "w") as f:
@@ -132,6 +161,15 @@ target_usd = y * 100_000
 bin_edges = np.linspace(target_usd.min(), target_usd.max(), 21)
 counts, _ = np.histogram(target_usd, bins=bin_edges)
 
+# Real Pearson correlation across the 8 features + target, computed on the
+# full dataset -- feeds the Analysis dashboard's correlation heatmap.
+corr_matrix = np.corrcoef(np.column_stack([X, y]), rowvar=False)
+corr_labels = feature_names + ["MedHouseVal"]
+feature_correlation = {
+    "labels": corr_labels,
+    "matrix": [[round(float(v), 4) for v in row] for row in corr_matrix],
+}
+
 dataset_stats = {
     "n_records": int(X.shape[0]),
     "n_features": int(X.shape[1]),
@@ -148,6 +186,7 @@ dataset_stats = {
             "counts": [int(c) for c in counts],
         },
     },
+    "feature_correlation": feature_correlation,
 }
 
 with open("dataset_stats.json", "w") as f:
@@ -179,12 +218,23 @@ for i in worst_idx:
         "features": row,
     })
 
+# Signed-residual histogram over the FULL test set (not just the 300-row
+# sample above) -- real errors, feeds the Analysis dashboard's residual
+# distribution chart.
+signed_residuals_usd = predicted_usd - actual_usd
+res_bin_edges = np.linspace(signed_residuals_usd.min(), signed_residuals_usd.max(), 21)
+res_counts, _ = np.histogram(signed_residuals_usd, bins=res_bin_edges)
+
 evaluation_results = {
     "served_model": served_key,
     "mae_usd": results[served_key]["mae_usd"],
     "r2": results[served_key]["r2"],
     "sample": sample,
     "largest_errors": largest_errors,
+    "residual_histogram": {
+        "bin_edges_usd": [round(float(e), 2) for e in res_bin_edges],
+        "counts": [int(c) for c in res_counts],
+    },
 }
 
 with open("evaluation_results.json", "w") as f:

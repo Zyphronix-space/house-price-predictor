@@ -77,6 +77,11 @@
   color: var(--hv-text-tertiary);
 }
 
+.dataset-explorer__see-also {
+  font-size: 0.8rem;
+  color: var(--hv-text-tertiary);
+}
+
 @media (max-width: 520px) {
   .dataset-explorer__stats {
     grid-template-columns: 1fr;
