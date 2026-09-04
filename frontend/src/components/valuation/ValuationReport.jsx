@@ -55,7 +55,7 @@ export default function ValuationReport({ features, result, onClose }) {
 
         {topFactors.length > 0 && (
           <div className="valuation-report__factors">
-            <p className="valuation-report__section-title">Key factors (SHAP)</p>
+            <p className="valuation-report__section-title">Key factors</p>
             <ul>
               {topFactors.map((f) => (
                 <li key={f.feature} className={f.direction === 'positive' ? 'is-positive' : 'is-negative'}>

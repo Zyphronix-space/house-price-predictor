@@ -25,10 +25,11 @@ export default function WhyThisPrice({ explanation }) {
     <section className="hv-card why-price">
       <p className="hv-label">Why this price?</p>
       <p className="why-price__note">
-        Computed with SHAP (TreeExplainer) directly from the served Random Forest model for
-        this specific input. Each bar is that feature's real dollar contribution above or
-        below the model's baseline expected value — it explains this model's reasoning, not
-        a causal claim about what actually drives real-world prices.
+        Computed directly from the served Random Forest's decision trees for this specific
+        input (a tree-path contribution breakdown, sometimes called the Saabas method): each
+        bar is that feature's real dollar contribution above or below the model's baseline
+        expected value — it explains this model's reasoning, not a causal claim about what
+        actually drives real-world prices.
       </p>
 
       <div className="why-price__columns">

@@ -1,9 +1,9 @@
 """
 Everything that touches the trained model: loading it, running a
-prediction, explaining it (SHAP), estimating a range from real historical
-error, and finding real comparable properties (k-NN over the actual
-dataset). Loaded once at import time so a request never re-loads the
-model, re-fits the explainer, or re-fits the neighbor index.
+prediction, explaining it (tree-path contributions), estimating a range
+from real historical error, and finding real comparable properties (k-NN
+over the actual dataset). Loaded once at import time so a request never
+re-loads the model or re-fits the neighbor index.
 """
 
 import json
@@ -11,7 +11,6 @@ from pathlib import Path
 
 import joblib
 import numpy as np
-import shap
 from sklearn.neighbors import NearestNeighbors
 
 _here = Path(__file__).resolve().parent
@@ -32,8 +31,6 @@ dataset_stats = json.loads((ML_DIR / "dataset_stats.json").read_text())
 evaluation_results = json.loads((ML_DIR / "evaluation_results.json").read_text())
 
 FEATURE_LABELS = {name: dataset_stats["features"][name]["label"] for name in FEATURE_ORDER}
-
-_explainer = shap.TreeExplainer(model)
 
 _reference = joblib.load(ML_DIR / "reference_dataset.joblib")
 _reference_X = _reference["X"]  # (20640, 8) raw feature values
@@ -68,27 +65,52 @@ def predict(features: dict) -> tuple[float, list[str]]:
     return price_usd, warnings
 
 
+def _tree_contributions(x_scaled: np.ndarray) -> tuple[np.ndarray, float]:
+    """Per-feature contributions for one input, averaged across every tree
+    in the forest. For each tree, walk the exact decision path this input
+    takes (root to leaf) and attribute the change in the tree's predicted
+    value at each split to the feature that split was on -- this is the
+    Saabas tree-path-contribution method (the same decomposition
+    treeinterpreter uses, and the basis SHAP's own TreeExplainer paper
+    builds on). base_value + sum(contributions) exactly reconstructs the
+    forest's prediction for this input -- an exact decomposition, not an
+    approximation, just not Shapley-value-consistent the way full SHAP is.
+    """
+    n_features = x_scaled.shape[1]
+    contributions = np.zeros(n_features)
+    base_value = 0.0
+
+    for estimator in model.estimators_:
+        tree = estimator.tree_
+        node_indicator = estimator.decision_path(x_scaled)
+        path = node_indicator.indices[node_indicator.indptr[0]:node_indicator.indptr[1]]
+
+        base_value += tree.value[path[0]].reshape(-1)[0]
+        for parent, child in zip(path[:-1], path[1:]):
+            delta = tree.value[child].reshape(-1)[0] - tree.value[parent].reshape(-1)[0]
+            contributions[tree.feature[parent]] += delta
+
+    n_trees = len(model.estimators_)
+    return contributions / n_trees, base_value / n_trees
+
+
 def explain(features: dict) -> dict:
-    """SHAP explanation for one prediction, in USD. base_value + sum of
-    contributions reconstructs the model's raw output for this input
-    (exact for tree models -- this is a real decomposition, not an
-    approximation dressed up as one)."""
+    """Tree-path contribution breakdown for one prediction, in USD."""
     values = {name: features[name] for name in FEATURE_ORDER}
     x_scaled = scaler.transform(_to_vector(values))
 
-    shap_out = _explainer(x_scaled)
-    shap_values = np.asarray(shap_out.values[0]).reshape(-1) * 100_000
-    base_value_usd = float(np.asarray(shap_out.base_values).reshape(-1)[0]) * 100_000
+    raw_contributions, base_value = _tree_contributions(x_scaled)
+    base_value_usd = base_value * 100_000
 
     contributions = []
     for i, name in enumerate(FEATURE_ORDER):
-        shap_usd = round(float(shap_values[i]), 2)
+        contrib_usd = round(float(raw_contributions[i]) * 100_000, 2)
         contributions.append({
             "feature": name,
             "label": FEATURE_LABELS[name],
             "value": values[name],
-            "shap_usd": shap_usd,
-            "direction": "positive" if shap_usd >= 0 else "negative",
+            "shap_usd": contrib_usd,
+            "direction": "positive" if contrib_usd >= 0 else "negative",
         })
 
     contributions.sort(key=lambda c: abs(c["shap_usd"]), reverse=True)

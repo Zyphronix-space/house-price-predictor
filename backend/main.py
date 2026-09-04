@@ -1,5 +1,5 @@
 """
-FastAPI backend that serves predictions (with SHAP explanations, an
+FastAPI backend that serves predictions (with tree-path explanations, an
 error-based range, and real comparable properties) from the trained house
 price model, plus an optional Gemini-assisted natural-language input mode.
 
