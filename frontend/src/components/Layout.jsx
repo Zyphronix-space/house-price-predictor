@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import SystemStatus from './SystemStatus'
+import ToastHost from './ToastHost'
 import { useTheme } from '../lib/hooks'
 import './Layout.css'
 
 const TABS = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'predict', label: 'Predict' },
+  { key: 'properties', label: 'Properties' },
   { key: 'analysis', label: 'Analysis' },
   { key: 'comparables', label: 'Comparable Properties', short: 'Comparables' },
   { key: 'whatif', label: 'What-If Simulator', short: 'What-If' },
@@ -17,13 +19,13 @@ const TABS = [
 // Bottom nav (mobile) only has room for a few items readably -- these four
 // cover the core loop (see, predict, understand, review); the rest are one
 // tap away behind "More".
-const CORE_KEYS = ['dashboard', 'predict', 'analysis', 'history']
+const CORE_KEYS = ['dashboard', 'predict', 'properties', 'history']
 const CORE_TABS = TABS.filter((t) => CORE_KEYS.includes(t.key))
 const MORE_TABS = TABS.filter((t) => !CORE_KEYS.includes(t.key))
 
 const THEME_ICON = { system: '◐', light: '☀', dark: '☾' }
 
-export default function Layout({ view, setView, children }) {
+export default function Layout({ view, setView, children, user, onLogout }) {
   const { theme, cycleTheme } = useTheme()
   const [moreOpen, setMoreOpen] = useState(false)
 
@@ -64,10 +66,16 @@ export default function Layout({ view, setView, children }) {
           >
             {THEME_ICON[theme]}
           </button>
+          {user && (
+            <button type="button" className="hv-btn hv-btn-ghost hv-logout-btn" onClick={onLogout} title={user.email}>
+              Log out
+            </button>
+          )}
         </div>
       </header>
 
       <main className="hv-main">{children}</main>
+      <ToastHost />
 
       {moreOpen && (
         <div className="hv-more-sheet" role="dialog" aria-label="More sections">

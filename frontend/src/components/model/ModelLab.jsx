@@ -28,10 +28,22 @@ export default function ModelLab() {
                 <p className="hv-label">MAE (held-out)</p>
                 <p className="model-lab__metric-value">${model.mae_usd.toLocaleString()}</p>
               </div>
+              {model.rmse_usd !== undefined && (
+                <div>
+                  <p className="hv-label">RMSE (held-out)</p>
+                  <p className="model-lab__metric-value">${model.rmse_usd.toLocaleString()}</p>
+                </div>
+              )}
               <div>
                 <p className="hv-label">R² (held-out)</p>
                 <p className="model-lab__metric-value">{model.r2}</p>
               </div>
+              {model.training_time_seconds !== undefined && (
+                <div>
+                  <p className="hv-label">Training time</p>
+                  <p className="model-lab__metric-value">{model.training_time_seconds}s</p>
+                </div>
+              )}
             </div>
             {model.cv_r2_mean !== undefined && (
               <div className="model-lab__cv">

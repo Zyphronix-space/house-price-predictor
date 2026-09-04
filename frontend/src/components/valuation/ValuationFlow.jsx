@@ -14,7 +14,8 @@ import { STEPS, EXAMPLE_PROPERTY, FALLBACK_RANGES } from '../../lib/fields'
 import { validateFeatures } from '../../lib/validation'
 import { api, ApiError } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
-import { addHistoryEntry, addToComparison } from '../../lib/storage'
+import { addToComparison } from '../../lib/storage'
+import { showToast } from '../../lib/toast'
 import './ValuationFlow.css'
 
 function toRangeMap(datasetStats) {
@@ -64,7 +65,6 @@ export default function ValuationFlow({ setView }) {
       const payload = Object.fromEntries(Object.entries(values).map(([k, v]) => [k, Number(v)]))
       const res = await api.predict(payload)
       setResult(res)
-      addHistoryEntry({ features: payload, predictedPriceUsd: res.predicted_price_usd, warnings: res.warnings })
       setPhase('result')
     } catch (err) {
       setSubmitError(err instanceof ApiError ? err.message : 'Something went wrong while valuing this property.')
@@ -87,6 +87,21 @@ export default function ValuationFlow({ setView }) {
     setSavedNotice(outcome.ok ? 'Saved to Comparison.' : outcome.error)
   }
 
+  const handleSaveHistory = async (houseId) => {
+    // Always send the exact features the user just previewed (not the
+    // house's stored values) -- picking a house here only links the
+    // record for organization, it shouldn't silently re-run the model on
+    // different numbers than what's on screen.
+    const payload = Object.fromEntries(Object.entries(values).map(([k, v]) => [k, Number(v)]))
+    try {
+      await api.predictions.create({ features: payload, ...(houseId ? { house_id: Number(houseId) } : {}) })
+      showToast('Saved to prediction history', 'success')
+    } catch (err) {
+      showToast(err.message, 'error')
+      throw err
+    }
+  }
+
   if (phase === 'loading') {
     return <LoadingStages />
   }
@@ -106,6 +121,7 @@ export default function ValuationFlow({ setView }) {
           result={result}
           onWhatIf={() => setShowWhatIf((s) => !s)}
           onSaveComparison={handleSaveComparison}
+          onSaveHistory={handleSaveHistory}
           onReport={() => setShowReport(true)}
           onNewValuation={restart}
         />

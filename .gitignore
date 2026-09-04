@@ -2,11 +2,16 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.pytest_cache/
 
 node_modules/
 dist/
 
 .env
+
+# Local/dev SQLite databases -- never the source of truth, regenerated
+# automatically on first run (see backend/database.py).
+*.db
 
 # Trained model artifacts -- regenerate with `python train_model.py` +
 # `python compare_models.py` (see README). Kept out of git: the Random

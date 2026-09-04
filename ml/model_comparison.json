@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T05:21:39.589742+00:00",
+  "generated_at": "2026-09-04T08:08:17.663344+00:00",
   "dataset": "California Housing",
   "test_size": 0.2,
   "random_state": 42,
@@ -7,7 +7,9 @@
     "linear_regression": {
       "name": "Linear Regression",
       "mae_usd": 53320.01,
+      "rmse_usd": 74558.14,
       "r2": 0.5758,
+      "training_time_seconds": 0.014,
       "cv_folds": 5,
       "cv_r2_mean": 0.6115,
       "cv_r2_std": 0.0124,
@@ -17,16 +19,30 @@
     "random_forest": {
       "name": "Random Forest",
       "mae_usd": 32776.57,
+      "rmse_usd": 50588.03,
       "r2": 0.8047,
+      "training_time_seconds": 22.605,
       "cv_folds": 5,
       "cv_r2_mean": 0.8047,
       "cv_r2_std": 0.0063,
       "cv_mae_usd_mean": 33489.89,
       "cv_mae_usd_std": 545.8
+    },
+    "gradient_boosting": {
+      "name": "Gradient Boosting",
+      "mae_usd": 37165.04,
+      "rmse_usd": 54221.68,
+      "r2": 0.7756,
+      "training_time_seconds": 8.465,
+      "cv_folds": 5,
+      "cv_r2_mean": 0.7881,
+      "cv_r2_std": 0.0068,
+      "cv_mae_usd_mean": 36977.03,
+      "cv_mae_usd_std": 646.7
     }
   },
   "served_model": "random_forest",
-  "rationale": "Random Forest is served because it measured $32,777 MAE (vs $53,320 for Linear Regression, a 38.5% reduction) and R^2 0.8047 (vs 0.5758) on the same held-out test split. Linear Regression is kept as the interpretable baseline.",
+  "rationale": "Random Forest is served because it measured $32,777 MAE (the lowest of the 3 models compared here; next best was $37,165 for Gradient Boosting, a 11.8% reduction) and R^2 0.8047 on the same held-out test split. Linear Regression is kept as the interpretable baseline regardless of which model wins on accuracy.",
   "feature_importance": [
     {
       "feature": "MedInc",

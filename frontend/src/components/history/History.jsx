@@ -1,7 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { api } from '../../lib/api'
 import PropertySummary from '../valuation/PropertySummary'
-import { getHistory, deleteHistoryEntry, clearHistory, addToComparison, clearComparison } from '../../lib/storage'
+import ErrorState from '../ErrorState'
+import ConfirmDialog from '../ConfirmDialog'
+import { addToComparison, clearComparison } from '../../lib/storage'
 import { exportHistoryAsCsv, exportHistoryAsJson } from '../../lib/exportHistory'
+import { showToast } from '../../lib/toast'
 import './History.css'
 
 function dayLabel(iso) {
@@ -16,27 +20,52 @@ function dayLabel(iso) {
 }
 
 export default function History({ setView }) {
-  const [entries, setEntries] = useState(() => getHistory())
+  const [entries, setEntries] = useState(null)
+  const [error, setError] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
   const [checkedIds, setCheckedIds] = useState(() => new Set())
   const [compareNotice, setCompareNotice] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [clearAllOpen, setClearAllOpen] = useState(false)
 
-  const remove = (id) => {
-    deleteHistoryEntry(id)
-    setEntries(getHistory())
-    if (selectedId === id) setSelectedId(null)
-    setCheckedIds((prev) => {
-      const next = new Set(prev)
-      next.delete(id)
-      return next
-    })
+  const load = () => {
+    setError(null)
+    api.predictions
+      .list()
+      .then((res) => setEntries(res.predictions))
+      .catch((err) => setError(err))
   }
 
-  const clear = () => {
-    clearHistory()
-    setEntries([])
-    setSelectedId(null)
-    setCheckedIds(new Set())
+  useEffect(load, [])
+
+  const remove = async (id) => {
+    try {
+      await api.predictions.remove(id)
+      setEntries((prev) => prev.filter((e) => e.id !== id))
+      if (selectedId === id) setSelectedId(null)
+      setCheckedIds((prev) => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
+      showToast('Prediction deleted', 'success')
+    } catch (err) {
+      showToast(err.message, 'error')
+    }
+  }
+
+  const clearAll = async () => {
+    setClearAllOpen(false)
+    try {
+      await Promise.all(entries.map((e) => api.predictions.remove(e.id)))
+      setEntries([])
+      setSelectedId(null)
+      setCheckedIds(new Set())
+      showToast('History cleared', 'success')
+    } catch (err) {
+      showToast(err.message, 'error')
+      load()
+    }
   }
 
   const toggleChecked = (id) => {
@@ -52,7 +81,7 @@ export default function History({ setView }) {
     clearComparison()
     let lastError = null
     for (const entry of entries.filter((e) => checkedIds.has(e.id))) {
-      const outcome = addToComparison({ features: entry.features, predictedPriceUsd: entry.predictedPriceUsd })
+      const outcome = addToComparison({ features: entry.features, predictedPriceUsd: entry.predicted_price_usd })
       if (!outcome.ok) lastError = outcome.error
     }
     if (lastError) {
@@ -62,10 +91,16 @@ export default function History({ setView }) {
     setView('compare')
   }
 
+  if (error) return <ErrorState message={error.message} onRetry={load} />
+
+  if (entries === null) {
+    return <div className="history history--loading" aria-hidden="true" />
+  }
+
   if (entries.length === 0) {
     return (
       <section className="history history--empty">
-        <p className="hv-label">Valuation History</p>
+        <p className="hv-label">Prediction History</p>
         <p className="history__empty-copy">Your past valuations will appear here once you run one.</p>
         <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
           Start Valuation
@@ -75,7 +110,7 @@ export default function History({ setView }) {
   }
 
   const groups = entries.reduce((acc, entry) => {
-    const label = dayLabel(entry.timestamp)
+    const label = dayLabel(entry.created_at)
     ;(acc[label] ??= []).push(entry)
     return acc
   }, {})
@@ -85,7 +120,7 @@ export default function History({ setView }) {
   return (
     <section className="history">
       <div className="history__header">
-        <p className="hv-label">Valuation History</p>
+        <p className="hv-label">Prediction History</p>
         <div className="history__header-actions">
           <button type="button" className="hv-btn hv-btn-ghost" onClick={() => exportHistoryAsCsv(entries)}>
             Export CSV
@@ -93,7 +128,7 @@ export default function History({ setView }) {
           <button type="button" className="hv-btn hv-btn-ghost" onClick={() => exportHistoryAsJson(entries)}>
             Export JSON
           </button>
-          <button type="button" className="hv-btn hv-btn-ghost" onClick={clear}>
+          <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setClearAllOpen(true)}>
             Clear history
           </button>
         </div>
@@ -137,16 +172,16 @@ export default function History({ setView }) {
                     onClick={() => setSelectedId(entry.id === selectedId ? null : entry.id)}
                   >
                     <span className="history__row-price">
-                      ${Math.round(entry.predictedPriceUsd).toLocaleString()}
+                      ${Math.round(entry.predicted_price_usd).toLocaleString()}
                     </span>
                     <span className="history__row-time">
-                      {new Date(entry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </button>
                   <button
                     type="button"
                     className="history__row-delete"
-                    onClick={() => remove(entry.id)}
+                    onClick={() => setDeleteTarget(entry)}
                     aria-label="Delete this valuation"
                   >
                     Delete
@@ -163,6 +198,30 @@ export default function History({ setView }) {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this prediction?"
+        message="This can't be undone."
+        confirmLabel="Delete"
+        danger
+        onConfirm={() => {
+          const target = deleteTarget
+          setDeleteTarget(null)
+          remove(target.id)
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
+
+      <ConfirmDialog
+        open={clearAllOpen}
+        title="Clear all history?"
+        message={`This will permanently delete all ${entries.length} saved predictions.`}
+        confirmLabel="Clear all"
+        danger
+        onConfirm={clearAll}
+        onCancel={() => setClearAllOpen(false)}
+      />
     </section>
   )
 }

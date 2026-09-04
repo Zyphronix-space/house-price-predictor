@@ -1,0 +1,46 @@
+.house-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.house-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.house-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.house-form__field--wide {
+  grid-column: 1 / -1;
+}
+
+.house-form__unit {
+  text-transform: none;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.house-form__notes {
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.92rem;
+}
+
+.house-form__error {
+  color: var(--hv-negative);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.house-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}

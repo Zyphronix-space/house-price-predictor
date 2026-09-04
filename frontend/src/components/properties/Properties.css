@@ -1,0 +1,123 @@
+.properties {
+  padding: 32px 0 48px;
+}
+
+.properties__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.properties__header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.properties__toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.properties__search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.properties__select {
+  width: auto;
+}
+
+.properties__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.properties__skeleton {
+  height: 220px;
+  background: linear-gradient(90deg, var(--hv-surface) 25%, var(--hv-border) 50%, var(--hv-surface) 75%);
+  background-size: 200% 100%;
+  animation: properties-shimmer 1.4s ease infinite;
+}
+
+@keyframes properties-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.properties__empty {
+  padding: 40px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--hv-text-secondary);
+}
+
+.properties__card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.properties__card-label {
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--hv-text);
+  margin: 0;
+}
+
+.properties__card-notes {
+  font-size: 0.85rem;
+  color: var(--hv-text-secondary);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.properties__card-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+  margin: 0;
+}
+
+.properties__card-facts dt {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hv-text-tertiary);
+}
+
+.properties__card-facts dd {
+  margin: 2px 0 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.properties__card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  flex-wrap: wrap;
+}
+
+.properties__predict-btn {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+}

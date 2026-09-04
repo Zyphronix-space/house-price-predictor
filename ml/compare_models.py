@@ -1,29 +1,35 @@
 """
-Compare a simple model (Linear Regression) against a stronger one
-(Random Forest) on the same house price data, to see how much
-model choice affects accuracy.
+Compare three models -- Linear Regression (interpretable baseline),
+Random Forest, and Gradient Boosting -- on the same house price data, to
+see how much model choice affects accuracy.
 
 Also writes three machine-readable JSON files, computed entirely from
 real fitted models and the real dataset (nothing hardcoded), which the
 FastAPI backend serves and the frontend renders:
 
-  model_comparison.json  -- both models' real MAE/R2, which one is served,
-                             the measured rationale, and Random Forest's
-                             feature importances.
+  model_comparison.json  -- every model's real MAE/RMSE/R2/training time,
+                             which one is served, the measured rationale,
+                             and the served model's feature importances.
   dataset_stats.json     -- real per-feature ranges (min/p1/p99/max/mean)
                              and a real histogram of the target values.
   evaluation_results.json -- real test-set actual-vs-predicted pairs and
                              the largest-error examples.
+
+The served model is chosen by lowest test-set MAE, whichever model that
+turns out to be -- see train_model.py, which must be re-run by hand if a
+new model here should actually become what /predict serves (this script
+never overwrites the production model file itself).
 """
 
 import json
+import time
 from datetime import datetime, timezone
 
 import numpy as np
 from sklearn.datasets import fetch_california_housing
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -56,10 +62,11 @@ X_test_scaled = scaler.transform(X_test)
 models = {
     "linear_regression": ("Linear Regression", LinearRegression()),
     "random_forest": ("Random Forest", RandomForestRegressor(n_estimators=100, random_state=42)),
+    "gradient_boosting": ("Gradient Boosting", GradientBoostingRegressor(random_state=42)),
 }
 
-print(f"{'Model':<20} {'MAE ($)':>12} {'R^2':>8}")
-print("-" * 42)
+print(f"{'Model':<20} {'MAE ($)':>12} {'RMSE ($)':>12} {'R^2':>8} {'Train (s)':>10}")
+print("-" * 66)
 
 
 # 5-fold cross-validation on the training split only (test set stays held
@@ -70,19 +77,25 @@ cv = KFold(n_splits=5, shuffle=True, random_state=42)
 results = {}
 fitted = {}
 for key, (name, model) in models.items():
+    start = time.perf_counter()
     model.fit(X_train_scaled, y_train)
+    training_time_seconds = time.perf_counter() - start
+
     predictions = model.predict(X_test_scaled)
     mae = mean_absolute_error(y_test, predictions)
+    rmse = mean_squared_error(y_test, predictions) ** 0.5
     r2 = r2_score(y_test, predictions)
 
     cv_r2 = cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring="r2")
     cv_mae = -cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring="neg_mean_absolute_error")
 
-    print(f"{name:<20} {mae * 100000:>12,.0f} {r2:>8.3f}")
+    print(f"{name:<20} {mae * 100000:>12,.0f} {rmse * 100000:>12,.0f} {r2:>8.3f} {training_time_seconds:>10.2f}")
     results[key] = {
         "name": name,
         "mae_usd": round(mae * 100_000, 2),
+        "rmse_usd": round(rmse * 100_000, 2),
         "r2": round(r2, 4),
+        "training_time_seconds": round(training_time_seconds, 3),
         "cv_folds": cv.get_n_splits(),
         "cv_r2_mean": round(float(cv_r2.mean()), 4),
         "cv_r2_std": round(float(cv_r2.std()), 4),
@@ -91,25 +104,31 @@ for key, (name, model) in models.items():
     }
     fitted[key] = (model, predictions)
 
-served_key = "random_forest" if results["random_forest"]["mae_usd"] < results["linear_regression"]["mae_usd"] else "linear_regression"
-other_key = "linear_regression" if served_key == "random_forest" else "random_forest"
+served_key = min(results, key=lambda k: results[k]["mae_usd"])
+runner_up_key = min((k for k in results if k != served_key), key=lambda k: results[k]["mae_usd"])
 mae_drop_pct = round(
-    100 * (results[other_key]["mae_usd"] - results[served_key]["mae_usd"]) / results[other_key]["mae_usd"], 1
+    100 * (results[runner_up_key]["mae_usd"] - results[served_key]["mae_usd"]) / results[runner_up_key]["mae_usd"], 1
 )
 rationale = (
     f"{results[served_key]['name']} is served because it measured "
-    f"${results[served_key]['mae_usd']:,.0f} MAE (vs "
-    f"${results[other_key]['mae_usd']:,.0f} for {results[other_key]['name']}, "
-    f"a {mae_drop_pct}% reduction) and R^2 {results[served_key]['r2']} (vs "
-    f"{results[other_key]['r2']}) on the same held-out test split. "
-    f"{results[other_key]['name']} is kept as the interpretable baseline."
+    f"${results[served_key]['mae_usd']:,.0f} MAE (the lowest of the "
+    f"{len(results)} models compared here; next best was "
+    f"${results[runner_up_key]['mae_usd']:,.0f} for {results[runner_up_key]['name']}, "
+    f"a {mae_drop_pct}% reduction) and R^2 {results[served_key]['r2']} on the same "
+    f"held-out test split. Linear Regression is kept as the interpretable baseline "
+    f"regardless of which model wins on accuracy."
 )
 
-rf_model, _ = fitted["random_forest"]
+# Feature importance comes from whichever tree-ensemble model is actually
+# served (both Random Forest and Gradient Boosting expose it identically);
+# Linear Regression has no such attribute, so fall back to Random Forest's
+# if Linear Regression happens to win on MAE.
+_importance_source_key = served_key if served_key != "linear_regression" else "random_forest"
+_importance_model, _ = fitted[_importance_source_key]
 feature_importance = sorted(
     (
         {"feature": name, "label": FEATURE_META[name]["label"], "importance": round(float(imp), 4)}
-        for name, imp in zip(feature_names, rf_model.feature_importances_)
+        for name, imp in zip(feature_names, _importance_model.feature_importances_)
     ),
     key=lambda item: item["importance"],
     reverse=True,

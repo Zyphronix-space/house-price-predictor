@@ -79,6 +79,15 @@
   margin-top: 6px;
 }
 
+.prediction-result__house-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 360px;
+  margin: 24px auto 0;
+  text-align: left;
+}
+
 .prediction-result__actions {
   display: flex;
   flex-wrap: wrap;

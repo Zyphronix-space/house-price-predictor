@@ -17,10 +17,10 @@ export function exportHistoryAsJson(entries) {
 }
 
 export function exportHistoryAsCsv(entries) {
-  const header = ['timestamp', 'predicted_price_usd', ...FEATURE_ORDER]
+  const header = ['created_at', 'predicted_price_usd', ...FEATURE_ORDER]
   const rows = entries.map((e) => [
-    e.timestamp,
-    e.predictedPriceUsd,
+    e.created_at,
+    e.predicted_price_usd,
     ...FEATURE_ORDER.map((f) => e.features[f]),
   ])
   const csv = [header, ...rows].map((row) => row.join(',')).join('\n')

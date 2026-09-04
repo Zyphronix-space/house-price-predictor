@@ -5,3 +5,6 @@ joblib
 numpy
 google-genai
 python-dotenv
+sqlalchemy
+pyjwt
+email-validator
