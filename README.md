@@ -6,8 +6,11 @@ valuations with explainable tree-path breakdowns, compare model choices,
 explore the dataset, and track your prediction history — all backed by a
 real per-user database, not local-only demo state.
 
-**Live demo:** frontend on Vercel, backend on Azure App Service (see
-[Deployment](#deployment) for URLs and how to redeploy).
+**Live demo:** https://house-price-predictor-three-nu.vercel.app
+(frontend on Vercel; backend on Azure App Service at
+`house-price-predictor-stephan.azurewebsites.net` — see
+[Deployment](#deployment) for redeploy instructions). Sign up with any
+email — there's no seeded account.
 
 ## Architecture
 
