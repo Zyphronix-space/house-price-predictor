@@ -25,6 +25,22 @@ export default function AuthPage({ onAuthenticated }) {
 
   return (
     <div className="auth-page">
+      <div className="auth-page__brand">
+        <p className="auth-page__brand-eyebrow">AI-Powered Property Valuation</p>
+        <h1 className="auth-page__brand-headline">
+          Understand what a property could be worth.
+        </h1>
+        <p className="auth-page__brand-copy">
+          Machine-learning price estimates with transparent, explainable reasoning behind
+          every number — built on one real trained model, not a black box.
+        </p>
+        <ul className="auth-page__brand-points">
+          <li>Instant ML-based valuations</li>
+          <li>Transparent prediction explanations</li>
+          <li>Comparables &amp; what-if scenario analysis</li>
+        </ul>
+      </div>
+
       <div className="hv-card auth-page__card">
         <p className="hv-label">Home Value</p>
         <h1 className="auth-page__headline">AI Real Estate Analytics</h1>

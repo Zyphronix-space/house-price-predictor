@@ -1,103 +1,122 @@
-/* Design tokens for the Home Value experience: warm-neutral, glass-surface,
-   single-accent, iOS-inspired system. Extends the base tokens in index.css. */
+/* Design tokens for the Home Value experience: premium real-estate analytics
+   + fintech dashboard system. Canonical palette lives on the --color-* tokens;
+   every component consumes the --hv-* aliases below, which are derived from
+   --color-* so light/dark stay a single source of truth. */
 
 :root {
-  --hv-bg: #faf9f6;
-  --hv-bg-elevated: #ffffff;
-  --hv-surface: rgba(255, 255, 255, 0.66);
-  --hv-surface-solid: #ffffff;
-  --hv-border: rgba(20, 18, 12, 0.08);
-  --hv-border-strong: rgba(20, 18, 12, 0.14);
+  /* ---- Canonical color tokens (do not hardcode colors elsewhere) ---- */
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-primary: #16324f;
+  --color-primary-contrast: #ffffff;
+  --color-secondary: #2f6fed;
+  --color-success: #35b88a;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-text: #17202a;
+  --color-text-muted: #667085;
+  --color-text-faint: #98a2b3;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d0d5dd;
+  --color-muted-bg: #f0f2f5;
 
-  --hv-text: #1a1a1c;
-  --hv-text-secondary: #6b6b70;
-  --hv-text-tertiary: #9a9a9e;
+  --shadow-color: 16, 24, 40;
+  --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.06), 0 1px 1px rgba(var(--shadow-color), 0.04);
+  --shadow-md: 0 8px 20px -8px rgba(var(--shadow-color), 0.16), 0 2px 6px -2px rgba(var(--shadow-color), 0.08);
+  --shadow-lg: 0 20px 44px -16px rgba(var(--shadow-color), 0.24), 0 6px 14px -6px rgba(var(--shadow-color), 0.1);
 
-  --hv-accent: #a1710a;
-  --hv-accent-soft: rgba(161, 113, 10, 0.1);
-  --hv-accent-border: rgba(161, 113, 10, 0.35);
-  --hv-accent-contrast: #fffaf0;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 
-  --hv-positive: #006300;
-  --hv-negative: #b3241f;
-  --hv-warning: #a15d00;
-  --hv-critical: #b3241f;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Plus Jakarta Sans', var(--font-sans);
 
-  --hv-grid: #e6e4de;
-  --hv-axis: #c9c7c0;
+  /* ---- Component aliases -- derived, never redefined per-theme ---- */
+  --hv-bg: var(--color-bg);
+  --hv-bg-elevated: var(--color-surface);
+  --hv-surface: var(--color-muted-bg);
+  --hv-surface-solid: var(--color-surface);
+  --hv-border: var(--color-border);
+  --hv-border-strong: var(--color-border-strong);
 
-  --hv-shadow-sm: 0 1px 2px rgba(20, 18, 12, 0.04), 0 1px 1px rgba(20, 18, 12, 0.03);
-  --hv-shadow-md: 0 12px 28px -12px rgba(20, 18, 12, 0.18), 0 4px 10px -4px rgba(20, 18, 12, 0.08);
-  --hv-shadow-lg: 0 24px 60px -20px rgba(20, 18, 12, 0.28), 0 8px 20px -8px rgba(20, 18, 12, 0.1);
+  --hv-text: var(--color-text);
+  --hv-text-secondary: var(--color-text-muted);
+  --hv-text-tertiary: var(--color-text-faint);
 
-  --hv-radius-sm: 14px;
-  --hv-radius-md: 20px;
-  --hv-radius-lg: 28px;
-  --hv-blur: 20px;
+  --hv-accent: var(--color-secondary);
+  --hv-accent-soft: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface));
+  --hv-accent-border: color-mix(in srgb, var(--color-secondary) 38%, transparent);
+  --hv-accent-contrast: #ffffff;
 
-  --hv-font: -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+  --hv-positive: var(--color-success);
+  --hv-negative: var(--color-danger);
+  --hv-warning: var(--color-warning);
+  --hv-critical: var(--color-danger);
+
+  --hv-grid: var(--color-border);
+  --hv-axis: var(--color-border-strong);
+
+  --hv-shadow-sm: var(--shadow-sm);
+  --hv-shadow-md: var(--shadow-md);
+  --hv-shadow-lg: var(--shadow-lg);
+
+  --hv-radius-sm: var(--radius-sm);
+  --hv-radius-md: var(--radius-md);
+  --hv-radius-lg: var(--radius-lg);
+  --hv-blur: 0px;
+
+  --hv-font: var(--font-sans);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --hv-bg: #0a0a0c;
-    --hv-bg-elevated: #131316;
-    --hv-surface: rgba(255, 255, 255, 0.055);
-    --hv-surface-solid: #17171b;
-    --hv-border: rgba(255, 255, 255, 0.09);
-    --hv-border-strong: rgba(255, 255, 255, 0.15);
+    --color-bg: #0b1420;
+    --color-surface: #121d2c;
+    --color-primary: #4d7cb0;
+    --color-primary-contrast: #f3f6fa;
+    --color-secondary: #5b9bff;
+    --color-success: #3ddc9b;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-text: #e7ecf3;
+    --color-text-muted: #94a3b8;
+    --color-text-faint: #647388;
+    --color-border: #223349;
+    --color-border-strong: #324863;
+    --color-muted-bg: #101a28;
 
-    --hv-text: #f4f3f0;
-    --hv-text-secondary: #a6a5a2;
-    --hv-text-tertiary: #77767a;
+    --shadow-color: 0, 0, 0;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 10px 24px -10px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 24px 52px -18px rgba(0, 0, 0, 0.65), 0 8px 18px -8px rgba(0, 0, 0, 0.5);
 
-    --hv-accent: #bd8b35;
-    --hv-accent-soft: rgba(189, 139, 53, 0.16);
-    --hv-accent-border: rgba(189, 139, 53, 0.42);
-    --hv-accent-contrast: #1c1608;
-
-    --hv-positive: #0ca30c;
-    --hv-negative: #e2685a;
-    --hv-warning: #d6a13a;
-    --hv-critical: #e2685a;
-
-    --hv-grid: #2c2c2a;
-    --hv-axis: #3a3a38;
-
-    --hv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
-    --hv-shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
-    --hv-shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7), 0 8px 20px -8px rgba(0, 0, 0, 0.5);
+    --hv-accent-contrast: #071019;
   }
 }
 
 :root[data-theme='dark'] {
-  --hv-bg: #0a0a0c;
-  --hv-bg-elevated: #131316;
-  --hv-surface: rgba(255, 255, 255, 0.055);
-  --hv-surface-solid: #17171b;
-  --hv-border: rgba(255, 255, 255, 0.09);
-  --hv-border-strong: rgba(255, 255, 255, 0.15);
+  --color-bg: #0b1420;
+  --color-surface: #121d2c;
+  --color-primary: #4d7cb0;
+  --color-primary-contrast: #f3f6fa;
+  --color-secondary: #5b9bff;
+  --color-success: #3ddc9b;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+  --color-text: #e7ecf3;
+  --color-text-muted: #94a3b8;
+  --color-text-faint: #647388;
+  --color-border: #223349;
+  --color-border-strong: #324863;
+  --color-muted-bg: #101a28;
 
-  --hv-text: #f4f3f0;
-  --hv-text-secondary: #a6a5a2;
-  --hv-text-tertiary: #77767a;
+  --shadow-color: 0, 0, 0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 24px -10px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 24px 52px -18px rgba(0, 0, 0, 0.65), 0 8px 18px -8px rgba(0, 0, 0, 0.5);
 
-  --hv-accent: #bd8b35;
-  --hv-accent-soft: rgba(189, 139, 53, 0.16);
-  --hv-accent-border: rgba(189, 139, 53, 0.42);
-  --hv-accent-contrast: #1c1608;
-
-  --hv-positive: #0ca30c;
-  --hv-negative: #e2685a;
-  --hv-warning: #d6a13a;
-  --hv-critical: #e2685a;
-
-  --hv-grid: #2c2c2a;
-  --hv-axis: #3a3a38;
-
-  --hv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
-  --hv-shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
-  --hv-shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7), 0 8px 20px -8px rgba(0, 0, 0, 0.5);
+  --hv-accent-contrast: #071019;
 }
 
 body {
@@ -113,10 +132,15 @@ body {
   flex-direction: column;
 }
 
+/* Solid, bordered "premium" surface -- no glassmorphism/blur. Kept the
+   .hv-glass class name so PredictionResult didn't need a markup change. */
 .hv-glass {
-  background: var(--hv-surface);
-  backdrop-filter: blur(var(--hv-blur));
-  -webkit-backdrop-filter: blur(var(--hv-blur));
+  background: var(--hv-bg-elevated);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-primary) 4%, transparent),
+    transparent 120px
+  );
   border: 1px solid var(--hv-border);
   border-radius: var(--hv-radius-lg);
   box-shadow: var(--hv-shadow-md);
@@ -127,29 +151,31 @@ body {
   border: 1px solid var(--hv-border);
   border-radius: var(--hv-radius-md);
   box-shadow: var(--hv-shadow-sm);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .hv-label {
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--hv-text-tertiary);
 }
 
 .hv-btn {
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.94rem;
   font-weight: 600;
-  border-radius: 999px;
-  padding: 14px 26px;
+  border-radius: var(--hv-radius-sm);
+  padding: 12px 22px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease,
+    background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .hv-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .hv-btn:disabled {
@@ -159,12 +185,13 @@ body {
 }
 
 .hv-btn-primary {
-  background: var(--hv-accent);
-  color: var(--hv-accent-contrast);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
   box-shadow: var(--hv-shadow-sm);
 }
 
 .hv-btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-primary) 88%, black);
   box-shadow: var(--hv-shadow-md);
 }
 
@@ -174,21 +201,31 @@ body {
   border-color: var(--hv-border-strong);
 }
 
+.hv-btn-secondary:hover:not(:disabled) {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
 .hv-btn-ghost {
   background: transparent;
   color: var(--hv-text-secondary);
   border-color: transparent;
-  padding: 10px 16px;
+  padding: 10px 14px;
+}
+
+.hv-btn-ghost:hover:not(:disabled) {
+  color: var(--hv-text);
+  background: var(--hv-surface);
 }
 
 .hv-input {
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: var(--hv-text);
   background: var(--hv-bg-elevated);
   border: 1px solid var(--hv-border-strong);
   border-radius: var(--hv-radius-sm);
-  padding: 12px 14px;
+  padding: 11px 14px;
   width: 100%;
   box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -196,7 +233,7 @@ body {
 
 .hv-input:focus-visible {
   outline: none;
-  border-color: var(--hv-accent);
+  border-color: var(--color-secondary);
   box-shadow: 0 0 0 4px var(--hv-accent-soft);
 }
 
@@ -214,15 +251,16 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--hv-accent);
+  outline: 2px solid var(--color-secondary);
   outline-offset: 2px;
 }
 
 .hv-stat-value {
-  font-size: clamp(2.6rem, 7vw, 4.4rem);
-  font-weight: 650;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6.4vw, 4rem);
+  font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--hv-text);
+  color: var(--color-primary);
 }
 
 .hv-tabular {

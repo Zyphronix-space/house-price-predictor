@@ -7,11 +7,12 @@
 }
 
 .dashboard__headline {
+  font-family: var(--font-display);
   font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin: 8px 0 10px;
-  color: var(--hv-text);
+  color: var(--color-primary);
 }
 
 .dashboard__tagline {
@@ -69,6 +70,8 @@
 
 .dashboard__quicklink:hover {
   border-color: var(--hv-accent-border);
+  box-shadow: var(--hv-shadow-md);
+  transform: translateY(-2px);
 }
 
 .dashboard__quicklink-label {

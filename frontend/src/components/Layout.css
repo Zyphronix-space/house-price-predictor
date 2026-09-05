@@ -2,30 +2,28 @@
   display: flex;
   align-items: center;
   gap: 32px;
-  padding: 18px 32px;
+  padding: 16px 32px;
   border-bottom: 1px solid var(--hv-border);
-  background: var(--hv-surface);
-  backdrop-filter: blur(var(--hv-blur));
-  -webkit-backdrop-filter: blur(var(--hv-blur));
+  background: var(--hv-bg-elevated);
   position: sticky;
   top: 0;
   z-index: 20;
 }
 
 .hv-brand {
-  font-family: inherit;
-  font-size: 1.05rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   background: none;
   border: none;
-  color: var(--hv-text);
+  color: var(--color-primary);
   cursor: pointer;
   padding: 0;
 }
 
 .hv-brand__accent {
-  color: var(--hv-accent);
+  color: var(--color-secondary);
 }
 
 .hv-topnav__links {
@@ -43,7 +41,7 @@
   border: none;
   color: var(--hv-text-secondary);
   padding: 8px 12px;
-  border-radius: 999px;
+  border-radius: var(--hv-radius-sm);
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease, color 0.15s ease;
@@ -51,7 +49,7 @@
 
 .hv-topnav__link:hover {
   color: var(--hv-text);
-  background: var(--hv-surface-solid);
+  background: var(--hv-surface);
 }
 
 .hv-topnav__link.is-active {
@@ -162,9 +160,7 @@
     left: 0;
     right: 0;
     padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-    background: var(--hv-surface);
-    backdrop-filter: blur(var(--hv-blur));
-    -webkit-backdrop-filter: blur(var(--hv-blur));
+    background: var(--hv-bg-elevated);
     border-top: 1px solid var(--hv-border);
     z-index: 20;
   }

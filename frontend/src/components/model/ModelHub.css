@@ -19,7 +19,7 @@
   border: 1px solid var(--hv-border);
   color: var(--hv-text-secondary);
   padding: 9px 16px;
-  border-radius: 999px;
+  border-radius: var(--hv-radius-sm);
   cursor: pointer;
 }
 

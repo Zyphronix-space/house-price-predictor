@@ -93,6 +93,12 @@
   cursor: pointer;
   font-family: inherit;
   text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.history__row-main:hover {
+  border-color: var(--hv-border-strong);
+  background: var(--hv-surface);
 }
 
 .history__row.is-selected .history__row-main {
