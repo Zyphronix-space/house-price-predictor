@@ -15,7 +15,7 @@ export default function ConfirmDialog({
   return (
     <div className="confirm-dialog" role="dialog" aria-modal="true" aria-label={title}>
       <button type="button" className="confirm-dialog__backdrop" aria-label="Close" onClick={onCancel} />
-      <div className="hv-card confirm-dialog__panel">
+      <div className="hv-glass confirm-dialog__panel">
         <p className="confirm-dialog__title">{title}</p>
         {message && <p className="confirm-dialog__message">{message}</p>}
         <div className="confirm-dialog__actions">

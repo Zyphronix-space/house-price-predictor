@@ -15,10 +15,11 @@ export default function ToastHost() {
         <button
           key={t.id}
           type="button"
-          className={`hv-card toast-host__item toast-host__item--${t.type}`}
+          className={`hv-glass toast-host__item toast-host__item--${t.type}`}
           onClick={() => dismissToast(t.id)}
         >
-          {t.message}
+          <span className="toast-host__icon" aria-hidden="true">{t.type === 'error' ? '⚠' : '✓'}</span>
+          <span>{t.message}</span>
         </button>
       ))}
     </div>

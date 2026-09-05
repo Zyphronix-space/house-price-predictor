@@ -1,4 +1,3 @@
-const HISTORY_KEY = 'hv:history'
 const COMPARISON_KEY = 'hv:comparison'
 const THEME_KEY = 'hv:theme'
 const MAX_COMPARISON = 4
@@ -23,33 +22,6 @@ function writeJson(key, value) {
 
 function makeId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-}
-
-// --- Valuation history ---------------------------------------------
-
-export function getHistory() {
-  return readJson(HISTORY_KEY, [])
-}
-
-export function addHistoryEntry({ features, predictedPriceUsd, warnings }) {
-  const entry = {
-    id: makeId(),
-    timestamp: new Date().toISOString(),
-    features,
-    predictedPriceUsd,
-    warnings: warnings ?? [],
-  }
-  const history = [entry, ...getHistory()].slice(0, 100)
-  writeJson(HISTORY_KEY, history)
-  return entry
-}
-
-export function deleteHistoryEntry(id) {
-  writeJson(HISTORY_KEY, getHistory().filter((e) => e.id !== id))
-}
-
-export function clearHistory() {
-  writeJson(HISTORY_KEY, [])
 }
 
 // --- Property comparison -------------------------------------------

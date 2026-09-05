@@ -6,7 +6,7 @@ import './ModelLab.css'
 export default function ModelLab() {
   const { data, error, loading } = useAsync(() => api.modelComparison(), [])
 
-  if (loading) return <div className="model-lab model-lab--loading" aria-hidden="true" />
+  if (loading) return <div className="hv-card hv-skeleton model-lab model-lab--loading" aria-hidden="true" />
   if (error) return <ErrorState message={error.message} />
 
   const entries = Object.entries(data.models)

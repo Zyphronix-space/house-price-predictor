@@ -33,12 +33,35 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String, nullable=False, unique=True, index=True)
+    display_name = Column(String, nullable=True)
     password_hash = Column(String, nullable=False)
     password_salt = Column(String, nullable=False)
     created_at = Column(DateTime, default=_now)
 
     houses = relationship("House", back_populates="owner", cascade="all, delete-orphan")
     predictions = relationship("Prediction", back_populates="owner", cascade="all, delete-orphan")
+    reset_tokens = relationship("PasswordResetToken", back_populates="user", cascade="all, delete-orphan")
+
+
+class PasswordResetToken(Base):
+    """A single-use, time-limited token for the forgot/reset-password flow.
+
+    No email service is configured for this project, so routes_auth.py runs
+    this in "demo mode": the token is returned directly in the API response
+    instead of emailed. Still a real, validated, single-use, expiring token
+    -- not a fake flow -- just delivered differently than production would.
+    """
+
+    __tablename__ = "password_reset_tokens"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    token = Column(String, nullable=False, unique=True, index=True)
+    expires_at = Column(DateTime, nullable=False)
+    used_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=_now)
+
+    user = relationship("User", back_populates="reset_tokens")
 
 
 class House(Base):

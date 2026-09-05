@@ -1,38 +1,97 @@
-/* Design tokens for the Home Value experience: premium real-estate analytics
-   + fintech dashboard system. Canonical palette lives on the --color-* tokens;
-   every component consumes the --hv-* aliases below, which are derived from
-   --color-* so light/dark stay a single source of truth. */
+/* ==========================================================================
+   Home Value — Liquid Glass design system.
+
+   Canonical tokens live on --color-*, --glass-*, --space-*, --radius-*,
+   --ease-* etc. Every component consumes the --hv-* aliases below, which are
+   derived from those canonical tokens so light/dark/reduced-motion stay a
+   single source of truth. Never hardcode a color/blur/shadow in a component
+   file — add or reuse a token here instead.
+
+   Accent identity for this project (portfolio-family convention): deep navy
+   + blue primary, emerald secondary/positive.
+   ========================================================================== */
 
 :root {
-  /* ---- Canonical color tokens (do not hardcode colors elsewhere) ---- */
-  --color-bg: #f6f7f9;
+  /* ---- Canonical color tokens ---- */
+  --color-bg: #eef1f6;
+  --color-bg-strong: #e4e8f0;
   --color-surface: #ffffff;
-  --color-primary: #16324f;
+  --color-primary: #0f2744;
+  --color-primary-soft: #1f3f66;
   --color-primary-contrast: #ffffff;
   --color-secondary: #2f6fed;
-  --color-success: #35b88a;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-text: #17202a;
-  --color-text-muted: #667085;
-  --color-text-faint: #98a2b3;
-  --color-border: #e5e7eb;
-  --color-border-strong: #d0d5dd;
-  --color-muted-bg: #f0f2f5;
+  --color-tertiary: #7c8cff;
+  --color-success: #12a67f;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-text: #121826;
+  --color-text-muted: #55627a;
+  --color-text-faint: #8996ab;
+  --color-border: rgba(20, 32, 56, 0.1);
+  --color-border-strong: rgba(20, 32, 56, 0.18);
+  --color-muted-bg: #e7ebf2;
+
+  /* Ambient ground-color for ambient ligting blobs (mixed at low alpha) */
+  --ambient-1: 47, 111, 237;   /* blue */
+  --ambient-2: 18, 166, 127;   /* emerald */
+  --ambient-3: 124, 140, 255;  /* violet-blue */
 
   --shadow-color: 16, 24, 40;
   --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.06), 0 1px 1px rgba(var(--shadow-color), 0.04);
-  --shadow-md: 0 8px 20px -8px rgba(var(--shadow-color), 0.16), 0 2px 6px -2px rgba(var(--shadow-color), 0.08);
-  --shadow-lg: 0 20px 44px -16px rgba(var(--shadow-color), 0.24), 0 6px 14px -6px rgba(var(--shadow-color), 0.1);
+  --shadow-md: 0 10px 26px -10px rgba(var(--shadow-color), 0.16), 0 3px 8px -3px rgba(var(--shadow-color), 0.08);
+  --shadow-lg: 0 24px 56px -18px rgba(var(--shadow-color), 0.22), 0 8px 18px -8px rgba(var(--shadow-color), 0.12);
+  --shadow-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.28);
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  /* ---- Glass tokens ---- */
+  /* Level 1 — background glass: near-invisible, used for large ambient panels */
+  --glass-bg-1: rgba(255, 255, 255, 0.38);
+  --glass-blur-1: 8px;
+
+  /* Level 2 — standard glass: cards, nav, panels, forms */
+  --glass-bg-2: rgba(255, 255, 255, 0.62);
+  --glass-bg-2-hover: rgba(255, 255, 255, 0.74);
+  --glass-blur-2: 18px;
+
+  /* Level 3 — elevated glass: results, modals, key metrics, AI output */
+  --glass-bg-3: rgba(255, 255, 255, 0.82);
+  --glass-blur-3: 28px;
+
+  --glass-border: rgba(20, 32, 56, 0.1);
+  --glass-border-strong: rgba(20, 32, 56, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.65);
+  --glass-shadow: var(--shadow-md);
+
+  --scrim: rgba(10, 16, 28, 0.32);
+  --scrim-blur: 6px;
+
+  /* ---- Radius / spacing / motion ---- */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 0.14s;
+  --duration-base: 0.22s;
+  --duration-slow: 0.42s;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-display: 'Plus Jakarta Sans', var(--font-sans);
 
-  /* ---- Component aliases -- derived, never redefined per-theme ---- */
+  /* ---- Component aliases — derived, never redefined per-theme ---- */
   --hv-bg: var(--color-bg);
   --hv-bg-elevated: var(--color-surface);
   --hv-surface: var(--color-muted-bg);
@@ -45,8 +104,9 @@
   --hv-text-tertiary: var(--color-text-faint);
 
   --hv-accent: var(--color-secondary);
-  --hv-accent-soft: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface));
-  --hv-accent-border: color-mix(in srgb, var(--color-secondary) 38%, transparent);
+  --hv-accent-strong: color-mix(in srgb, var(--color-secondary) 82%, black);
+  --hv-accent-soft: color-mix(in srgb, var(--color-secondary) 14%, transparent);
+  --hv-accent-border: color-mix(in srgb, var(--color-secondary) 40%, transparent);
   --hv-accent-contrast: #ffffff;
 
   --hv-positive: var(--color-success);
@@ -54,8 +114,8 @@
   --hv-warning: var(--color-warning);
   --hv-critical: var(--color-danger);
 
-  --hv-grid: var(--color-border);
-  --hv-axis: var(--color-border-strong);
+  --hv-grid: rgba(20, 32, 56, 0.09);
+  --hv-axis: rgba(20, 32, 56, 0.2);
 
   --hv-shadow-sm: var(--shadow-sm);
   --hv-shadow-md: var(--shadow-md);
@@ -64,94 +124,251 @@
   --hv-radius-sm: var(--radius-sm);
   --hv-radius-md: var(--radius-md);
   --hv-radius-lg: var(--radius-lg);
-  --hv-blur: 0px;
+  --hv-blur: var(--glass-blur-2);
 
   --hv-font: var(--font-sans);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #0b1420;
-    --color-surface: #121d2c;
-    --color-primary: #4d7cb0;
-    --color-primary-contrast: #f3f6fa;
+    --color-bg: #0a0f1a;
+    --color-bg-strong: #060a12;
+    --color-surface: #101826;
+    --color-primary: #7fb3ff;
+    --color-primary-soft: #a7cbff;
+    --color-primary-contrast: #071019;
     --color-secondary: #5b9bff;
-    --color-success: #3ddc9b;
+    --color-tertiary: #9aa6ff;
+    --color-success: #2fd6a8;
     --color-warning: #fbbf24;
     --color-danger: #f87171;
-    --color-text: #e7ecf3;
-    --color-text-muted: #94a3b8;
-    --color-text-faint: #647388;
-    --color-border: #223349;
-    --color-border-strong: #324863;
-    --color-muted-bg: #101a28;
+    --color-text: #edf1f8;
+    --color-text-muted: #9aa7bd;
+    --color-text-faint: #6c7994;
+    --color-border: rgba(148, 168, 200, 0.16);
+    --color-border-strong: rgba(148, 168, 200, 0.26);
+    --color-muted-bg: #0d1420;
+
+    --ambient-1: 91, 155, 255;
+    --ambient-2: 47, 214, 168;
+    --ambient-3: 154, 166, 255;
 
     --shadow-color: 0, 0, 0;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 10px 24px -10px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 24px 52px -18px rgba(0, 0, 0, 0.65), 0 8px 18px -8px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 28px 60px -20px rgba(0, 0, 0, 0.7), 0 10px 22px -10px rgba(0, 0, 0, 0.55);
+    --shadow-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    --glass-bg-1: rgba(16, 24, 38, 0.42);
+    --glass-bg-2: rgba(18, 27, 42, 0.58);
+    --glass-bg-2-hover: rgba(22, 32, 49, 0.7);
+    --glass-bg-3: rgba(16, 24, 38, 0.78);
+    --glass-border: rgba(148, 168, 200, 0.14);
+    --glass-border-strong: rgba(148, 168, 200, 0.22);
+    --glass-highlight: rgba(255, 255, 255, 0.06);
+    --scrim: rgba(2, 4, 10, 0.55);
 
     --hv-accent-contrast: #071019;
+    --hv-grid: rgba(148, 168, 200, 0.1);
+    --hv-axis: rgba(148, 168, 200, 0.24);
   }
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #0b1420;
-  --color-surface: #121d2c;
-  --color-primary: #4d7cb0;
-  --color-primary-contrast: #f3f6fa;
+  --color-bg: #0a0f1a;
+  --color-bg-strong: #060a12;
+  --color-surface: #101826;
+  --color-primary: #7fb3ff;
+  --color-primary-soft: #a7cbff;
+  --color-primary-contrast: #071019;
   --color-secondary: #5b9bff;
-  --color-success: #3ddc9b;
+  --color-tertiary: #9aa6ff;
+  --color-success: #2fd6a8;
   --color-warning: #fbbf24;
   --color-danger: #f87171;
-  --color-text: #e7ecf3;
-  --color-text-muted: #94a3b8;
-  --color-text-faint: #647388;
-  --color-border: #223349;
-  --color-border-strong: #324863;
-  --color-muted-bg: #101a28;
+  --color-text: #edf1f8;
+  --color-text-muted: #9aa7bd;
+  --color-text-faint: #6c7994;
+  --color-border: rgba(148, 168, 200, 0.16);
+  --color-border-strong: rgba(148, 168, 200, 0.26);
+  --color-muted-bg: #0d1420;
+
+  --ambient-1: 91, 155, 255;
+  --ambient-2: 47, 214, 168;
+  --ambient-3: 154, 166, 255;
 
   --shadow-color: 0, 0, 0;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 10px 24px -10px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 24px 52px -18px rgba(0, 0, 0, 0.65), 0 8px 18px -8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 28px 60px -20px rgba(0, 0, 0, 0.7), 0 10px 22px -10px rgba(0, 0, 0, 0.55);
+  --shadow-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  --glass-bg-1: rgba(16, 24, 38, 0.42);
+  --glass-bg-2: rgba(18, 27, 42, 0.58);
+  --glass-bg-2-hover: rgba(22, 32, 49, 0.7);
+  --glass-bg-3: rgba(16, 24, 38, 0.78);
+  --glass-border: rgba(148, 168, 200, 0.14);
+  --glass-border-strong: rgba(148, 168, 200, 0.22);
+  --glass-highlight: rgba(255, 255, 255, 0.06);
+  --scrim: rgba(2, 4, 10, 0.55);
 
   --hv-accent-contrast: #071019;
+  --hv-grid: rgba(148, 168, 200, 0.1);
+  --hv-axis: rgba(148, 168, 200, 0.24);
 }
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
 body {
   background: var(--hv-bg);
   color: var(--hv-text);
   font-family: var(--hv-font);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--duration-slow) var(--ease-standard), color var(--duration-base) ease;
 }
 
 .hv-app {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  isolation: isolate;
 }
 
-/* Solid, bordered "premium" surface -- no glassmorphism/blur. Kept the
-   .hv-glass class name so PredictionResult didn't need a markup change. */
-.hv-glass {
-  background: var(--hv-bg-elevated);
-  background-image: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-primary) 4%, transparent),
-    transparent 120px
-  );
-  border: 1px solid var(--hv-border);
+/* ---- Ambient background: soft gradient mesh + slow-drifting light blobs.
+   Fixed behind everything at z-index -1; barely-noticeable motion only. ---- */
+.hv-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 640px at 12% -8%, color-mix(in srgb, var(--color-secondary) 16%, transparent), transparent 60%),
+    radial-gradient(900px 620px at 108% 8%, color-mix(in srgb, var(--color-success) 12%, transparent), transparent 62%),
+    radial-gradient(1200px 900px at 50% 118%, color-mix(in srgb, var(--color-tertiary) 10%, transparent), transparent 65%),
+    linear-gradient(180deg, var(--color-bg), var(--color-bg-strong));
+}
+
+.hv-ambient__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.hv-ambient__blob--a {
+  width: 46vw;
+  height: 46vw;
+  max-width: 640px;
+  max-height: 640px;
+  top: -14%;
+  left: -8%;
+  background: radial-gradient(circle, rgba(var(--ambient-1), 0.35), transparent 70%);
+  animation: hv-drift-a 46s ease-in-out infinite;
+}
+
+.hv-ambient__blob--b {
+  width: 40vw;
+  height: 40vw;
+  max-width: 560px;
+  max-height: 560px;
+  top: 30%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(var(--ambient-2), 0.3), transparent 70%);
+  animation: hv-drift-b 54s ease-in-out infinite;
+}
+
+.hv-ambient__blob--c {
+  width: 34vw;
+  height: 34vw;
+  max-width: 480px;
+  max-height: 480px;
+  bottom: -16%;
+  left: 28%;
+  background: radial-gradient(circle, rgba(var(--ambient-3), 0.24), transparent 70%);
+  animation: hv-drift-c 60s ease-in-out infinite;
+}
+
+@keyframes hv-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, 4%) scale(1.06); }
+}
+@keyframes hv-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-4%, -3%) scale(1.05); }
+}
+@keyframes hv-drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -3%) scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hv-ambient__blob { animation: none; }
+}
+
+/* ==========================================================================
+   Glass surfaces
+   ========================================================================== */
+
+/* Level 1 — background glass: very subtle, for large recessed panels */
+.hv-glass-1 {
+  background: var(--glass-bg-1);
+  backdrop-filter: blur(var(--glass-blur-1));
+  -webkit-backdrop-filter: blur(var(--glass-blur-1));
+  border: 1px solid var(--glass-border);
   border-radius: var(--hv-radius-lg);
-  box-shadow: var(--hv-shadow-md);
 }
 
+/* Level 2 — standard glass: cards, panels, forms, nav */
 .hv-card {
-  background: var(--hv-bg-elevated);
-  border: 1px solid var(--hv-border);
+  background: var(--glass-bg-2);
+  backdrop-filter: blur(var(--glass-blur-2)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-2)) saturate(150%);
+  border: 1px solid var(--glass-border);
   border-radius: var(--hv-radius-md);
-  box-shadow: var(--hv-shadow-sm);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: var(--hv-shadow-sm), var(--shadow-inner-highlight-soft);
+  transition: box-shadow var(--duration-base) var(--ease-out), border-color var(--duration-base) ease,
+    transform var(--duration-base) var(--ease-out), background-color var(--duration-base) ease;
+}
+
+button.hv-card {
+  font: inherit;
+  text-align: inherit;
+  color: inherit;
+}
+
+/* Interactive cards (quicklinks, list rows used as buttons, etc.) get a
+   restrained lift + brighten on hover — never a scale transform. */
+button.hv-card:hover:not(:disabled),
+a.hv-card:hover,
+.hv-card--interactive:hover {
+  background: var(--glass-bg-2-hover);
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--hv-shadow-md), var(--shadow-inner-highlight-soft);
+  transform: translateY(-2px);
+}
+
+button.hv-card:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+/* Level 3 — elevated glass: prediction results, AI output, modals, key metrics */
+.hv-glass {
+  background: var(--glass-bg-3);
+  backdrop-filter: blur(var(--glass-blur-3)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-3)) saturate(160%);
+  background-image: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--color-secondary) 7%, transparent),
+    transparent 55%
+  );
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--hv-radius-lg);
+  box-shadow: var(--hv-shadow-lg), var(--shadow-inner-highlight);
 }
 
 .hv-label {
@@ -162,6 +379,10 @@ body {
   color: var(--hv-text-tertiary);
 }
 
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
 .hv-btn {
   font-family: inherit;
   font-size: 0.94rem;
@@ -170,11 +391,16 @@ body {
   padding: 12px 22px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease,
-    background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-base) ease,
+    opacity var(--duration-fast) ease, background-color var(--duration-base) ease,
+    border-color var(--duration-base) ease, color var(--duration-base) ease;
 }
 
-.hv-btn:active {
+.hv-btn:active:not(:disabled) {
   transform: scale(0.98);
 }
 
@@ -185,25 +411,28 @@ body {
 }
 
 .hv-btn-primary {
-  background: var(--color-primary);
+  background: linear-gradient(155deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 70%, var(--color-primary)));
   color: var(--color-primary-contrast);
-  box-shadow: var(--hv-shadow-sm);
+  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--color-secondary) 55%, transparent), var(--hv-shadow-sm);
 }
 
 .hv-btn-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-primary) 88%, black);
-  box-shadow: var(--hv-shadow-md);
+  box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--color-secondary) 65%, transparent), var(--hv-shadow-md);
+  transform: translateY(-1px);
 }
 
 .hv-btn-secondary {
-  background: var(--hv-surface-solid);
+  background: var(--glass-bg-2);
+  backdrop-filter: blur(var(--glass-blur-2));
+  -webkit-backdrop-filter: blur(var(--glass-blur-2));
   color: var(--hv-text);
-  border-color: var(--hv-border-strong);
+  border-color: var(--glass-border-strong);
 }
 
 .hv-btn-secondary:hover:not(:disabled) {
-  border-color: var(--color-secondary);
-  color: var(--color-secondary);
+  border-color: var(--hv-accent-border);
+  color: var(--hv-accent);
+  background: var(--glass-bg-2-hover);
 }
 
 .hv-btn-ghost {
@@ -215,30 +444,62 @@ body {
 
 .hv-btn-ghost:hover:not(:disabled) {
   color: var(--hv-text);
-  background: var(--hv-surface);
+  background: color-mix(in srgb, var(--hv-text) 6%, transparent);
 }
+
+/* Loading state: dim label via opacity + inline spinner (add
+   aria-busy="true" and a <span class="hv-spinner"/> before the label) */
+.hv-btn[aria-busy='true'] {
+  cursor: progress;
+  opacity: 0.85;
+}
+
+.hv-spinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  opacity: 0.7;
+  animation: hv-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes hv-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Inputs
+   ========================================================================== */
 
 .hv-input {
   font-family: inherit;
   font-size: 1rem;
   color: var(--hv-text);
-  background: var(--hv-bg-elevated);
-  border: 1px solid var(--hv-border-strong);
+  background: var(--glass-bg-2);
+  backdrop-filter: blur(var(--glass-blur-2));
+  -webkit-backdrop-filter: blur(var(--glass-blur-2));
+  border: 1px solid var(--glass-border-strong);
   border-radius: var(--hv-radius-sm);
   padding: 11px 14px;
   width: 100%;
   box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) ease,
+    background-color var(--duration-base) ease;
+}
+
+.hv-input:hover:not(:disabled):not(:focus) {
+  border-color: var(--hv-border-strong);
 }
 
 .hv-input:focus-visible {
   outline: none;
   border-color: var(--color-secondary);
+  background: var(--glass-bg-3);
   box-shadow: 0 0 0 4px var(--hv-accent-soft);
 }
 
-/* Hide the native number spinner -- it clashes with the unit label sharing
-   that same right-hand space and reads as a stray browser default. */
 .hv-input[type='number'] {
   appearance: textfield;
   -moz-appearance: textfield;
@@ -260,11 +521,74 @@ body {
   font-size: clamp(2.4rem, 6.4vw, 4rem);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--color-primary);
+  background: linear-gradient(155deg, var(--color-text), color-mix(in srgb, var(--color-secondary) 55%, var(--color-text)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .hv-tabular {
   font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Skeletons
+   ========================================================================== */
+
+/* Glass skeleton: pair with .hv-card (or use alone) on a loading placeholder.
+   The shimmer sweeps a soft highlight across the glass surface. */
+.hv-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-bg-2);
+}
+
+.hv-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in srgb, var(--hv-text) 7%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: hv-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes hv-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hv-skeleton::after { animation: none; }
+}
+
+/* Empty-state icon badge -- a small glass-accent circle, used above the
+   label in polished empty states (see history/comparables/etc). */
+.hv-empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--color-secondary) 20%, transparent), color-mix(in srgb, var(--color-secondary) 6%, transparent));
+  border: 1px solid var(--hv-accent-border);
+  color: var(--hv-accent);
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* Small status/notification dot used across badges */
+.hv-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -274,4 +598,44 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ==========================================================================
+   User-controlled display preferences (Settings > Appearance) -- see
+   lib/preferences.js. Each attribute is applied to <html> at boot and on
+   change, independent of the OS-level prefers-reduced-motion query below.
+   ========================================================================== */
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+:root[data-glass='low'] {
+  --glass-blur-1: 4px;
+  --glass-blur-2: 8px;
+  --glass-blur-3: 14px;
+}
+
+:root[data-glass='high'] {
+  --glass-blur-1: 14px;
+  --glass-blur-2: 26px;
+  --glass-blur-3: 40px;
+}
+
+:root[data-density='compact'] .hv-main {
+  padding-top: 14px;
+  padding-bottom: 72px;
+}
+
+:root[data-density='compact'] .hv-btn {
+  padding: 9px 16px;
+}
+
+:root[data-density='compact'] .hv-input {
+  padding: 8px 12px;
 }

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { getComparison, removeFromComparison, clearComparison, MAX_COMPARISON_PROPERTIES } from '../../lib/storage'
+import { api } from '../../lib/api'
+import { useAsync } from '../../lib/hooks'
 import './PropertyComparison.css'
 
 const LABELS = ['Property A', 'Property B', 'Property C', 'Property D']
@@ -20,6 +22,7 @@ const ROWS = [
 
 export default function PropertyComparison({ setView }) {
   const [entries, setEntries] = useState(() => getComparison())
+  const { data: modelInfo } = useAsync(() => api.modelInfo(), [])
 
   const remove = (id) => {
     removeFromComparison(id)
@@ -33,7 +36,8 @@ export default function PropertyComparison({ setView }) {
 
   if (entries.length === 0) {
     return (
-      <section className="comparison comparison--empty">
+      <section className="hv-card comparison comparison--empty">
+        <span className="hv-empty-icon" aria-hidden="true">+</span>
         <p className="hv-label">Compare Properties</p>
         <p className="comparison__empty-copy">
           Run a valuation and choose "Save to Comparison" to line up to{' '}
@@ -72,7 +76,7 @@ export default function PropertyComparison({ setView }) {
         ))}
       </div>
 
-      <div className="comparison__table-wrap">
+      <div className="hv-card comparison__table-wrap">
         <table className="comparison__table">
           <thead>
             <tr>
@@ -91,6 +95,12 @@ export default function PropertyComparison({ setView }) {
                 ))}
               </tr>
             ))}
+            <tr>
+              <th scope="row">Model</th>
+              {entries.map((entry) => (
+                <td key={entry.id}>{modelInfo?.model_name ?? '—'}</td>
+              ))}
+            </tr>
           </tbody>
         </table>
       </div>

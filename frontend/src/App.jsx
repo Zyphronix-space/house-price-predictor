@@ -1,7 +1,21 @@
-import { useEffect, useState } from 'react'
-import Layout from './components/Layout'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './lib/authContext'
+import { useSetView } from './lib/nav'
+
+import RequireAuth from './components/routing/RequireAuth'
+import GuestOnly from './components/routing/GuestOnly'
+import AppShell from './components/routing/AppShell'
+import NotFound from './components/routing/NotFound'
+
+import Home from './components/marketing/Home'
+import About from './components/marketing/About'
+import Features from './components/marketing/Features'
+import Login from './components/auth/Login'
+import Signup from './components/auth/Signup'
+import ForgotPassword from './components/auth/ForgotPassword'
+import ResetPassword from './components/auth/ResetPassword'
+
 import Dashboard from './components/Dashboard'
-import AuthPage from './components/AuthPage'
 import ValuationFlow from './components/valuation/ValuationFlow'
 import WhatIfPage from './components/valuation/WhatIfPage'
 import Analysis from './components/analysis/Analysis'
@@ -11,56 +25,70 @@ import PropertyComparison from './components/compare/PropertyComparison'
 import History from './components/history/History'
 import ModelHub from './components/model/ModelHub'
 import Properties from './components/properties/Properties'
-import { fetchCurrentUser, getToken, logout, setToken } from './lib/auth'
+import Profile from './components/account/Profile'
+import Settings from './components/account/Settings'
+
+// Every existing page component below already accepts a `setView(key)`
+// prop (from the pre-router version of this app, where navigation was
+// local view-state). These one-line wrappers are the only thing that
+// changed when the app moved to real URL routes: each supplies that same
+// prop via useSetView(), which just calls react-router's navigate() under
+// the VIEW_PATHS translation table (see lib/nav.js) -- the page components
+// themselves needed zero changes.
+function DashboardRoute() {
+  return <Dashboard setView={useSetView()} />
+}
+function PredictRoute() {
+  return <ValuationFlow setView={useSetView()} />
+}
+function PropertiesRoute() {
+  return <Properties setView={useSetView()} />
+}
+function ComparablesRoute() {
+  return <ComparableProperties setView={useSetView()} />
+}
+function WhatIfRoute() {
+  return <WhatIfPage setView={useSetView()} />
+}
+function HistoryRoute() {
+  return <History setView={useSetView()} />
+}
+function CompareRoute() {
+  return <PropertyComparison setView={useSetView()} />
+}
 
 function App() {
-  const [view, setView] = useState('dashboard')
-  const [user, setUser] = useState(null)
-  const [authChecked, setAuthChecked] = useState(false)
-
-  useEffect(() => {
-    if (!getToken()) {
-      setAuthChecked(true)
-      return
-    }
-    fetchCurrentUser().then((data) => {
-      setUser(data)
-      setAuthChecked(true)
-    })
-  }, [])
-
-  if (!authChecked) return null
-
-  if (!user) {
-    return (
-      <AuthPage
-        onAuthenticated={(data) => {
-          setToken(data.access_token)
-          setUser(data.user)
-        }}
-      />
-    )
-  }
-
-  const handleLogout = () => {
-    logout()
-    setUser(null)
-    setView('dashboard')
-  }
-
   return (
-    <Layout view={view} setView={setView} user={user} onLogout={handleLogout}>
-      {view === 'dashboard' && <Dashboard setView={setView} />}
-      {view === 'predict' && <ValuationFlow setView={setView} />}
-      {view === 'properties' && <Properties setView={setView} />}
-      {view === 'analysis' && <Analysis />}
-      {view === 'comparables' && <ComparableProperties setView={setView} />}
-      {view === 'whatif' && <WhatIfPage setView={setView} />}
-      {view === 'investment' && <InvestmentCalculator />}
-      {view === 'model' && <ModelHub />}
-      {view === 'history' && <History setView={setView} />}
-      {view === 'compare' && <PropertyComparison setView={setView} />}
-    </Layout>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<GuestOnly><Home /></GuestOnly>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
+          <Route path="/signup" element={<GuestOnly><Signup /></GuestOnly>} />
+          <Route path="/forgot-password" element={<GuestOnly><ForgotPassword /></GuestOnly>} />
+          <Route path="/reset-password" element={<GuestOnly><ResetPassword /></GuestOnly>} />
+
+          <Route element={<RequireAuth><AppShell /></RequireAuth>}>
+            <Route path="/dashboard" element={<DashboardRoute />} />
+            <Route path="/predict" element={<PredictRoute />} />
+            <Route path="/properties" element={<PropertiesRoute />} />
+            <Route path="/market-analytics" element={<Analysis />} />
+            <Route path="/comparables" element={<ComparablesRoute />} />
+            <Route path="/what-if" element={<WhatIfRoute />} />
+            <Route path="/investment" element={<InvestmentCalculator />} />
+            <Route path="/model-insights" element={<ModelHub />} />
+            <Route path="/history" element={<HistoryRoute />} />
+            <Route path="/compare" element={<CompareRoute />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 

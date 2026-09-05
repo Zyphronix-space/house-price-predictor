@@ -3,18 +3,19 @@
   align-items: center;
   gap: 16px;
   padding: 20px 22px;
-  border-color: var(--hv-critical);
+  border-color: color-mix(in srgb, var(--hv-critical) 35%, var(--glass-border-strong));
+  background-image: linear-gradient(155deg, color-mix(in srgb, var(--hv-critical) 6%, transparent), transparent 60%);
 }
 
 .error-state__icon {
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--hv-critical);
-  color: #fff;
+  background: color-mix(in srgb, var(--hv-critical) 16%, transparent);
+  color: var(--hv-critical);
   font-weight: 700;
 }
 
@@ -31,6 +32,7 @@
 
 .error-state .hv-btn {
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 @media (max-width: 520px) {

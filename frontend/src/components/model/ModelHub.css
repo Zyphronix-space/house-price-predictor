@@ -15,18 +15,28 @@
   font-size: 0.86rem;
   font-weight: 600;
   white-space: nowrap;
-  background: var(--hv-surface-solid);
-  border: 1px solid var(--hv-border);
+  background: var(--glass-bg-2);
+  backdrop-filter: blur(var(--glass-blur-2));
+  -webkit-backdrop-filter: blur(var(--glass-blur-2));
+  border: 1px solid var(--glass-border);
   color: var(--hv-text-secondary);
   padding: 9px 16px;
-  border-radius: var(--hv-radius-sm);
+  border-radius: var(--radius-pill);
   cursor: pointer;
+  transition: background-color var(--duration-base) ease, color var(--duration-base) ease,
+    border-color var(--duration-base) ease;
+}
+
+.model-hub__tab:hover:not(.is-active) {
+  color: var(--hv-text);
+  border-color: var(--glass-border-strong);
 }
 
 .model-hub__tab.is-active {
-  background: var(--hv-accent);
+  background: linear-gradient(155deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 70%, var(--color-primary)));
   border-color: transparent;
   color: var(--hv-accent-contrast);
+  box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--color-secondary) 55%, transparent);
 }
 
 .model-hub__limitations {

@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { computeInvestment } from '../../lib/investmentMath'
-import { getHistory } from '../../lib/storage'
+import { api } from '../../lib/api'
+import { useAsync } from '../../lib/hooks'
 import './InvestmentCalculator.css'
 
 const FIELDS = [
@@ -14,9 +15,7 @@ const FIELDS = [
   { key: 'monthlyMaintenance', label: 'Maintenance', unit: '$ / mo' },
 ]
 
-function defaultInputs() {
-  const latest = getHistory()[0]
-  const purchasePrice = latest ? Math.round(latest.predictedPriceUsd) : 400000
+function defaultInputs(purchasePrice) {
   return {
     purchasePrice,
     downPayment: Math.round(purchasePrice * 0.2),
@@ -32,7 +31,19 @@ function defaultInputs() {
 const fmtUsd = (v) => `$${Math.round(v).toLocaleString()}`
 
 export default function InvestmentCalculator() {
-  const [inputs, setInputs] = useState(defaultInputs)
+  const { data } = useAsync(() => api.predictions.list(), [])
+  const [inputs, setInputs] = useState(() => defaultInputs(400000))
+  const [seeded, setSeeded] = useState(false)
+
+  // Once the user's real prediction history loads, pre-fill the purchase
+  // price from their most recent prediction -- but only the first time, so
+  // it never clobbers values the user has already started editing.
+  useEffect(() => {
+    if (seeded || !data) return
+    const latest = data.predictions?.[0]
+    if (latest) setInputs(defaultInputs(Math.round(latest.predicted_price_usd)))
+    setSeeded(true)
+  }, [data, seeded])
 
   const handleChange = (key, raw) => {
     const value = Number(raw)

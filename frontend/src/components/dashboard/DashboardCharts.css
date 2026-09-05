@@ -1,0 +1,36 @@
+.dashboard-chart {
+  padding: 20px 20px 14px;
+}
+
+.dashboard-chart__svg {
+  width: 100%;
+  height: auto;
+  margin-top: 10px;
+  overflow: visible;
+}
+
+.dashboard-chart__bar {
+  fill: var(--hv-accent);
+  transition: fill 0.15s ease;
+}
+
+.dashboard-chart__bar--accent2 {
+  fill: var(--hv-positive);
+}
+
+.dashboard-chart__bar:hover {
+  fill: var(--hv-text);
+}
+
+.dashboard-chart__tick {
+  font-size: 10px;
+  fill: var(--hv-text-tertiary);
+  text-anchor: middle;
+}
+
+.dashboard-chart--empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--hv-text-secondary);
+  font-size: 0.86rem;
+}

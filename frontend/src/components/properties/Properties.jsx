@@ -109,13 +109,14 @@ export default function Properties({ setView }) {
       {!error && houses === null && (
         <div className="properties__grid" aria-hidden="true">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="hv-card properties__skeleton" />
+            <div key={i} className="hv-card hv-skeleton properties__skeleton" />
           ))}
         </div>
       )}
 
       {!error && houses !== null && houses.length === 0 && (
         <div className="hv-card properties__empty">
+          <span className="hv-empty-icon" aria-hidden="true">+</span>
           <p>{q ? 'No properties match your search.' : 'No properties saved yet — add your first one.'}</p>
           {!q && (
             <button type="button" className="hv-btn hv-btn-primary" onClick={() => setFormOpen(true)}>

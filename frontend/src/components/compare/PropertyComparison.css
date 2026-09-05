@@ -56,8 +56,6 @@
 
 .comparison__table-wrap {
   overflow-x: auto;
-  border-radius: var(--hv-radius-md);
-  border: 1px solid var(--hv-border);
 }
 
 .comparison__table {
@@ -89,6 +87,14 @@
 .comparison__table tbody tr:not(:last-child) td,
 .comparison__table tbody tr:not(:last-child) th {
   border-bottom: 1px solid var(--hv-border);
+}
+
+.comparison__table tbody tr {
+  transition: background-color var(--duration-base) ease;
+}
+
+.comparison__table tbody tr:hover {
+  background: color-mix(in srgb, var(--hv-text) 4%, transparent);
 }
 
 .comparison__table tbody td {

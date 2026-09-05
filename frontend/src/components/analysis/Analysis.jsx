@@ -57,7 +57,7 @@ export default function Analysis() {
 
   return (
     <section className="analysis">
-      <p className="hv-label analysis__title">Analysis Dashboard</p>
+      <p className="hv-label analysis__title">Market Analytics</p>
       <p className="analysis__intro">
         Real, computed views of the training data and the served model's behavior — nothing
         here is illustrative or hardcoded.
@@ -77,7 +77,7 @@ export default function Analysis() {
         ))}
       </nav>
 
-      {loading && <div className="analysis__loading" aria-hidden="true" />}
+      {loading && <div className="hv-card hv-skeleton analysis__loading" aria-hidden="true" />}
       {error && <ErrorState message={error.message} />}
 
       {!loading && !error && (

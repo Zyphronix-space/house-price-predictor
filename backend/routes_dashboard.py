@@ -38,6 +38,11 @@ def dashboard_summary(
         .limit(5)
         .all()
     )
+    house_labels = {}
+    house_ids = [p.house_id for p in recent if p.house_id is not None]
+    if house_ids:
+        rows = db.query(db_models.House.id, db_models.House.label).filter(db_models.House.id.in_(house_ids)).all()
+        house_labels = dict(rows)
 
     served_key = ml_service.model_comparison["served_model"]
     served = ml_service.model_comparison["models"][served_key]
@@ -54,7 +59,9 @@ def dashboard_summary(
             {
                 "id": p.id,
                 "house_id": p.house_id,
+                "house_label": house_labels.get(p.house_id),
                 "predicted_price_usd": p.predicted_price_usd,
+                "model_used": p.model_used,
                 "created_at": p.created_at,
             }
             for p in recent

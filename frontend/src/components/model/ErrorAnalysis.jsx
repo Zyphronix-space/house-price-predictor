@@ -8,7 +8,7 @@ const fmtUsd = (v) => `$${Math.round(v).toLocaleString()}`
 export default function ErrorAnalysis() {
   const { data, error, loading } = useAsync(() => api.evaluationSample(), [])
 
-  if (loading) return <div className="error-analysis--loading" aria-hidden="true" />
+  if (loading) return <div className="hv-card hv-skeleton error-analysis--loading" aria-hidden="true" />
   if (error) return <ErrorState message={error.message} />
 
   return (

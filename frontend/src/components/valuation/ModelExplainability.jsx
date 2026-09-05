@@ -6,7 +6,7 @@ export default function ModelExplainability() {
   const { data, loading } = useAsync(() => api.modelInfo(), [])
 
   if (loading || !data) {
-    return <div className="hv-card model-explainability model-explainability--loading" aria-hidden="true" />
+    return <div className="hv-card hv-skeleton model-explainability model-explainability--loading" aria-hidden="true" />
   }
 
   const importances = data.feature_importance

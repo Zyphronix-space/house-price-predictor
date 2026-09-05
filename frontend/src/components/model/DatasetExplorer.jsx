@@ -6,7 +6,7 @@ import './DatasetExplorer.css'
 export default function DatasetExplorer() {
   const { data, error, loading } = useAsync(() => api.datasetStats(), [])
 
-  if (loading) return <div className="dataset-explorer--loading" aria-hidden="true" />
+  if (loading) return <div className="hv-card hv-skeleton dataset-explorer--loading" aria-hidden="true" />
   if (error) return <ErrorState message={error.message} />
 
   return (

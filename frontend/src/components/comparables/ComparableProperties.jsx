@@ -1,7 +1,6 @@
 import { api, ApiError } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
 import ErrorState from '../ErrorState'
-import { getHistory } from '../../lib/storage'
 import './ComparableProperties.css'
 
 const ROWS = [
@@ -17,14 +16,14 @@ const ROWS = [
 function ComparablesTable({ features }) {
   const { data, error, loading } = useAsync(() => api.comparables(features), [JSON.stringify(features)])
 
-  if (loading) return <div className="hv-card comparables--loading" aria-hidden="true" />
+  if (loading) return <div className="hv-card hv-skeleton comparables--loading" aria-hidden="true" />
   if (error) return <ErrorState message={error instanceof ApiError ? error.message : 'Could not load comparable properties.'} />
   if (!data || data.comparables.length === 0) {
     return <p className="comparables__empty">No comparable properties found.</p>
   }
 
   return (
-    <div className="comparables__table-wrap">
+    <div className="hv-card comparables__table-wrap">
       <table className="comparables__table">
         <thead>
           <tr>
@@ -52,12 +51,21 @@ function ComparablesTable({ features }) {
 }
 
 export default function ComparableProperties({ setView }) {
-  const history = getHistory()
-  const latest = history[0]
+  const { data, error, loading } = useAsync(() => api.predictions.list(), [])
+  const latest = data?.predictions?.[0]
+
+  if (loading) {
+    return <div className="hv-card hv-skeleton comparables comparables--loading" aria-hidden="true" />
+  }
+
+  if (error) {
+    return <ErrorState message={error instanceof ApiError ? error.message : 'Could not load your prediction history.'} />
+  }
 
   if (!latest) {
     return (
-      <section className="comparables comparables--empty">
+      <section className="hv-card comparables comparables--empty">
+        <span className="hv-empty-icon" aria-hidden="true">+</span>
         <p className="hv-label">Comparable Properties</p>
         <p className="comparables__empty-copy">
           Run a valuation first — this page finds the real dataset records most similar to

@@ -58,6 +58,14 @@
   border-bottom: 1px solid var(--hv-border);
 }
 
+.error-analysis__table tbody tr {
+  transition: background-color var(--duration-base) ease;
+}
+
+.error-analysis__table tbody tr:hover {
+  background: color-mix(in srgb, var(--hv-text) 4%, transparent);
+}
+
 .error-analysis__error-cell {
   color: var(--hv-critical);
   font-weight: 600;

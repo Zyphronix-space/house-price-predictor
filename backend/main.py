@@ -25,6 +25,7 @@ from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 import db_models
 import llm_service
@@ -46,6 +47,17 @@ from schemas import (
 )
 
 Base.metadata.create_all(bind=engine)
+
+
+def _ensure_schema() -> None:
+    """`create_all` only creates missing tables -- it never alters an
+    existing one. The `users` table already exists in any pre-existing
+    house_price.db, so a column added to db_models.User after that (like
+    display_name) needs a real, if tiny, migration step here."""
+    with engine.begin() as conn:
+        existing_cols = {row[1] for row in conn.execute(text("PRAGMA table_info(users)"))}
+        if "display_name" not in existing_cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN display_name VARCHAR"))
 
 
 def _sync_model_evaluations() -> None:
@@ -81,6 +93,7 @@ def _sync_model_evaluations() -> None:
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    _ensure_schema()
     _sync_model_evaluations()
     yield
 

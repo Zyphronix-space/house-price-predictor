@@ -1,0 +1,122 @@
+.cmdk {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 14vh 20px 20px;
+}
+
+.cmdk__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: var(--scrim);
+  backdrop-filter: blur(var(--scrim-blur));
+  -webkit-backdrop-filter: blur(var(--scrim-blur));
+  cursor: pointer;
+  animation: modal-backdrop-in var(--duration-base) var(--ease-out);
+}
+
+.cmdk__panel {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: min(70vh, 480px);
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  animation: modal-panel-in var(--duration-base) var(--ease-out);
+}
+
+.cmdk__input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 8px;
+}
+
+.cmdk__icon {
+  color: var(--hv-text-tertiary);
+  font-size: 1rem;
+}
+
+.cmdk__input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--hv-text);
+}
+
+.cmdk__input::placeholder {
+  color: var(--hv-text-tertiary);
+}
+
+.cmdk__kbd {
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--hv-text-tertiary);
+  background: color-mix(in srgb, var(--hv-text) 8%, transparent);
+  border-radius: var(--radius-xs);
+  padding: 3px 6px;
+}
+
+.cmdk__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px 4px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cmdk__empty {
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--hv-text-tertiary);
+}
+
+.cmdk__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--hv-text);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease;
+}
+
+.cmdk__item.is-active {
+  background: var(--hv-accent-soft);
+  color: var(--color-secondary);
+}
+
+.cmdk__hint {
+  font-size: 0.74rem;
+  color: var(--hv-text-tertiary);
+}
+
+.cmdk__item.is-active .cmdk__hint {
+  color: color-mix(in srgb, var(--color-secondary) 70%, var(--hv-text-tertiary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmdk__backdrop, .cmdk__panel { animation: none; }
+}

@@ -74,13 +74,16 @@ export function useTheme() {
     else root.setAttribute('data-theme', theme)
   }, [theme])
 
-  const cycleTheme = () => {
-    const next = THEME_ORDER[(THEME_ORDER.indexOf(theme) + 1) % THEME_ORDER.length]
+  const setTheme = (next) => {
     setThemeState(next)
     setStoredTheme(next === 'system' ? null : next)
   }
 
-  return { theme, cycleTheme }
+  const cycleTheme = () => {
+    setTheme(THEME_ORDER[(THEME_ORDER.indexOf(theme) + 1) % THEME_ORDER.length])
+  }
+
+  return { theme, setTheme, cycleTheme }
 }
 
 export function usePrefersReducedMotion() {

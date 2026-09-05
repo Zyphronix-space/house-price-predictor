@@ -4,6 +4,10 @@
   margin: 0 auto;
 }
 
+.whatif-page--loading {
+  min-height: 240px;
+}
+
 .whatif-page--empty {
   text-align: center;
   padding: 80px 20px;

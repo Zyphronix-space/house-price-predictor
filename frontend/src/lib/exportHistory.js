@@ -16,6 +16,10 @@ export function exportHistoryAsJson(entries) {
   download('valuation-history.json', JSON.stringify(entries, null, 2), 'application/json')
 }
 
+export function downloadJson(filename, data) {
+  download(filename, JSON.stringify(data, null, 2), 'application/json')
+}
+
 export function exportHistoryAsCsv(entries) {
   const header = ['created_at', 'predicted_price_usd', ...FEATURE_ORDER]
   const rows = entries.map((e) => [

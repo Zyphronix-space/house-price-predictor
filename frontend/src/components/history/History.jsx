@@ -94,12 +94,13 @@ export default function History({ setView }) {
   if (error) return <ErrorState message={error.message} onRetry={load} />
 
   if (entries === null) {
-    return <div className="history history--loading" aria-hidden="true" />
+    return <div className="hv-card hv-skeleton history history--loading" aria-hidden="true" />
   }
 
   if (entries.length === 0) {
     return (
-      <section className="history history--empty">
+      <section className="hv-card history history--empty">
+        <span className="hv-empty-icon" aria-hidden="true">+</span>
         <p className="hv-label">Prediction History</p>
         <p className="history__empty-copy">Your past valuations will appear here once you run one.</p>
         <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>

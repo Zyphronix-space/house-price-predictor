@@ -12,7 +12,7 @@ const fmtUsd = (v) => (Math.abs(v) >= 1000 ? `$${Math.round(v / 1000)}k` : `$${M
 export default function ModelCheck() {
   const { data, error, loading } = useAsync(() => api.evaluationSample(), [])
 
-  if (loading) return <div className="model-check--loading" aria-hidden="true" />
+  if (loading) return <div className="hv-card hv-skeleton model-check--loading" aria-hidden="true" />
   if (error) return <ErrorState message={error.message} />
 
   const values = data.sample.flatMap((p) => [p.actual_usd, p.predicted_usd])

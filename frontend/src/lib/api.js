@@ -119,6 +119,10 @@ export const api = {
     remove: (id) => request(`/predictions/${id}`, { method: 'DELETE' }),
   },
   dashboardSummary: () => request('/dashboard/summary'),
+
+  updateProfile: (payload) => request('/auth/me', { method: 'PATCH', ...jsonBody(payload) }),
+  changePassword: (payload) => request('/auth/change-password', { method: 'POST', ...jsonBody(payload) }),
+  deleteAccount: () => request('/auth/me', { method: 'DELETE' }),
 }
 
 export { ApiError, API_URL }

@@ -34,8 +34,6 @@
 
 .comparables__table-wrap {
   overflow-x: auto;
-  border-radius: var(--hv-radius-md);
-  border: 1px solid var(--hv-border);
 }
 
 .comparables__table {
@@ -61,6 +59,14 @@
 
 .comparables__table tbody tr:not(:last-child) td {
   border-bottom: 1px solid var(--hv-border);
+}
+
+.comparables__table tbody tr {
+  transition: background-color var(--duration-base) ease;
+}
+
+.comparables__table tbody tr:hover {
+  background: color-mix(in srgb, var(--hv-text) 4%, transparent);
 }
 
 .comparables__table tbody td {

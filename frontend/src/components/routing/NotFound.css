@@ -1,0 +1,26 @@
+.not-found {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.not-found__card {
+  text-align: center;
+  padding: 48px 40px;
+  max-width: 420px;
+}
+
+.not-found__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--hv-text);
+  margin: 8px 0 8px;
+}
+
+.not-found__copy {
+  font-size: 0.94rem;
+  color: var(--hv-text-secondary);
+  margin: 0 0 22px;
+}
