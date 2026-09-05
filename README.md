@@ -166,5 +166,17 @@ public `/health` check.
 
 ## Screenshots
 
-_TODO: add screenshots of the Dashboard, Property Management, Valuation
-Flow, and Model Lab pages here._
+**Sign in / sign up**
+![Auth](docs/screenshots/auth.png)
+
+**Dashboard**
+![Dashboard](docs/screenshots/dashboard.png)
+
+**Prediction with tree-path explanation**
+![Prediction explanation](docs/screenshots/prediction-explanation.png)
+
+**Analysis dashboard (real data distributions, correlations, model fit)**
+![Analysis](docs/screenshots/analysis.png)
+
+**Valuation wizard — location step**
+![Valuation wizard](docs/screenshots/valuation-wizard.png)
