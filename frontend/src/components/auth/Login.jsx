@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { login } from '../../lib/auth'
 import { useAuth } from '../../lib/authContext'
 import { showToast } from '../../lib/toast'
+import { EyeIcon, EyeOffIcon } from '../icons'
 import AuthShell from './AuthShell'
 
 export default function Login() {
@@ -67,7 +68,7 @@ export default function Login() {
               onClick={() => setShowPassword((s) => !s)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? '🙈' : '👁'}
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </button>
           </div>
         </label>

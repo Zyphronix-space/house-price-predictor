@@ -5,6 +5,7 @@ import {
   markNotificationRead,
   subscribeNotifications,
 } from '../lib/toast'
+import { BellIcon } from './icons'
 import './NotificationCenter.css'
 
 function timeAgo(iso) {
@@ -52,7 +53,7 @@ export default function NotificationCenter() {
         aria-expanded={open}
         aria-label={`Notifications${unreadCount ? ` (${unreadCount} unread)` : ''}`}
       >
-        <span aria-hidden="true">🔔</span>
+        <BellIcon />
         {unreadCount > 0 && <span className="notif__badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
       </button>
 
