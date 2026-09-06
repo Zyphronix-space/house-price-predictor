@@ -1,5 +1,10 @@
 # HomeValue — AI Real Estate Intelligence Platform
 
+![Python](https://img.shields.io/badge/-Python-black?style=flat-square&logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/-scikit--learn-black?style=flat-square&logo=scikitlearn&logoColor=white)
+![FastAPI](https://img.shields.io/badge/-FastAPI-black?style=flat-square&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react&logoColor=white)
+
 A full-stack AI real estate intelligence platform built around one real
 trained machine-learning model on the California Housing dataset. Predict a
 property's value, understand exactly why via feature-contribution
