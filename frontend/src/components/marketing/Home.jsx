@@ -29,7 +29,7 @@ export default function Home() {
         </h1>
         <p className="marketing-hero__sub">
           Predict a property's value with a real trained machine-learning model, understand exactly
-          why, compare scenarios, and run the investment numbers — all in one place.
+          why, compare scenarios, and run the investment numbers, all in one place.
         </p>
         <div className="marketing-hero__cta">
           <Link to="/signup" className="hv-btn hv-btn-primary">

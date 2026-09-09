@@ -18,7 +18,7 @@ export default function AuthShell({ title, tagline, children }) {
           <h1 className="auth-page__brand-headline">Understand what a property could be worth.</h1>
           <p className="auth-page__brand-copy">
             Machine-learning price estimates with transparent, explainable reasoning behind every
-            number — built on one real trained model, not a black box.
+            number, built on one real trained model, not a black box.
           </p>
           <ul className="auth-page__brand-points">
             <li>Instant ML-based valuations</li>
@@ -37,7 +37,7 @@ export default function AuthShell({ title, tagline, children }) {
               <span style={{ height: '70%' }} />
               <span style={{ height: '95%' }} />
             </div>
-            <p className="auth-preview__caption">Illustrative preview — not live data</p>
+            <p className="auth-preview__caption">Illustrative preview: not live data</p>
           </div>
         </div>
 

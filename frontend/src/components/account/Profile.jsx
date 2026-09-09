@@ -62,7 +62,7 @@ export default function Profile() {
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>
-        <p className="account-hint">Your email can't be changed from here — contact support if you need to update it.</p>
+        <p className="account-hint">Your email can't be changed from here, contact support if you need to update it.</p>
       </form>
 
       <p className="account-page__footer-link">

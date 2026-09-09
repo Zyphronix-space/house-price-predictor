@@ -15,7 +15,7 @@ export default function SliderField({ name, value, onChange, bounds }) {
       <div className="slider-field__head">
         <span className="slider-field__label">{meta.label}</span>
         <span className="slider-field__value">
-          {Number.isFinite(num) ? num.toFixed(2) : '—'} <span className="slider-field__unit">{meta.unit}</span>
+          {Number.isFinite(num) ? num.toFixed(2) : '-'} <span className="slider-field__unit">{meta.unit}</span>
         </span>
       </div>
       <input

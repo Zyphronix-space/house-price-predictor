@@ -37,11 +37,11 @@ export default function PredictionResult({ result, onWhatIf, onSaveComparison, o
       <div className="prediction-result__meta">
         <span>
           <span className="prediction-result__meta-label">Model</span>
-          {modelInfo?.model_name ?? '—'}
+          {modelInfo?.model_name ?? '-'}
         </span>
         <span>
           <span className="prediction-result__meta-label">Dataset</span>
-          {modelInfo?.dataset ?? '—'}
+          {modelInfo?.dataset ?? '-'}
         </span>
       </div>
 
@@ -57,7 +57,7 @@ export default function PredictionResult({ result, onWhatIf, onSaveComparison, o
         <label className="prediction-result__house-picker">
           <span className="hv-label">Attach to a saved property (optional)</span>
           <select className="hv-input" value={houseId} onChange={(e) => setHouseId(e.target.value)}>
-            <option value="">None — save as a standalone prediction</option>
+            <option value="">None, save as a standalone prediction</option>
             {housesRes.houses.map((h) => (
               <option key={h.id} value={h.id}>{h.label}</option>
             ))}

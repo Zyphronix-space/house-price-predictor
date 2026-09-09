@@ -53,9 +53,9 @@ export default function ForgotPassword() {
 
           {result.reset_token && (
             <div className="auth-page__demo-banner">
-              <p className="auth-page__demo-banner-title">Demo mode — no email service configured</p>
+              <p className="auth-page__demo-banner-title">Demo mode: no email service configured</p>
               <p className="auth-page__demo-banner-copy">
-                In production this link would be emailed. For this project, here it is directly —
+                In production this link would be emailed. For this project, here it is directly:
                 the token is real, single-use, and expires in 30 minutes.
               </p>
               <Link

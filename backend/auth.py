@@ -4,9 +4,9 @@ get_current_user dependency that gates every user-data route.
 
 Deliberately dependency-light:
 - Passwords are hashed with PBKDF2-HMAC-SHA256 (Python's stdlib `hashlib`,
-  260,000 iterations — the iteration count Django recommends), not a
+  260,000 iterations, the iteration count Django recommends), not a
   compiled bcrypt/argon2 library.
-- Sessions are signed JWTs (PyJWT, HS256) carrying only the user id — no
+- Sessions are signed JWTs (PyJWT, HS256) carrying only the user id, no
   session table needed.
 
 SECRET_KEY must be set via the JWT_SECRET_KEY env var in any real

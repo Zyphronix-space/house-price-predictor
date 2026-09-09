@@ -28,7 +28,7 @@ export default function WhyThisPrice({ explanation }) {
         Computed directly from the served Random Forest's decision trees for this specific
         input (a tree-path contribution breakdown, sometimes called the Saabas method): each
         bar is that feature's real dollar contribution above or below the model's baseline
-        expected value — it explains this model's reasoning, not a causal claim about what
+        expected value, it explains this model's reasoning, not a causal claim about what
         actually drives real-world prices.
       </p>
 

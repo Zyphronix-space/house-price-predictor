@@ -98,7 +98,7 @@ export default function PropertyComparison({ setView }) {
             <tr>
               <th scope="row">Model</th>
               {entries.map((entry) => (
-                <td key={entry.id}>{modelInfo?.model_name ?? '—'}</td>
+                <td key={entry.id}>{modelInfo?.model_name ?? '-'}</td>
               ))}
             </tr>
           </tbody>

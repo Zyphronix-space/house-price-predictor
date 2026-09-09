@@ -19,7 +19,7 @@ export default function ModelExplainability() {
         {data.model_name} scores each feature by how much it contributed to the model's
         predictions overall (relative influence). This is not a per-property, per-dollar
         effect, and it doesn't say whether a feature pushes value up or down for a given
-        property — only how much the model leans on it.
+        property, only how much the model leans on it.
       </p>
       <ul className="model-explainability__bars">
         {importances.map((f) => (

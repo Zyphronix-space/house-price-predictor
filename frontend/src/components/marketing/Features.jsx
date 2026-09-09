@@ -4,7 +4,7 @@ import PublicShell from './PublicShell'
 const FEATURES = [
   {
     title: 'ML-powered valuation',
-    desc: 'A real trained model estimates property value from 8 measurable features — no invented inputs like square footage that the model was never trained on.',
+    desc: 'A real trained model estimates property value from 8 measurable features, no invented inputs like square footage that the model was never trained on.',
   },
   {
     title: 'Explainable predictions',
@@ -24,7 +24,7 @@ const FEATURES = [
   },
   {
     title: 'Investment calculator',
-    desc: 'Monthly payment, cash flow, ROI, and break-even from clearly labeled financial assumptions — never presented as ML output.',
+    desc: 'Monthly payment, cash flow, ROI, and break-even from clearly labeled financial assumptions, never presented as ML output.',
   },
   {
     title: 'Prediction history',
@@ -43,7 +43,7 @@ export default function Features() {
         <p className="marketing-hero__eyebrow">Features</p>
         <h1 className="marketing-hero__headline">Everything from prediction to decision.</h1>
         <p className="marketing-hero__sub">
-          Every feature below is real and running on the same trained model — nothing here is a
+          Every feature below is real and running on the same trained model, nothing here is a
           mockup.
         </p>
       </section>

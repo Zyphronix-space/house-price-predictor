@@ -89,7 +89,7 @@ export default function WhatIfSimulator({ baseFeatures, baseValue, onClose }) {
         <div>
           <p className="hv-label">Difference</p>
           <span className={`what-if__figure ${change >= 0 ? 'is-positive' : 'is-negative'}`}>
-            {scenario ? `${change >= 0 ? '+' : '-'}$${Math.abs(Math.round(change)).toLocaleString()}` : '—'}
+            {scenario ? `${change >= 0 ? '+' : '-'}$${Math.abs(Math.round(change)).toLocaleString()}` : '-'}
           </span>
         </div>
       </div>

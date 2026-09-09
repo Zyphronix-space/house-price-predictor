@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Home Value — Liquid Glass design system.
+   Home Value, Liquid Glass design system.
 
    Canonical tokens live on --color-*, --glass-*, --space-*, --radius-*,
    --ease-* etc. Every component consumes the --hv-* aliases below, which are
    derived from those canonical tokens so light/dark/reduced-motion stay a
    single source of truth. Never hardcode a color/blur/shadow in a component
-   file — add or reuse a token here instead.
+   file, add or reuse a token here instead.
 
    Accent identity for this project (portfolio-family convention): deep navy
    + blue primary, emerald secondary/positive.
@@ -44,16 +44,16 @@
   --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.28);
 
   /* ---- Glass tokens ---- */
-  /* Level 1 — background glass: near-invisible, used for large ambient panels */
+  /* Level 1, background glass: near-invisible, used for large ambient panels */
   --glass-bg-1: rgba(255, 255, 255, 0.38);
   --glass-blur-1: 8px;
 
-  /* Level 2 — standard glass: cards, nav, panels, forms */
+  /* Level 2, standard glass: cards, nav, panels, forms */
   --glass-bg-2: rgba(255, 255, 255, 0.62);
   --glass-bg-2-hover: rgba(255, 255, 255, 0.74);
   --glass-blur-2: 18px;
 
-  /* Level 3 — elevated glass: results, modals, key metrics, AI output */
+  /* Level 3, elevated glass: results, modals, key metrics, AI output */
   --glass-bg-3: rgba(255, 255, 255, 0.82);
   --glass-blur-3: 28px;
 
@@ -91,7 +91,7 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-display: 'Plus Jakarta Sans', var(--font-sans);
 
-  /* ---- Component aliases — derived, never redefined per-theme ---- */
+  /* ---- Component aliases, derived, never redefined per-theme ---- */
   --hv-bg: var(--color-bg);
   --hv-bg-elevated: var(--color-surface);
   --hv-surface: var(--color-muted-bg);
@@ -314,7 +314,7 @@ body {
    Glass surfaces
    ========================================================================== */
 
-/* Level 1 — background glass: very subtle, for large recessed panels */
+/* Level 1, background glass: very subtle, for large recessed panels */
 .hv-glass-1 {
   background: var(--glass-bg-1);
   backdrop-filter: blur(var(--glass-blur-1));
@@ -323,7 +323,7 @@ body {
   border-radius: var(--hv-radius-lg);
 }
 
-/* Level 2 — standard glass: cards, panels, forms, nav */
+/* Level 2, standard glass: cards, panels, forms, nav */
 .hv-card {
   background: var(--glass-bg-2);
   backdrop-filter: blur(var(--glass-blur-2)) saturate(150%);
@@ -342,7 +342,7 @@ button.hv-card {
 }
 
 /* Interactive cards (quicklinks, list rows used as buttons, etc.) get a
-   restrained lift + brighten on hover — never a scale transform. */
+   restrained lift + brighten on hover, never a scale transform. */
 button.hv-card:hover:not(:disabled),
 a.hv-card:hover,
 .hv-card--interactive:hover {
@@ -356,7 +356,7 @@ button.hv-card:active:not(:disabled) {
   transform: translateY(-1px);
 }
 
-/* Level 3 — elevated glass: prediction results, AI output, modals, key metrics */
+/* Level 3, elevated glass: prediction results, AI output, modals, key metrics */
 .hv-glass {
   background: var(--glass-bg-3);
   backdrop-filter: blur(var(--glass-blur-3)) saturate(160%);

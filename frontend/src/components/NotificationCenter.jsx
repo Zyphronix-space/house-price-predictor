@@ -76,7 +76,7 @@ export default function NotificationCenter() {
           </div>
 
           {items.length === 0 ? (
-            <p className="notif__empty">No notifications yet — actions like predictions and saved properties will show up here.</p>
+            <p className="notif__empty">No notifications yet, actions like predictions and saved properties will show up here.</p>
           ) : (
             <ul className="notif__list">
               {items.map((n) => (

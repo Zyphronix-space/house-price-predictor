@@ -68,7 +68,7 @@ export default function ComparableProperties({ setView }) {
         <span className="hv-empty-icon" aria-hidden="true">+</span>
         <p className="hv-label">Comparable Properties</p>
         <p className="comparables__empty-copy">
-          Run a valuation first — this page finds the real dataset records most similar to
+          Run a valuation first, this page finds the real dataset records most similar to
           your most recent prediction's inputs.
         </p>
         <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>

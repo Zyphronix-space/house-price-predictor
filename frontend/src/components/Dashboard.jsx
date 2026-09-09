@@ -44,7 +44,7 @@ export default function Dashboard({ setView }) {
         <h1 className="dashboard__headline">Your Real Estate Intelligence</h1>
         <p className="dashboard__tagline">
           A machine-learning valuation platform: predictions, explanations, comparables,
-          scenario simulation, and model analytics — all built on one real trained model.
+          scenario simulation, and model analytics, all built on one real trained model.
         </p>
         <div className="dashboard__cta">
           <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
@@ -69,16 +69,16 @@ export default function Dashboard({ setView }) {
       <div className="dashboard__stats">
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Predictions made</p>
-          <p className="dashboard__stat-value">{summary?.total_predictions ?? '—'}</p>
+          <p className="dashboard__stat-value">{summary?.total_predictions ?? '-'}</p>
         </div>
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Saved properties</p>
-          <p className="dashboard__stat-value">{summary?.total_properties ?? '—'}</p>
+          <p className="dashboard__stat-value">{summary?.total_properties ?? '-'}</p>
         </div>
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Average predicted value</p>
           <p className="dashboard__stat-value dashboard__stat-value--small">
-            {summary?.average_predicted_price_usd != null ? fmtUsd(summary.average_predicted_price_usd) : '—'}
+            {summary?.average_predicted_price_usd != null ? fmtUsd(summary.average_predicted_price_usd) : '-'}
           </p>
         </div>
         <div className="hv-card dashboard__stat">
@@ -93,22 +93,22 @@ export default function Dashboard({ setView }) {
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Highest prediction</p>
           <p className="dashboard__stat-value dashboard__stat-value--small">
-            {summary?.highest_predicted_price_usd != null ? fmtUsd(summary.highest_predicted_price_usd) : '—'}
+            {summary?.highest_predicted_price_usd != null ? fmtUsd(summary.highest_predicted_price_usd) : '-'}
           </p>
         </div>
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Lowest prediction</p>
           <p className="dashboard__stat-value dashboard__stat-value--small">
-            {summary?.lowest_predicted_price_usd != null ? fmtUsd(summary.lowest_predicted_price_usd) : '—'}
+            {summary?.lowest_predicted_price_usd != null ? fmtUsd(summary.lowest_predicted_price_usd) : '-'}
           </p>
         </div>
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Served model</p>
-          <p className="dashboard__stat-value dashboard__stat-value--small">{modelInfo?.model_name ?? '—'}</p>
+          <p className="dashboard__stat-value dashboard__stat-value--small">{modelInfo?.model_name ?? '-'}</p>
         </div>
         <div className="hv-card dashboard__stat">
           <p className="hv-label">Training records</p>
-          <p className="dashboard__stat-value">{datasetStats ? datasetStats.n_records.toLocaleString() : '—'}</p>
+          <p className="dashboard__stat-value">{datasetStats ? datasetStats.n_records.toLocaleString() : '-'}</p>
         </div>
       </div>
 
@@ -143,7 +143,7 @@ export default function Dashboard({ setView }) {
         <div className="dashboard__recent">
           <p className="hv-label">Recent predictions</p>
           {!summary || summary.recent_predictions.length === 0 ? (
-            <p className="dashboard__recent-empty">No predictions yet — run your first valuation to see it here.</p>
+            <p className="dashboard__recent-empty">No predictions yet, run your first valuation to see it here.</p>
           ) : (
             <div className="hv-card dashboard__recent-table-wrap">
               <table className="dashboard__recent-table">
@@ -161,7 +161,7 @@ export default function Dashboard({ setView }) {
                         {new Date(entry.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </td>
                       <td className="hv-tabular">{fmtUsd(entry.predicted_price_usd)}</td>
-                      <td>{entry.house_label ?? '—'}</td>
+                      <td>{entry.house_label ?? '-'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -174,7 +174,7 @@ export default function Dashboard({ setView }) {
           <p className="hv-label">Comparison basket</p>
           {comparisonCount === 0 ? (
             <p className="dashboard__recent-empty">
-              No properties saved for comparison yet — save one after a prediction.
+              No properties saved for comparison yet, save one after a prediction.
             </p>
           ) : (
             <p className="dashboard__comparison-count">

@@ -40,7 +40,7 @@ export default function ResetPassword() {
     try {
       await resetPassword(token, password)
       setDone(true)
-      showToast('Password reset — you can sign in now', 'success')
+      showToast('Password reset, you can sign in now', 'success')
       setTimeout(() => navigate('/login', { replace: true }), 1600)
     } catch (err) {
       setError(err.message)

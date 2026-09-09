@@ -38,7 +38,7 @@ export default function ModelCheck() {
       <p className="model-check__explainer">
         <strong>MAE</strong> is the average absolute prediction error in dollars.{' '}
         <strong>R²</strong> is the share of variance in actual values the model explains
-        on this held-out test set — not "accuracy."
+        on this held-out test set, not "accuracy."
       </p>
 
       <div className="hv-card model-check__chart-card">

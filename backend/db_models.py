@@ -2,13 +2,13 @@
 SQLAlchemy tables: user accounts, saved properties, prediction history, and
 model evaluation snapshots.
 
-House and Prediction are both scoped by user_id — each account only ever
+House and Prediction are both scoped by user_id, each account only ever
 sees its own properties and predictions (enforced in routes_houses.py /
 routes_predictions.py via the get_current_user dependency, not just in the
 UI). House uses the model's actual 8 input features (the California
 Housing dataset describes a census block group, not a single home) rather
 than invented fields like square footage or bedroom count that the model
-was never trained on — see ml_service.FEATURE_ORDER.
+was never trained on, see ml_service.FEATURE_ORDER.
 
 ModelEvaluation is not user-scoped: it's a shared snapshot of the latest
 compare_models.py run, synced into the database at backend startup (see

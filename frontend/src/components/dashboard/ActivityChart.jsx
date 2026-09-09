@@ -21,7 +21,7 @@ export default function ActivityChart({ predictions }) {
 
   return (
     <section className="hv-card dashboard-chart">
-      <p className="hv-label">Prediction activity — last 14 days</p>
+      <p className="hv-label">Prediction activity (last 14 days)</p>
       <svg
         className="dashboard-chart__svg"
         viewBox={`0 0 ${W} ${H}`}

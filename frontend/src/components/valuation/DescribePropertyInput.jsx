@@ -44,7 +44,7 @@ export default function DescribePropertyInput({ onExtracted }) {
     <div className="describe-input">
       <p className="describe-input__note">
         Describe the neighborhood in plain language. An AI model extracts candidate values for
-        this model's real inputs — it never sets the price. You'll review and can edit every
+        this model's real inputs, it never sets the price. You'll review and can edit every
         value before estimating.
       </p>
       <textarea

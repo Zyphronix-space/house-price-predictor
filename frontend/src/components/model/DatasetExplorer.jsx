@@ -29,8 +29,8 @@ export default function DatasetExplorer() {
       </div>
 
       <div className="hv-card dataset-explorer__notice">
-        This dataset describes California census block groups — clusters of a few
-        hundred to a few thousand people — not individual home listings. Every
+        This dataset describes California census block groups, clusters of a few
+        hundred to a few thousand people, not individual home listings. Every
         prediction in this app inherits that limitation.
       </div>
 

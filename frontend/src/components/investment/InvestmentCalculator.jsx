@@ -57,7 +57,7 @@ export default function InvestmentCalculator() {
       <p className="hv-label">Investment Calculator</p>
       <p className="investment__note">
         Arithmetic over the assumptions you enter below (standard mortgage amortization and
-        cash-flow formulas) — not financial advice, and not connected to the ML model beyond
+        cash-flow formulas), not financial advice, and not connected to the ML model beyond
         pre-filling the purchase price from your last prediction.
       </p>
 

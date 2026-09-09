@@ -117,7 +117,7 @@ export default function Properties({ setView }) {
       {!error && houses !== null && houses.length === 0 && (
         <div className="hv-card properties__empty">
           <span className="hv-empty-icon" aria-hidden="true">+</span>
-          <p>{q ? 'No properties match your search.' : 'No properties saved yet — add your first one.'}</p>
+          <p>{q ? 'No properties match your search.' : 'No properties saved yet, add your first one.'}</p>
           {!q && (
             <button type="button" className="hv-btn hv-btn-primary" onClick={() => setFormOpen(true)}>
               Add property

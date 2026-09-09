@@ -20,7 +20,7 @@ export default function DistributionChart({ stats }) {
 
   return (
     <section className="hv-card distribution-chart">
-      <p className="hv-label">Median House Value — Distribution</p>
+      <p className="hv-label">Median House Value: Distribution</p>
       <svg
         className="distribution-chart__svg"
         viewBox={`0 0 ${W} ${H}`}

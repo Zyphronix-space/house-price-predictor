@@ -15,7 +15,7 @@ function ComparablesMini({ features }) {
       <ul>
         {data.comparables.map((c, i) => (
           <li key={i}>
-            {c.similarity_pct.toFixed(0)}% similar — recorded value {fmtUsd(c.actual_price_usd)}
+            {c.similarity_pct.toFixed(0)}% similar, recorded value {fmtUsd(c.actual_price_usd)}
           </li>
         ))}
       </ul>
@@ -71,17 +71,17 @@ export default function ValuationReport({ features, result, onClose }) {
         <dl className="valuation-report__meta">
           <div>
             <dt>Model used</dt>
-            <dd>{modelInfo?.model_name ?? '—'}</dd>
+            <dd>{modelInfo?.model_name ?? '-'}</dd>
           </div>
           <div>
             <dt>Model performance (test set)</dt>
             <dd>
-              {modelInfo ? `MAE $${modelInfo.metrics.mae_usd.toLocaleString()} · R² ${modelInfo.metrics.r2}` : '—'}
+              {modelInfo ? `MAE $${modelInfo.metrics.mae_usd.toLocaleString()} · R² ${modelInfo.metrics.r2}` : '-'}
             </dd>
           </div>
           <div>
             <dt>Dataset</dt>
-            <dd>{modelInfo?.dataset ?? '—'} (block-group level, not individual listings)</dd>
+            <dd>{modelInfo?.dataset ?? '-'} (block-group level, not individual listings)</dd>
           </div>
           <div>
             <dt>Generated</dt>

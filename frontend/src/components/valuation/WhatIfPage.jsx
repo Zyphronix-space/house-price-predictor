@@ -26,7 +26,7 @@ export default function WhatIfPage({ setView }) {
         <span className="hv-empty-icon" aria-hidden="true">+</span>
         <p className="hv-label">What-If Simulator</p>
         <p className="whatif-page__empty-copy">
-          Run a valuation first — the simulator explores scenarios starting from your most
+          Run a valuation first, the simulator explores scenarios starting from your most
           recent prediction's inputs.
         </p>
         <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>

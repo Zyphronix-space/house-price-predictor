@@ -216,7 +216,7 @@ function NotificationsTab() {
       </div>
 
       <p className="account-hint">
-        Every event is always logged in the notification center (the bell icon in the top bar) —
+        Every event is always logged in the notification center (the bell icon in the top bar);
         these switches only control the floating pop-up.
       </p>
     </div>
@@ -390,7 +390,7 @@ function AccountTab({ user, signOut }) {
       </div>
       <div className="hv-card account-card">
         <p className="hv-label">Plan</p>
-        <p className="account-value">Free — this is a portfolio project, no billing is implemented.</p>
+        <p className="account-value">Free, this is a portfolio project, no billing is implemented.</p>
       </div>
       <div className="hv-card account-card">
         <button
