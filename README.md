@@ -1,9 +1,13 @@
-# HomeValue: AI Real Estate Intelligence Platform
+<p align="center"><img src="docs/banner.svg" alt="HomeValue — AI real estate intelligence platform" width="100%" /></p>
 
-![Python](https://img.shields.io/badge/-Python-black?style=flat-square&logo=python&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/-scikit--learn-black?style=flat-square&logo=scikitlearn&logoColor=white)
-![FastAPI](https://img.shields.io/badge/-FastAPI-black?style=flat-square&logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react&logoColor=white)
+<p align="center">
+<img src="https://img.shields.io/badge/-Python-0d0d16?style=flat-square&logo=python&logoColor=white" alt="Python" />
+<img src="https://img.shields.io/badge/-scikit--learn-0d0d16?style=flat-square&logo=scikitlearn&logoColor=white" alt="scikit-learn" />
+<img src="https://img.shields.io/badge/-FastAPI-0d0d16?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+<img src="https://img.shields.io/badge/-React-0d0d16?style=flat-square&logo=react&logoColor=white" alt="React" />
+</p>
+
+# HomeValue — AI Real Estate Intelligence Platform
 
 A full-stack AI real estate intelligence platform built around one real
 trained machine-learning model on the California Housing dataset. Predict a
@@ -33,6 +37,18 @@ there isn't enough real data yet (a new account with no predictions), the
 UI shows an honest empty state instead of a fake statistic.
 
 ## Architecture
+
+```mermaid
+flowchart LR
+    F["React (Vite) SPA<br/>valuation wizard, dashboard, what-if, insights"] -->|REST, JWT| A["FastAPI service"]
+    A --> ML["ml_service.py<br/>loads model + scaler + dataset once"]
+    ML --> M[("Trained model<br/>Random Forest / GB / Linear<br/>joblib artifact")]
+    A --> DB[("SQLite<br/>users, houses, predictions")]
+    ML -->|Saabas tree-path| EXP["Explanation<br/>base + per-feature contribution"]
+
+    classDef stage fill:#6C5CE7,stroke:#4834B0,color:#fff
+    class A,ML stage
+```
 
 ```
 frontend/   React (Vite) SPA, react-router-dom routes for public marketing
