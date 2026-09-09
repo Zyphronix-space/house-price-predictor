@@ -36,7 +36,7 @@ export default function Signup() {
     try {
       const data = await signup(email, password, name.trim())
       signIn(data, true)
-      showToast('Account created — welcome aboard', 'success')
+      showToast('Account created. Welcome aboard.', 'success')
       navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(err.message)
@@ -118,7 +118,8 @@ export default function Signup() {
             checked={agreedToTerms}
             onChange={(e) => setAgreedToTerms(e.target.checked)}
           />
-          I agree to the Terms of Service and Privacy Policy
+          I agree to the <Link to="/terms">Terms and Conditions</Link> and{' '}
+          <Link to="/privacy">Privacy Policy</Link>
         </label>
 
         {error && <p className="auth-page__error">{error}</p>}

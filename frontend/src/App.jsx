@@ -10,6 +10,8 @@ import NotFound from './components/routing/NotFound'
 import Home from './components/marketing/Home'
 import About from './components/marketing/About'
 import Features from './components/marketing/Features'
+import PrivacyPolicy from './components/marketing/PrivacyPolicy'
+import Terms from './components/marketing/Terms'
 import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
 import ForgotPassword from './components/auth/ForgotPassword'
@@ -65,6 +67,8 @@ function App() {
           <Route path="/" element={<GuestOnly><Home /></GuestOnly>} />
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
           <Route path="/signup" element={<GuestOnly><Signup /></GuestOnly>} />
           <Route path="/forgot-password" element={<GuestOnly><ForgotPassword /></GuestOnly>} />

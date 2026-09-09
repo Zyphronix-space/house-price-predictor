@@ -199,6 +199,14 @@
   text-decoration: underline;
 }
 
+.marketing-footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 10px;
+}
+
 @media (max-width: 640px) {
   .marketing-main {
     gap: 48px;
