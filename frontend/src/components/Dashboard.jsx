@@ -28,8 +28,6 @@ function greeting() {
 
 export default function Dashboard({ setView }) {
   const { user } = useAuth()
-  const { data: modelInfo } = useAsync(() => api.modelInfo(), [])
-  const { data: datasetStats } = useAsync(() => api.datasetStats(), [])
   const { data: summary } = useAsync(() => api.dashboardSummary(), [])
   const { data: predictionsRes } = useAsync(() => api.predictions.list(), [])
 
@@ -41,28 +39,15 @@ export default function Dashboard({ setView }) {
     <section className="dashboard">
       <div className="dashboard__hero">
         <p className="hv-label">{greeting()}{user?.display_name ? `, ${user.display_name}` : ''}</p>
-        <h1 className="dashboard__headline">Your Real Estate Intelligence</h1>
+        <h1 className="dashboard__headline">What would you like to value today?</h1>
         <p className="dashboard__tagline">
-          A machine-learning valuation platform: predictions, explanations, comparables,
-          scenario simulation, and model analytics, all built on one real trained model.
+          Predict a property's value, see why, and pick up where you left off below.
         </p>
         <div className="dashboard__cta">
           <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
-            Start a Valuation
+            Start a valuation
           </button>
           <SystemStatus />
-        </div>
-
-        <div className="dashboard__quick-actions" aria-label="Quick actions">
-          <button type="button" className="hv-btn hv-btn-secondary" onClick={() => setView('predict')}>
-            New Prediction
-          </button>
-          <button type="button" className="hv-btn hv-btn-secondary" onClick={() => setView('compare')}>
-            Compare Properties
-          </button>
-          <button type="button" className="hv-btn hv-btn-secondary" onClick={() => setView('whatif')}>
-            What-If Analysis
-          </button>
         </div>
       </div>
 
@@ -82,33 +67,10 @@ export default function Dashboard({ setView }) {
           </p>
         </div>
         <div className="hv-card dashboard__stat">
-          <p className="hv-label">Recent activity</p>
+          <p className="hv-label">Last activity</p>
           <p className="dashboard__stat-value dashboard__stat-value--small">
             {mostRecent ? timeAgo(mostRecent.created_at) : 'No activity yet'}
           </p>
-        </div>
-      </div>
-
-      <div className="dashboard__stats">
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Highest prediction</p>
-          <p className="dashboard__stat-value dashboard__stat-value--small">
-            {summary?.highest_predicted_price_usd != null ? fmtUsd(summary.highest_predicted_price_usd) : '-'}
-          </p>
-        </div>
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Lowest prediction</p>
-          <p className="dashboard__stat-value dashboard__stat-value--small">
-            {summary?.lowest_predicted_price_usd != null ? fmtUsd(summary.lowest_predicted_price_usd) : '-'}
-          </p>
-        </div>
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Served model</p>
-          <p className="dashboard__stat-value dashboard__stat-value--small">{modelInfo?.model_name ?? '-'}</p>
-        </div>
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Training records</p>
-          <p className="dashboard__stat-value">{datasetStats ? datasetStats.n_records.toLocaleString() : '-'}</p>
         </div>
       </div>
 
@@ -124,13 +86,13 @@ export default function Dashboard({ setView }) {
       )}
 
       <div className="dashboard__quicklinks">
+        <p className="hv-label dashboard__quicklinks-label">Insights</p>
         {[
-          { key: 'properties', label: 'Properties', desc: 'Add, edit, and manage your saved properties' },
-          { key: 'analysis', label: 'Analysis', desc: 'Distributions, correlations, model fit' },
-          { key: 'comparables', label: 'Comparable Properties', desc: 'Nearest real matches to your last prediction' },
-          { key: 'whatif', label: 'What-If Simulator', desc: 'Explore scenarios interactively' },
-          { key: 'investment', label: 'Investment Calculator', desc: 'Mortgage, cash flow, ROI' },
-          { key: 'model', label: 'Model Performance', desc: 'Comparison, cross-validation, errors' },
+          { key: 'comparables', label: 'Comparable properties', desc: 'Nearest real matches to your last prediction' },
+          { key: 'whatif', label: 'What-if simulator', desc: 'Change one input and see the new estimate' },
+          { key: 'analysis', label: 'Market analysis', desc: 'Distributions, correlations, model fit' },
+          { key: 'investment', label: 'Investment calculator', desc: 'Mortgage, cash flow, ROI' },
+          { key: 'model', label: 'Model performance', desc: 'Comparison, cross-validation, errors' },
         ].map((link) => (
           <button key={link.key} type="button" className="hv-card dashboard__quicklink" onClick={() => setView(link.key)}>
             <span className="dashboard__quicklink-label">{link.label}</span>

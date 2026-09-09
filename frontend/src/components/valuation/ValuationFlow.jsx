@@ -1,19 +1,20 @@
 import { useState } from 'react'
 import FieldInput from './FieldInput'
 import CaliforniaMap from './CaliforniaMap'
-import PropertySummary from './PropertySummary'
 import PredictionResult from './PredictionResult'
 import LoadingStages from './LoadingStages'
 import WhyThisPrice from './WhyThisPrice'
 import WhatIfSimulator from './WhatIfSimulator'
 import ValuationReport from './ValuationReport'
 import DescribePropertyInput from './DescribePropertyInput'
+import { Link } from 'react-router-dom'
 import Limitations from '../Limitations'
 import ErrorState from '../ErrorState'
-import { STEPS, EXAMPLE_PROPERTY, FALLBACK_RANGES } from '../../lib/fields'
+import { SECTIONS, FIELD_META, EXAMPLE_PROPERTY, FALLBACK_RANGES } from '../../lib/fields'
 import { validateFeatures } from '../../lib/validation'
 import { api, ApiError } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
+import { useAuth } from '../../lib/authContext'
 import { addToComparison } from '../../lib/storage'
 import { showToast } from '../../lib/toast'
 import './ValuationFlow.css'
@@ -26,7 +27,7 @@ function toRangeMap(datasetStats) {
 }
 
 export default function ValuationFlow({ setView }) {
-  const [stepIndex, setStepIndex] = useState(0)
+  const { user } = useAuth()
   const [values, setValues] = useState(EXAMPLE_PROPERTY)
   const [showErrors, setShowErrors] = useState(false)
   const [phase, setPhase] = useState('form') // form | loading | result | error
@@ -39,24 +40,19 @@ export default function ValuationFlow({ setView }) {
 
   const { data: datasetStats } = useAsync(() => api.datasetStats(), [])
   const ranges = toRangeMap(datasetStats)
-  const { errors, warnings } = validateFeatures(values, ranges)
-
-  const step = STEPS[stepIndex]
-  const isReview = step.key === 'review'
+  const { errors, warnings, isValid } = validateFeatures(values, ranges)
+  const errorFields = Object.keys(errors)
 
   const handleChange = (name, raw) => setValues((prev) => ({ ...prev, [name]: raw }))
 
-  const stepHasErrors = step.fields.some((f) => errors[f])
-
-  const goNext = () => {
-    if (stepHasErrors) {
+  const handleEstimateClick = () => {
+    if (!isValid) {
       setShowErrors(true)
+      document.getElementById('valuation-flow-error-summary')?.focus()
       return
     }
-    setShowErrors(false)
-    setStepIndex((i) => Math.min(i + 1, STEPS.length - 1))
+    submit()
   }
-  const goBack = () => setStepIndex((i) => Math.max(i - 1, 0))
 
   const submit = async () => {
     setPhase('loading')
@@ -74,7 +70,7 @@ export default function ValuationFlow({ setView }) {
 
   const restart = () => {
     setPhase('form')
-    setStepIndex(0)
+    setShowErrors(false)
     setResult(null)
     setShowWhatIf(false)
     setShowReport(false)
@@ -119,6 +115,7 @@ export default function ValuationFlow({ setView }) {
       <div className="valuation-flow__result-stack">
         <PredictionResult
           result={result}
+          isGuest={!user}
           onWhatIf={() => setShowWhatIf((s) => !s)}
           onSaveComparison={handleSaveComparison}
           onSaveHistory={handleSaveHistory}
@@ -134,14 +131,27 @@ export default function ValuationFlow({ setView }) {
           />
         )}
         <WhyThisPrice explanation={result.explanation} />
-        <div className="valuation-flow__footer-actions">
-          <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('comparables')}>
-            View Comparable Properties →
-          </button>
-          <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('model')}>
-            View Model Performance →
-          </button>
-        </div>
+        {user ? (
+          <div className="valuation-flow__footer-actions">
+            <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('comparables')}>
+              View Comparable Properties →
+            </button>
+            <button type="button" className="hv-btn hv-btn-ghost" onClick={() => setView('model')}>
+              View Model Performance →
+            </button>
+          </div>
+        ) : (
+          <div className="hv-card valuation-flow__guest-cta">
+            <p className="valuation-flow__guest-cta-title">Like what you see?</p>
+            <p className="valuation-flow__guest-cta-copy">
+              Create a free account to save this prediction, find comparable properties, and build
+              a history of every valuation you run.
+            </p>
+            <Link to="/signup" className="hv-btn hv-btn-primary">
+              Create your account
+            </Link>
+          </div>
+        )}
         <Limitations />
       </div>
     )
@@ -149,105 +159,93 @@ export default function ValuationFlow({ setView }) {
 
   return (
     <div className="valuation-flow">
-      <ol className="valuation-flow__progress" aria-label="Valuation steps">
-        {STEPS.map((s, i) => (
-          <li key={s.key} className={i === stepIndex ? 'is-active' : i < stepIndex ? 'is-done' : ''}>
-            {s.title}
-          </li>
-        ))}
-      </ol>
+      <p className="hv-label">Predict</p>
+      <h1 className="valuation-flow__title">What's the property like?</h1>
+      <p className="valuation-flow__intro">
+        Fill in what you know below, or describe it in plain language and we'll fill in the
+        rest. Every value is editable before you estimate.
+      </p>
 
-      <div className="hv-card valuation-flow__panel">
-        <h2 className="valuation-flow__step-title">{step.title}</h2>
+      <div className="valuation-flow__mode-toggle" role="tablist" aria-label="Input method">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={entryMode === 'guided'}
+          className={`valuation-flow__mode-btn ${entryMode === 'guided' ? 'is-active' : ''}`}
+          onClick={() => setEntryMode('guided')}
+        >
+          Guided form
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={entryMode === 'describe'}
+          className={`valuation-flow__mode-btn ${entryMode === 'describe' ? 'is-active' : ''}`}
+          onClick={() => setEntryMode('describe')}
+        >
+          Describe your property
+        </button>
+      </div>
 
-        {stepIndex === 0 && (
-          <div className="valuation-flow__mode-toggle" role="tablist" aria-label="Input method">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={entryMode === 'guided'}
-              className={`valuation-flow__mode-btn ${entryMode === 'guided' ? 'is-active' : ''}`}
-              onClick={() => setEntryMode('guided')}
-            >
-              Guided form
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={entryMode === 'describe'}
-              className={`valuation-flow__mode-btn ${entryMode === 'describe' ? 'is-active' : ''}`}
-              onClick={() => setEntryMode('describe')}
-            >
-              Describe your property
-            </button>
-          </div>
-        )}
-
-        {stepIndex === 0 && entryMode === 'describe' && (
+      {entryMode === 'describe' && (
+        <div className="hv-card valuation-flow__panel">
           <DescribePropertyInput
             onExtracted={(fields) => setValues((prev) => ({ ...prev, ...fields }))}
           />
-        )}
-
-        {!isReview && !(stepIndex === 0 && entryMode === 'describe') && (
-          <>
-            {step.key === 'location' && (
-              <CaliforniaMap
-                latitude={values.Latitude}
-                longitude={values.Longitude}
-                onPick={({ lat, lon }) =>
-                  setValues((prev) => ({ ...prev, Latitude: lat.toFixed(4), Longitude: lon.toFixed(4) }))
-                }
-              />
-            )}
-            <div className="valuation-flow__fields">
-              {step.fields.map((name) => (
-                <FieldInput
-                  key={name}
-                  name={name}
-                  value={values[name]}
-                  onChange={handleChange}
-                  error={showErrors ? errors[name] : undefined}
-                  warning={warnings[name]}
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {isReview && (
-          <>
-            <PropertySummary features={values} />
-            {Object.keys(errors).length > 0 && (
-              <p className="valuation-flow__review-error">
-                Some values still need attention. Go back and correct them before estimating.
-              </p>
-            )}
-          </>
-        )}
-
-        <div className="valuation-flow__nav">
-          {stepIndex > 0 && (
-            <button type="button" className="hv-btn hv-btn-secondary" onClick={goBack}>
-              {isReview ? 'Edit' : 'Back'}
-            </button>
-          )}
-          {!isReview && (
-            <button type="button" className="hv-btn hv-btn-primary" onClick={goNext}>
-              Continue
-            </button>
-          )}
-          {isReview && (
-            <button
-              type="button"
-              className="hv-btn hv-btn-primary"
-              onClick={submit}
-              disabled={Object.keys(errors).length > 0}
-            >
-              Estimate Value
-            </button>
-          )}
         </div>
+      )}
+
+      {showErrors && errorFields.length > 0 && (
+        <div
+          id="valuation-flow-error-summary"
+          className="valuation-flow__error-summary"
+          role="alert"
+          tabIndex={-1}
+        >
+          <p className="valuation-flow__error-summary-title">
+            {errorFields.length === 1 ? 'One field needs' : `${errorFields.length} fields need`} attention:
+          </p>
+          <ul>
+            {errorFields.map((name) => (
+              <li key={name}>
+                <a href={`#field-${name}`}>{FIELD_META[name].label}</a>: {errors[name]}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {SECTIONS.map((section) => (
+        <fieldset key={section.key} className="hv-card valuation-flow__panel valuation-flow__section">
+          <legend className="valuation-flow__section-title">{section.title}</legend>
+          {section.key === 'location' && (
+            <CaliforniaMap
+              latitude={values.Latitude}
+              longitude={values.Longitude}
+              onPick={({ lat, lon }) =>
+                setValues((prev) => ({ ...prev, Latitude: lat.toFixed(4), Longitude: lon.toFixed(4) }))
+              }
+            />
+          )}
+          <div className="valuation-flow__fields">
+            {section.fields.map((name) => (
+              <FieldInput
+                key={name}
+                name={name}
+                value={values[name]}
+                onChange={handleChange}
+                error={showErrors ? errors[name] : undefined}
+                warning={warnings[name]}
+              />
+            ))}
+          </div>
+        </fieldset>
+      ))}
+
+      <div className="valuation-flow__submit-row">
+        <button type="button" className="hv-btn hv-btn-primary valuation-flow__submit" onClick={handleEstimateClick}>
+          Estimate value
+        </button>
       </div>
     </div>
   )

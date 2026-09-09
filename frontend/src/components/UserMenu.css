@@ -6,9 +6,9 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 1px solid var(--glass-border-strong);
-  background: linear-gradient(155deg, var(--color-secondary), var(--color-primary));
-  color: var(--hv-accent-contrast);
+  border: 1px solid var(--hv-border-strong);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
   font-family: var(--font-display);
   font-size: 0.82rem;
   font-weight: 700;
@@ -38,7 +38,7 @@
   gap: 1px;
   padding: 8px 10px 10px;
   margin: 0 0 6px;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--hv-border);
 }
 
 .user-menu__name {

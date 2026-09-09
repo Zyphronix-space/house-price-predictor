@@ -4,49 +4,69 @@
   margin: 0 auto;
 }
 
-.valuation-flow__progress {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  list-style: none;
-  margin: 0 0 24px;
-  padding: 0;
-  flex-wrap: wrap;
-}
-
-.valuation-flow__progress li {
-  font-size: 0.72rem;
+.valuation-flow__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.4vw, 2rem);
   font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--hv-text-tertiary);
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--glass-bg-2);
-  backdrop-filter: blur(var(--glass-blur-2));
-  -webkit-backdrop-filter: blur(var(--glass-blur-2));
-  border: 1px solid var(--glass-border);
-  transition: background-color var(--duration-base) ease, color var(--duration-base) ease;
-}
-
-.valuation-flow__progress li.is-active {
-  color: var(--hv-accent-contrast);
-  background: linear-gradient(155deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 70%, var(--color-primary)));
-  border-color: transparent;
-  box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--color-secondary) 50%, transparent);
-}
-
-.valuation-flow__progress li.is-done {
+  letter-spacing: -0.01em;
+  margin: 4px 0 8px;
   color: var(--hv-text);
 }
 
-.valuation-flow__panel {
-  padding: 32px;
+.valuation-flow__intro {
+  font-size: 0.94rem;
+  color: var(--hv-text-secondary);
+  max-width: 520px;
+  margin: 0 0 20px;
+  line-height: 1.5;
 }
 
-.valuation-flow__step-title {
-  font-size: 1.6rem;
-  margin: 0 0 24px;
+.valuation-flow__panel {
+  padding: 28px 28px 24px;
+}
+
+.valuation-flow__section {
+  /* min-width:0 undoes the native <fieldset> sizing quirk; .hv-card and
+     .valuation-flow__panel (both also applied) already cover its border
+     and padding at higher specificity than the UA fieldset stylesheet. */
+  min-width: 0;
+  margin: 0 0 16px;
+}
+
+.valuation-flow__section-title {
+  display: block;
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--hv-text);
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.valuation-flow__error-summary {
+  border: 1px solid color-mix(in srgb, var(--hv-critical) 40%, var(--hv-border-strong));
+  background: color-mix(in srgb, var(--hv-critical) 6%, var(--hv-bg-elevated));
+  border-radius: var(--hv-radius-md);
+  padding: 16px 18px;
+  margin: 0 0 20px;
+}
+
+.valuation-flow__error-summary-title {
+  font-weight: 650;
+  color: var(--hv-critical);
+  margin: 0 0 6px;
+}
+
+.valuation-flow__error-summary ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.valuation-flow__error-summary a {
+  color: var(--hv-critical);
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .valuation-flow__mode-toggle {
@@ -80,21 +100,23 @@
   gap: 20px;
 }
 
-.valuation-flow__review-error {
-  color: var(--hv-critical);
-  font-size: 0.85rem;
-  margin-top: 16px;
-}
-
-.valuation-flow__nav {
+.valuation-flow__submit-row {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 32px;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
 
-.valuation-flow__nav .hv-btn-primary {
-  margin-left: auto;
+.valuation-flow__submit {
+  min-width: 200px;
+}
+
+@media (max-width: 520px) {
+  .valuation-flow__submit-row {
+    justify-content: stretch;
+  }
+  .valuation-flow__submit {
+    width: 100%;
+  }
 }
 
 .valuation-flow__result-stack {
@@ -118,6 +140,32 @@
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
+}
+
+.valuation-flow__guest-cta {
+  text-align: center;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border-top: 3px solid var(--hv-accent);
+}
+
+.valuation-flow__guest-cta-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--hv-text);
+  margin: 0;
+}
+
+.valuation-flow__guest-cta-copy {
+  font-size: 0.9rem;
+  color: var(--hv-text-secondary);
+  max-width: 440px;
+  margin: 0 0 10px;
+  line-height: 1.5;
 }
 
 @media (max-width: 520px) {

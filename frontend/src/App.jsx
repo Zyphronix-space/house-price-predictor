@@ -74,9 +74,16 @@ function App() {
           <Route path="/forgot-password" element={<GuestOnly><ForgotPassword /></GuestOnly>} />
           <Route path="/reset-password" element={<GuestOnly><ResetPassword /></GuestOnly>} />
 
+          {/* Predict stays outside RequireAuth on purpose: a visitor should be
+              able to see what the model actually does -- run a prediction and
+              read the explanation -- before being asked to create an account.
+              Saving, comparing, and everything else still requires signing in. */}
+          <Route element={<AppShell />}>
+            <Route path="/predict" element={<PredictRoute />} />
+          </Route>
+
           <Route element={<RequireAuth><AppShell /></RequireAuth>}>
             <Route path="/dashboard" element={<DashboardRoute />} />
-            <Route path="/predict" element={<PredictRoute />} />
             <Route path="/properties" element={<PropertiesRoute />} />
             <Route path="/market-analytics" element={<Analysis />} />
             <Route path="/comparables" element={<ComparablesRoute />} />

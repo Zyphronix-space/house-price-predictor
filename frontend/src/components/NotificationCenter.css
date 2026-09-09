@@ -7,8 +7,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 1px solid var(--glass-border-strong);
-  background: var(--glass-bg-2);
+  border: 1px solid var(--hv-border-strong);
+  background: var(--hv-bg-elevated);
   color: var(--hv-text-secondary);
   cursor: pointer;
   font-size: 0.9rem;

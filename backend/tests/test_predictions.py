@@ -1,9 +1,12 @@
 from conftest import VALID_FEATURES
 
 
-def test_predict_requires_auth(client):
+def test_predict_allows_anonymous_guests(client):
+    """/predict is intentionally guest-accessible (see main.py's docstring)
+    so a visitor can try a real prediction before creating an account."""
     res = client.post("/predict", json=VALID_FEATURES)
-    assert res.status_code == 401
+    assert res.status_code == 200
+    assert "predicted_price_usd" in res.json()
 
 
 def test_predict_does_not_persist(client, auth_headers):

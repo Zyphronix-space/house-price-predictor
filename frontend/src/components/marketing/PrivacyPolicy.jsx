@@ -31,8 +31,8 @@ export default function PrivacyPolicy() {
           your notification log. If you use the optional "describe your property in plain English"
           feature, the text you type is sent to Google's Gemini API to extract structured field
           values; that request text is not saved on the HomeValue server beyond the single request.
-          Interface preferences (theme, glass intensity, motion, density, notification toggles) are
-          stored only in your browser.
+          Interface preferences (theme, motion, density, notification toggles) are stored only in
+          your browser.
         </p>
       </section>
 

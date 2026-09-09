@@ -21,6 +21,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from slowapi.util import get_remote_address
 from sqlalchemy.orm import Session
 
 import db_models
@@ -69,3 +70,37 @@ def get_current_user(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in required")
     return user
+
+
+def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
+    db: Session = Depends(get_db),
+) -> db_models.User | None:
+    """Same as get_current_user, but for the guest-accessible Predict flow:
+    a missing or invalid token means "anonymous visitor", not a 401. Only
+    used on routes a guest is explicitly allowed to call (see main.py)."""
+    if credentials is None:
+        return None
+    try:
+        user_id = _decode_token(credentials.credentials)
+    except HTTPException:
+        return None
+    return db.query(db_models.User).filter_by(id=user_id).first()
+
+
+def rate_limit_key(request) -> str:
+    """slowapi key_func for routes that are reachable by both signed-in
+    users and anonymous visitors (see the guest-accessible /predict).
+    Buckets signed-in callers by user id and everyone else by IP, so
+    logged-in usage isn't capped by a limit sized for anonymous abuse, and
+    a shared office/NAT IP doesn't rate-limit unrelated signed-in users.
+    Reads the token directly instead of depending on get_optional_user so
+    it can run standalone as a key_func, with no DB session available."""
+    auth_header = request.headers.get("authorization", "")
+    if auth_header.lower().startswith("bearer "):
+        try:
+            payload = jwt.decode(auth_header[7:], SECRET_KEY, algorithms=[ALGORITHM])
+            return f"user:{payload['sub']}"
+        except (jwt.PyJWTError, KeyError):
+            pass
+    return get_remote_address(request)

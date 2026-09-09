@@ -68,8 +68,8 @@ export default function DescribePropertyInput({ onExtracted }) {
 
       {filledFields.length > 0 && (
         <p className="describe-input__success">
-          Filled in: {filledFields.map((name) => FIELD_META[name].label).join(', ')}. Continue to
-          the guided form to review, edit, and fill in anything left blank.
+          Filled in: {filledFields.map((name) => FIELD_META[name].label).join(', ')}. Review and
+          edit the fields below, and fill in anything left blank, before estimating.
         </p>
       )}
       {notes && <p className="describe-input__notes">Not usable by this model: {notes}</p>}

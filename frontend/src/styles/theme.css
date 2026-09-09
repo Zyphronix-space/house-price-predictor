@@ -1,76 +1,62 @@
 /* ==========================================================================
-   Home Value, Liquid Glass design system.
+   HomeValue design system -- "Ledger": a flat, editorial, property-report
+   language. Warm paper surfaces, ink text, deep forest primary (land/value)
+   + warm clay accent (the number that matters). No blur, no floating
+   ambient decoration, no gradient text -- hierarchy comes from type,
+   spacing and a single accent color, not decoration.
 
-   Canonical tokens live on --color-*, --glass-*, --space-*, --radius-*,
-   --ease-* etc. Every component consumes the --hv-* aliases below, which are
-   derived from those canonical tokens so light/dark/reduced-motion stay a
-   single source of truth. Never hardcode a color/blur/shadow in a component
-   file, add or reuse a token here instead.
-
-   Accent identity for this project (portfolio-family convention): deep navy
-   + blue primary, emerald secondary/positive.
+   Every component consumes the hv- prefixed aliases below, derived from
+   the canonical color/space/radius tokens so light, dark and reduced
+   motion stay a single source of truth. Never hardcode a color or shadow
+   in a component file; add or reuse a token here instead.
    ========================================================================== */
 
 :root {
-  /* ---- Canonical color tokens ---- */
-  --color-bg: #eef1f6;
-  --color-bg-strong: #e4e8f0;
+  /* ---- Canonical color tokens ----
+     A clean ivory/charcoal canvas (not a warm beige "old paper" tone) with
+     two confident, saturated colors doing all the work: a fresh emerald
+     for brand/trust and a warm gold for the number that matters. Neither
+     is the generic blue/purple AI-SaaS default. */
+  --color-bg: #f7f7f4;
+  --color-bg-strong: #efefea;
   --color-surface: #ffffff;
-  --color-primary: #0f2744;
-  --color-primary-soft: #1f3f66;
+  --color-surface-sunken: #f1f1ec;
+  --color-primary: #148a5e;
+  --color-primary-soft: #1ca873;
   --color-primary-contrast: #ffffff;
-  --color-secondary: #2f6fed;
-  --color-tertiary: #7c8cff;
-  --color-success: #12a67f;
-  --color-warning: #d97706;
-  --color-danger: #dc2626;
-  --color-text: #121826;
-  --color-text-muted: #55627a;
-  --color-text-faint: #8996ab;
-  --color-border: rgba(20, 32, 56, 0.1);
-  --color-border-strong: rgba(20, 32, 56, 0.18);
-  --color-muted-bg: #e7ebf2;
+  --color-secondary: #148a5e;
+  --color-accent: #e2a63b;
+  --color-accent-soft-bg: #fbebd2;
+  --color-accent-contrast: #201804;
+  --color-success: #148a5e;
+  --color-warning: #c67f1e;
+  --color-danger: #c0392b;
+  --color-text: #1b1e1c;
+  --color-text-muted: #565c58;
+  --color-text-faint: #868c88;
+  --color-border: rgba(27, 30, 28, 0.12);
+  --color-border-strong: rgba(27, 30, 28, 0.22);
+  --color-muted-bg: #f1f1ec;
 
-  /* Ambient ground-color for ambient ligting blobs (mixed at low alpha) */
-  --ambient-1: 47, 111, 237;   /* blue */
-  --ambient-2: 18, 166, 127;   /* emerald */
-  --ambient-3: 124, 140, 255;  /* violet-blue */
+  /* Real, visible soft-shadow elevation (not a hairline border doing all
+     the work) -- this is what reads as "modern product" instead of "flat
+     document." Two layers each: a tight contact shadow + a broad soft
+     one, the way most contemporary UI shadows are actually built. */
+  --shadow-color: 24, 30, 26;
+  --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.07), 0 1px 1px rgba(var(--shadow-color), 0.05);
+  --shadow-md: 0 3px 8px rgba(var(--shadow-color), 0.09), 0 16px 32px -8px rgba(var(--shadow-color), 0.18);
+  --shadow-lg: 0 6px 16px rgba(var(--shadow-color), 0.1), 0 32px 64px -16px rgba(var(--shadow-color), 0.28);
 
-  --shadow-color: 16, 24, 40;
-  --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.06), 0 1px 1px rgba(var(--shadow-color), 0.04);
-  --shadow-md: 0 10px 26px -10px rgba(var(--shadow-color), 0.16), 0 3px 8px -3px rgba(var(--shadow-color), 0.08);
-  --shadow-lg: 0 24px 56px -18px rgba(var(--shadow-color), 0.22), 0 8px 18px -8px rgba(var(--shadow-color), 0.12);
-  --shadow-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-
-  /* ---- Glass tokens ---- */
-  /* Level 1, background glass: near-invisible, used for large ambient panels */
-  --glass-bg-1: rgba(255, 255, 255, 0.38);
-  --glass-blur-1: 8px;
-
-  /* Level 2, standard glass: cards, nav, panels, forms */
-  --glass-bg-2: rgba(255, 255, 255, 0.62);
-  --glass-bg-2-hover: rgba(255, 255, 255, 0.74);
-  --glass-blur-2: 18px;
-
-  /* Level 3, elevated glass: results, modals, key metrics, AI output */
-  --glass-bg-3: rgba(255, 255, 255, 0.82);
-  --glass-blur-3: 28px;
-
-  --glass-border: rgba(20, 32, 56, 0.1);
-  --glass-border-strong: rgba(20, 32, 56, 0.16);
-  --glass-highlight: rgba(255, 255, 255, 0.65);
-  --glass-shadow: var(--shadow-md);
-
-  --scrim: rgba(10, 16, 28, 0.32);
-  --scrim-blur: 6px;
+  /* Modal/dialog dismissal scrim only -- not used for decorative panels */
+  --scrim: rgba(20, 17, 12, 0.4);
+  --scrim-blur: 3px;
 
   /* ---- Radius / spacing / motion ---- */
   --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 22px;
-  --radius-xl: 28px;
+  --radius-xl: 30px;
   --radius-pill: 999px;
 
   --space-1: 4px;
@@ -84,17 +70,17 @@
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --duration-fast: 0.14s;
-  --duration-base: 0.22s;
-  --duration-slow: 0.42s;
+  --duration-fast: 0.12s;
+  --duration-base: 0.18s;
+  --duration-slow: 0.32s;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-display: 'Plus Jakarta Sans', var(--font-sans);
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
 
   /* ---- Component aliases, derived, never redefined per-theme ---- */
   --hv-bg: var(--color-bg);
   --hv-bg-elevated: var(--color-surface);
-  --hv-surface: var(--color-muted-bg);
+  --hv-surface: var(--color-surface-sunken);
   --hv-surface-solid: var(--color-surface);
   --hv-border: var(--color-border);
   --hv-border-strong: var(--color-border-strong);
@@ -103,19 +89,22 @@
   --hv-text-secondary: var(--color-text-muted);
   --hv-text-tertiary: var(--color-text-faint);
 
-  --hv-accent: var(--color-secondary);
-  --hv-accent-strong: color-mix(in srgb, var(--color-secondary) 82%, black);
-  --hv-accent-soft: color-mix(in srgb, var(--color-secondary) 14%, transparent);
-  --hv-accent-border: color-mix(in srgb, var(--color-secondary) 40%, transparent);
-  --hv-accent-contrast: #ffffff;
+  --hv-accent: var(--color-accent);
+  --hv-accent-strong: color-mix(in srgb, var(--color-accent) 82%, black);
+  --hv-accent-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  --hv-accent-border: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  --hv-accent-contrast: var(--color-accent-contrast);
+
+  --hv-brand: var(--color-primary);
+  --hv-brand-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
 
   --hv-positive: var(--color-success);
   --hv-negative: var(--color-danger);
   --hv-warning: var(--color-warning);
   --hv-critical: var(--color-danger);
 
-  --hv-grid: rgba(20, 32, 56, 0.09);
-  --hv-axis: rgba(20, 32, 56, 0.2);
+  --hv-grid: rgba(28, 26, 22, 0.1);
+  --hv-axis: rgba(28, 26, 22, 0.24);
 
   --hv-shadow-sm: var(--shadow-sm);
   --hv-shadow-md: var(--shadow-md);
@@ -124,107 +113,88 @@
   --hv-radius-sm: var(--radius-sm);
   --hv-radius-md: var(--radius-md);
   --hv-radius-lg: var(--radius-lg);
-  --hv-blur: var(--glass-blur-2);
 
   --hv-font: var(--font-sans);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #0a0f1a;
-    --color-bg-strong: #060a12;
-    --color-surface: #101826;
-    --color-primary: #7fb3ff;
-    --color-primary-soft: #a7cbff;
-    --color-primary-contrast: #071019;
-    --color-secondary: #5b9bff;
-    --color-tertiary: #9aa6ff;
-    --color-success: #2fd6a8;
-    --color-warning: #fbbf24;
-    --color-danger: #f87171;
-    --color-text: #edf1f8;
-    --color-text-muted: #9aa7bd;
-    --color-text-faint: #6c7994;
-    --color-border: rgba(148, 168, 200, 0.16);
-    --color-border-strong: rgba(148, 168, 200, 0.26);
-    --color-muted-bg: #0d1420;
-
-    --ambient-1: 91, 155, 255;
-    --ambient-2: 47, 214, 168;
-    --ambient-3: 154, 166, 255;
+    --color-bg: #141613;
+    --color-bg-strong: #0d0f0c;
+    --color-surface: #1c1f1b;
+    --color-surface-sunken: #23261f;
+    --color-primary: #34c98a;
+    --color-primary-soft: #5ed9a5;
+    --color-primary-contrast: #06150e;
+    --color-secondary: #34c98a;
+    --color-accent: #f0b65b;
+    --color-accent-soft-bg: #3a2c13;
+    --color-accent-contrast: #201804;
+    --color-success: #34c98a;
+    --color-warning: #e3ae55;
+    --color-danger: #e2685a;
+    --color-text: #f1f3ef;
+    --color-text-muted: #b4bab4;
+    --color-text-faint: #7d847e;
+    --color-border: rgba(220, 228, 220, 0.14);
+    --color-border-strong: rgba(220, 228, 220, 0.24);
+    --color-muted-bg: #1e211b;
 
     --shadow-color: 0, 0, 0;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 28px 60px -20px rgba(0, 0, 0, 0.7), 0 10px 22px -10px rgba(0, 0, 0, 0.55);
-    --shadow-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-    --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 28px -10px rgba(0, 0, 0, 0.55);
+    --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.4), 0 28px 56px -16px rgba(0, 0, 0, 0.65);
 
-    --glass-bg-1: rgba(16, 24, 38, 0.42);
-    --glass-bg-2: rgba(18, 27, 42, 0.58);
-    --glass-bg-2-hover: rgba(22, 32, 49, 0.7);
-    --glass-bg-3: rgba(16, 24, 38, 0.78);
-    --glass-border: rgba(148, 168, 200, 0.14);
-    --glass-border-strong: rgba(148, 168, 200, 0.22);
-    --glass-highlight: rgba(255, 255, 255, 0.06);
-    --scrim: rgba(2, 4, 10, 0.55);
-
-    --hv-accent-contrast: #071019;
-    --hv-grid: rgba(148, 168, 200, 0.1);
-    --hv-axis: rgba(148, 168, 200, 0.24);
+    --hv-grid: rgba(230, 220, 200, 0.09);
+    --hv-axis: rgba(230, 220, 200, 0.22);
   }
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #0a0f1a;
-  --color-bg-strong: #060a12;
-  --color-surface: #101826;
-  --color-primary: #7fb3ff;
-  --color-primary-soft: #a7cbff;
-  --color-primary-contrast: #071019;
-  --color-secondary: #5b9bff;
-  --color-tertiary: #9aa6ff;
-  --color-success: #2fd6a8;
-  --color-warning: #fbbf24;
-  --color-danger: #f87171;
-  --color-text: #edf1f8;
-  --color-text-muted: #9aa7bd;
-  --color-text-faint: #6c7994;
-  --color-border: rgba(148, 168, 200, 0.16);
-  --color-border-strong: rgba(148, 168, 200, 0.26);
-  --color-muted-bg: #0d1420;
-
-  --ambient-1: 91, 155, 255;
-  --ambient-2: 47, 214, 168;
-  --ambient-3: 154, 166, 255;
+  --color-bg: #141613;
+  --color-bg-strong: #0d0f0c;
+  --color-surface: #1c1f1b;
+  --color-surface-sunken: #23261f;
+  --color-primary: #34c98a;
+  --color-primary-soft: #5ed9a5;
+  --color-primary-contrast: #06150e;
+  --color-secondary: #34c98a;
+  --color-accent: #f0b65b;
+  --color-accent-soft-bg: #3a2c13;
+  --color-accent-contrast: #201804;
+  --color-success: #34c98a;
+  --color-warning: #e3ae55;
+  --color-danger: #e2685a;
+  --color-text: #f1f3ef;
+  --color-text-muted: #b4bab4;
+  --color-text-faint: #7d847e;
+  --color-border: rgba(220, 228, 220, 0.14);
+  --color-border-strong: rgba(220, 228, 220, 0.24);
+  --color-muted-bg: #1e211b;
 
   --shadow-color: 0, 0, 0;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 28px 60px -20px rgba(0, 0, 0, 0.7), 0 10px 22px -10px rgba(0, 0, 0, 0.55);
-  --shadow-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  --shadow-inner-highlight-soft: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.35), 0 16px 32px -10px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.4), 0 32px 64px -16px rgba(0, 0, 0, 0.65);
 
-  --glass-bg-1: rgba(16, 24, 38, 0.42);
-  --glass-bg-2: rgba(18, 27, 42, 0.58);
-  --glass-bg-2-hover: rgba(22, 32, 49, 0.7);
-  --glass-bg-3: rgba(16, 24, 38, 0.78);
-  --glass-border: rgba(148, 168, 200, 0.14);
-  --glass-border-strong: rgba(148, 168, 200, 0.22);
-  --glass-highlight: rgba(255, 255, 255, 0.06);
-  --scrim: rgba(2, 4, 10, 0.55);
-
-  --hv-accent-contrast: #071019;
-  --hv-grid: rgba(148, 168, 200, 0.1);
-  --hv-axis: rgba(148, 168, 200, 0.24);
+  --hv-grid: rgba(230, 220, 200, 0.09);
+  --hv-axis: rgba(230, 220, 200, 0.22);
 }
 
 /* ==========================================================================
    Base
    ========================================================================== */
 
+/* A static, low-contrast brand wash instead of one flat paper color --
+   this is what separates "designed" from "plain document." No blur, no
+   animation, no motion: just two soft, fixed gradients baked straight
+   into the background paint. */
 body {
-  background: var(--hv-bg);
+  background:
+    radial-gradient(1100px 640px at 88% -12%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 60%),
+    radial-gradient(900px 700px at -10% 8%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 62%),
+    var(--hv-bg);
+  background-attachment: fixed;
   color: var(--hv-text);
   font-family: var(--hv-font);
   transition: background-color var(--duration-slow) var(--ease-standard), color var(--duration-base) ease;
@@ -235,103 +205,33 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  isolation: isolate;
-}
-
-/* ---- Ambient background: soft gradient mesh + slow-drifting light blobs.
-   Fixed behind everything at z-index -1; barely-noticeable motion only. ---- */
-.hv-ambient {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  background:
-    radial-gradient(1100px 640px at 12% -8%, color-mix(in srgb, var(--color-secondary) 16%, transparent), transparent 60%),
-    radial-gradient(900px 620px at 108% 8%, color-mix(in srgb, var(--color-success) 12%, transparent), transparent 62%),
-    radial-gradient(1200px 900px at 50% 118%, color-mix(in srgb, var(--color-tertiary) 10%, transparent), transparent 65%),
-    linear-gradient(180deg, var(--color-bg), var(--color-bg-strong));
-}
-
-.hv-ambient__blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.55;
-  will-change: transform;
-}
-
-.hv-ambient__blob--a {
-  width: 46vw;
-  height: 46vw;
-  max-width: 640px;
-  max-height: 640px;
-  top: -14%;
-  left: -8%;
-  background: radial-gradient(circle, rgba(var(--ambient-1), 0.35), transparent 70%);
-  animation: hv-drift-a 46s ease-in-out infinite;
-}
-
-.hv-ambient__blob--b {
-  width: 40vw;
-  height: 40vw;
-  max-width: 560px;
-  max-height: 560px;
-  top: 30%;
-  right: -10%;
-  background: radial-gradient(circle, rgba(var(--ambient-2), 0.3), transparent 70%);
-  animation: hv-drift-b 54s ease-in-out infinite;
-}
-
-.hv-ambient__blob--c {
-  width: 34vw;
-  height: 34vw;
-  max-width: 480px;
-  max-height: 480px;
-  bottom: -16%;
-  left: 28%;
-  background: radial-gradient(circle, rgba(var(--ambient-3), 0.24), transparent 70%);
-  animation: hv-drift-c 60s ease-in-out infinite;
-}
-
-@keyframes hv-drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(3%, 4%) scale(1.06); }
-}
-@keyframes hv-drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-4%, -3%) scale(1.05); }
-}
-@keyframes hv-drift-c {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(3%, -3%) scale(1.04); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hv-ambient__blob { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ==========================================================================
-   Glass surfaces
+   Surfaces -- real soft-shadow elevation does the work of separating a
+   card from the page; the border is just a faint edge, not the primary
+   definition (that flatter, border-led look was reading as a plain
+   bordered document instead of a designed product). .hv-card is the
+   standard surface; .hv-glass (name kept for compatibility) is the more
+   elevated "report" surface used for the prediction result and other
+   single-focus key output.
    ========================================================================== */
 
-/* Level 1, background glass: very subtle, for large recessed panels */
-.hv-glass-1 {
-  background: var(--glass-bg-1);
-  backdrop-filter: blur(var(--glass-blur-1));
-  -webkit-backdrop-filter: blur(var(--glass-blur-1));
-  border: 1px solid var(--glass-border);
-  border-radius: var(--hv-radius-lg);
-}
-
-/* Level 2, standard glass: cards, panels, forms, nav */
 .hv-card {
-  background: var(--glass-bg-2);
-  backdrop-filter: blur(var(--glass-blur-2)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--glass-blur-2)) saturate(150%);
-  border: 1px solid var(--glass-border);
+  background: var(--hv-bg-elevated);
+  border: 1px solid color-mix(in srgb, var(--hv-border) 55%, transparent);
   border-radius: var(--hv-radius-md);
-  box-shadow: var(--hv-shadow-sm), var(--shadow-inner-highlight-soft);
-  transition: box-shadow var(--duration-base) var(--ease-out), border-color var(--duration-base) ease,
+  box-shadow: var(--hv-shadow-md);
+  transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out),
     transform var(--duration-base) var(--ease-out), background-color var(--duration-base) ease;
 }
 
@@ -341,34 +241,24 @@ button.hv-card {
   color: inherit;
 }
 
-/* Interactive cards (quicklinks, list rows used as buttons, etc.) get a
-   restrained lift + brighten on hover, never a scale transform. */
 button.hv-card:hover:not(:disabled),
 a.hv-card:hover,
 .hv-card--interactive:hover {
-  background: var(--glass-bg-2-hover);
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--hv-shadow-md), var(--shadow-inner-highlight-soft);
-  transform: translateY(-2px);
+  border-color: var(--hv-border-strong);
+  box-shadow: var(--hv-shadow-lg);
+  transform: translateY(-3px);
 }
 
 button.hv-card:active:not(:disabled) {
+  box-shadow: var(--hv-shadow-md);
   transform: translateY(-1px);
 }
 
-/* Level 3, elevated glass: prediction results, AI output, modals, key metrics */
 .hv-glass {
-  background: var(--glass-bg-3);
-  backdrop-filter: blur(var(--glass-blur-3)) saturate(160%);
-  -webkit-backdrop-filter: blur(var(--glass-blur-3)) saturate(160%);
-  background-image: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--color-secondary) 7%, transparent),
-    transparent 55%
-  );
-  border: 1px solid var(--glass-border-strong);
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border-strong);
   border-radius: var(--hv-radius-lg);
-  box-shadow: var(--hv-shadow-lg), var(--shadow-inner-highlight);
+  box-shadow: var(--hv-shadow-lg);
 }
 
 .hv-label {
@@ -411,28 +301,26 @@ button.hv-card:active:not(:disabled) {
 }
 
 .hv-btn-primary {
-  background: linear-gradient(155deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 70%, var(--color-primary)));
-  color: var(--color-primary-contrast);
-  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--color-secondary) 55%, transparent), var(--hv-shadow-sm);
+  background: var(--color-accent);
+  color: var(--hv-accent-contrast);
+  box-shadow: 0 1px 2px rgba(var(--shadow-color), 0.08), 0 10px 22px -8px color-mix(in srgb, var(--color-accent) 55%, transparent);
 }
 
 .hv-btn-primary:hover:not(:disabled) {
-  box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--color-secondary) 65%, transparent), var(--hv-shadow-md);
+  background: var(--hv-accent-strong);
+  box-shadow: 0 1px 2px rgba(var(--shadow-color), 0.08), 0 16px 30px -8px color-mix(in srgb, var(--color-accent) 65%, transparent);
   transform: translateY(-1px);
 }
 
 .hv-btn-secondary {
-  background: var(--glass-bg-2);
-  backdrop-filter: blur(var(--glass-blur-2));
-  -webkit-backdrop-filter: blur(var(--glass-blur-2));
+  background: var(--hv-bg-elevated);
   color: var(--hv-text);
-  border-color: var(--glass-border-strong);
+  border-color: var(--hv-border-strong);
 }
 
 .hv-btn-secondary:hover:not(:disabled) {
   border-color: var(--hv-accent-border);
-  color: var(--hv-accent);
-  background: var(--glass-bg-2-hover);
+  color: var(--hv-accent-strong);
 }
 
 .hv-btn-ghost {
@@ -444,7 +332,7 @@ button.hv-card:active:not(:disabled) {
 
 .hv-btn-ghost:hover:not(:disabled) {
   color: var(--hv-text);
-  background: color-mix(in srgb, var(--hv-text) 6%, transparent);
+  background: var(--hv-surface);
 }
 
 /* Loading state: dim label via opacity + inline spinner (add
@@ -477,10 +365,8 @@ button.hv-card:active:not(:disabled) {
   font-family: inherit;
   font-size: 1rem;
   color: var(--hv-text);
-  background: var(--glass-bg-2);
-  backdrop-filter: blur(var(--glass-blur-2));
-  -webkit-backdrop-filter: blur(var(--glass-blur-2));
-  border: 1px solid var(--glass-border-strong);
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border-strong);
   border-radius: var(--hv-radius-sm);
   padding: 11px 14px;
   width: 100%;
@@ -490,14 +376,13 @@ button.hv-card:active:not(:disabled) {
 }
 
 .hv-input:hover:not(:disabled):not(:focus) {
-  border-color: var(--hv-border-strong);
+  border-color: var(--hv-text-faint);
 }
 
 .hv-input:focus-visible {
   outline: none;
-  border-color: var(--color-secondary);
-  background: var(--glass-bg-3);
-  box-shadow: 0 0 0 4px var(--hv-accent-soft);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--hv-accent-soft);
 }
 
 .hv-input[type='number'] {
@@ -512,19 +397,17 @@ button.hv-card:active:not(:disabled) {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-secondary);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
 .hv-stat-value {
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 6.4vw, 4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(155deg, var(--color-text), color-mix(in srgb, var(--color-secondary) 55%, var(--color-text)));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--hv-text);
+  font-variant-numeric: tabular-nums;
 }
 
 .hv-tabular {
@@ -535,12 +418,10 @@ button.hv-card:active:not(:disabled) {
    Skeletons
    ========================================================================== */
 
-/* Glass skeleton: pair with .hv-card (or use alone) on a loading placeholder.
-   The shimmer sweeps a soft highlight across the glass surface. */
 .hv-skeleton {
   position: relative;
   overflow: hidden;
-  background: var(--glass-bg-2);
+  background: var(--hv-surface);
 }
 
 .hv-skeleton::after {
@@ -550,7 +431,7 @@ button.hv-card:active:not(:disabled) {
   background: linear-gradient(
     100deg,
     transparent 30%,
-    color-mix(in srgb, var(--hv-text) 7%, transparent) 50%,
+    color-mix(in srgb, var(--hv-text) 6%, transparent) 50%,
     transparent 70%
   );
   background-size: 200% 100%;
@@ -566,15 +447,15 @@ button.hv-card:active:not(:disabled) {
   .hv-skeleton::after { animation: none; }
 }
 
-/* Empty-state icon badge -- a small glass-accent circle, used above the
-   label in polished empty states (see history/comparables/etc). */
+/* Empty-state icon badge -- a small accent-tinted circle above the label
+   in empty states (see history/comparables/etc). */
 .hv-empty-icon {
   width: 52px;
   height: 52px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: linear-gradient(155deg, color-mix(in srgb, var(--color-secondary) 20%, transparent), color-mix(in srgb, var(--color-secondary) 6%, transparent));
+  background: var(--hv-accent-soft);
   border: 1px solid var(--hv-accent-border);
   color: var(--hv-accent);
   font-size: 1.5rem;
@@ -602,8 +483,7 @@ button.hv-card:active:not(:disabled) {
 
 /* ==========================================================================
    User-controlled display preferences (Settings > Appearance) -- see
-   lib/preferences.js. Each attribute is applied to <html> at boot and on
-   change, independent of the OS-level prefers-reduced-motion query below.
+   lib/preferences.js.
    ========================================================================== */
 
 :root[data-motion='reduced'] *,
@@ -613,18 +493,6 @@ button.hv-card:active:not(:disabled) {
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
-}
-
-:root[data-glass='low'] {
-  --glass-blur-1: 4px;
-  --glass-blur-2: 8px;
-  --glass-blur-3: 14px;
-}
-
-:root[data-glass='high'] {
-  --glass-blur-1: 14px;
-  --glass-blur-2: 26px;
-  --glass-blur-3: 40px;
 }
 
 :root[data-density='compact'] .hv-main {

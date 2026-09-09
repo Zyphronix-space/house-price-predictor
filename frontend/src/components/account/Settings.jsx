@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../../lib/api'
 import { useAuth } from '../../lib/authContext'
 import { useTheme } from '../../lib/hooks'
-import { getPreferences, setDensity, setGlassIntensity, setMotionPreference, setToastErrorEnabled, setToastSuccessEnabled } from '../../lib/preferences'
+import { getPreferences, setDensity, setMotionPreference, setToastErrorEnabled, setToastSuccessEnabled } from '../../lib/preferences'
 import { downloadJson } from '../../lib/exportHistory'
 import { showToast } from '../../lib/toast'
 import ConfirmDialog from '../ConfirmDialog'
@@ -11,11 +11,6 @@ import './Account.css'
 
 const TABS = ['General', 'Appearance', 'Notifications', 'Security', 'Privacy', 'Account']
 const THEME_OPTIONS = ['system', 'light', 'dark']
-const GLASS_OPTIONS = [
-  { key: 'low', label: 'Low' },
-  { key: 'medium', label: 'Medium' },
-  { key: 'high', label: 'High' },
-]
 
 export default function Settings() {
   const [tab, setTab] = useState('General')
@@ -113,26 +108,6 @@ function AppearanceTab() {
           ))}
         </div>
         <p className="account-hint">"System" follows your OS light/dark setting automatically.</p>
-      </div>
-
-      <div className="hv-card account-card">
-        <p className="hv-label">Glass intensity</p>
-        <div className="account-pill-row">
-          {GLASS_OPTIONS.map((opt) => (
-            <button
-              key={opt.key}
-              type="button"
-              className={`account-pill ${prefs.glass === opt.key ? 'is-active' : ''}`}
-              onClick={() => {
-                setGlassIntensity(opt.key)
-                setPrefs(getPreferences())
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-        <p className="account-hint">Controls how strong the translucent blur looks across the app.</p>
       </div>
 
       <div className="hv-card account-card account-toggle-row">

@@ -1,6 +1,7 @@
 .prediction-result {
   padding: 40px 32px;
   text-align: center;
+  border-top: 4px solid var(--hv-accent);
   animation: result-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -27,6 +28,7 @@
 
 .prediction-result__value {
   display: block;
+  color: var(--hv-accent);
 }
 
 .prediction-result__range {

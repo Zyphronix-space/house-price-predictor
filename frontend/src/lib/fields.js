@@ -3,12 +3,14 @@ export const FEATURE_ORDER = [
   'Population', 'AveOccup', 'Latitude', 'Longitude',
 ]
 
-export const STEPS = [
-  { key: 'property', title: 'Property', fields: ['MedInc', 'HouseAge'] },
-  { key: 'rooms', title: 'Rooms', fields: ['AveRooms', 'AveBedrms'] },
-  { key: 'occupancy', title: 'Occupancy', fields: ['Population', 'AveOccup'] },
+// Field groups shown as sections on a single page (not a multi-step
+// wizard) -- with only 8 fields total, paginating them cost more clicks
+// than it saved in clarity.
+export const SECTIONS = [
+  { key: 'property', title: 'Property basics', fields: ['MedInc', 'HouseAge'] },
+  { key: 'home', title: 'Home size', fields: ['AveRooms', 'AveBedrms'] },
+  { key: 'neighborhood', title: 'Neighborhood', fields: ['Population', 'AveOccup'] },
   { key: 'location', title: 'Location', fields: ['Latitude', 'Longitude'] },
-  { key: 'review', title: 'Review', fields: [] },
 ]
 
 export const FIELD_META = {

@@ -36,7 +36,7 @@
 }
 
 .toast-host__item--success {
-  border-color: color-mix(in srgb, var(--hv-positive) 45%, var(--glass-border-strong));
+  border-color: color-mix(in srgb, var(--hv-positive) 45%, var(--hv-border-strong));
 }
 
 .toast-host__item--success .toast-host__icon {
@@ -45,7 +45,7 @@
 }
 
 .toast-host__item--error {
-  border-color: color-mix(in srgb, var(--hv-negative) 45%, var(--glass-border-strong));
+  border-color: color-mix(in srgb, var(--hv-negative) 45%, var(--hv-border-strong));
 }
 
 .toast-host__item--error .toast-host__icon {

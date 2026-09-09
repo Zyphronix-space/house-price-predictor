@@ -28,8 +28,11 @@
 
 .field-input__unit {
   position: absolute;
+  top: 50%;
   right: 14px;
+  transform: translateY(-50%);
   font-size: 0.8rem;
+  line-height: 1.25;
   color: var(--hv-text-tertiary);
   pointer-events: none;
   text-align: right;

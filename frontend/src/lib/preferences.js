@@ -4,7 +4,6 @@
 // toast.js's showToast() for the notification toggles.
 
 const KEYS = {
-  glass: 'hv:pref:glass', // 'low' | 'medium' | 'high'
   motion: 'hv:pref:motion', // 'auto' | 'reduced'
   density: 'hv:pref:density', // 'comfortable' | 'compact'
   toastSuccess: 'hv:pref:toast-success', // '1' | '0'
@@ -29,7 +28,6 @@ function write(key, value) {
 
 export function getPreferences() {
   return {
-    glass: read(KEYS.glass, 'medium'),
     motion: read(KEYS.motion, 'auto'),
     density: read(KEYS.density, 'comfortable'),
     toastSuccess: read(KEYS.toastSuccess, '1') === '1',
@@ -39,15 +37,9 @@ export function getPreferences() {
 
 export function applyPreferencesToDocument(prefs = getPreferences()) {
   const root = document.documentElement
-  root.setAttribute('data-glass', prefs.glass)
   root.setAttribute('data-density', prefs.density)
   if (prefs.motion === 'reduced') root.setAttribute('data-motion', 'reduced')
   else root.removeAttribute('data-motion')
-}
-
-export function setGlassIntensity(value) {
-  write(KEYS.glass, value)
-  applyPreferencesToDocument(getPreferences())
 }
 
 export function setMotionPreference(value) {

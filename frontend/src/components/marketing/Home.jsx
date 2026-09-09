@@ -2,12 +2,11 @@ import { Link } from 'react-router-dom'
 import PublicShell from './PublicShell'
 
 const STEPS = [
-  { label: 'Predict', desc: 'Enter property features and get an instant ML-estimated value.' },
-  { label: 'Understand', desc: 'See exactly which features pushed the price up or down.' },
-  { label: 'Compare', desc: 'Line up saved properties side by side.' },
-  { label: 'Simulate', desc: 'Change an input and see the scenario recalculated live.' },
-  { label: 'Analyze', desc: 'Explore distributions, correlations, and model performance.' },
-  { label: 'Decide', desc: 'Run the investment numbers before you commit.' },
+  { label: 'Property', desc: 'Enter what you know about a property, or describe it in your own words.' },
+  { label: 'Prediction', desc: 'A trained machine-learning model returns an estimated value.' },
+  { label: 'Explanation', desc: 'See exactly which features pushed that number up or down.' },
+  { label: 'Comparables', desc: 'Find the real dataset records closest to your inputs.' },
+  { label: 'What-if', desc: 'Change one input and see how the estimate moves.' },
 ]
 
 const FACTS = [
@@ -21,22 +20,23 @@ export default function Home() {
   return (
     <PublicShell>
       <section className="marketing-hero">
-        <p className="marketing-hero__eyebrow">AI-Powered Intelligence</p>
+        <p className="marketing-hero__eyebrow">California housing model</p>
         <h1 className="marketing-hero__headline">
-          Turn property data into
+          Know what a property is worth,
           <br />
-          clear, explainable decisions.
+          and why.
         </h1>
         <p className="marketing-hero__sub">
-          Predict a property's value with a real trained machine-learning model, understand exactly
-          why, compare scenarios, and run the investment numbers, all in one place.
+          HomeValue predicts a property's value with a real trained machine-learning model,
+          shows you exactly which features drove that number, and lets you compare it against
+          similar properties and test what-if scenarios.
         </p>
         <div className="marketing-hero__cta">
-          <Link to="/signup" className="hv-btn hv-btn-primary">
-            Get started free
+          <Link to="/predict" className="hv-btn hv-btn-primary">
+            Try a prediction, no account needed
           </Link>
-          <Link to="/features" className="hv-btn hv-btn-secondary">
-            See features
+          <Link to="/signup" className="hv-btn hv-btn-secondary">
+            Create a free account
           </Link>
         </div>
       </section>

@@ -2,14 +2,20 @@
 House Price Predictor API.
 
 Five things live here:
-  - /auth/*: sign-up/sign-in (routes_auth.py). Every route below requires
-    a valid session (see auth.get_current_user) except /health and /auth/*.
+  - /auth/*: sign-up/sign-in (routes_auth.py).
   - /predict, /comparables, /parse-description, /model-*, /dataset-*,
     /evaluation-sample: the original ML pipeline (model loading, tree-path
     explanations, comparables, dataset stats) in ml_service.py /
-    llm_service.py. /predict itself stays a stateless preview -- it does
-    not touch the database -- so interactive UI (the What-If simulator)
-    can call it on every slider change without flooding prediction history.
+    llm_service.py. Most of these require a session (see
+    auth.get_current_user), but /predict, /parse-description, /model-info,
+    /model-comparison and /dataset-stats are also reachable by anonymous
+    visitors (auth.get_optional_user, or no auth at all) -- the frontend's
+    /predict page lets a guest try a real prediction before signing up.
+    /predict itself stays a stateless preview -- it does not touch the
+    database -- so interactive UI (the What-If simulator) can call it on
+    every slider change without flooding prediction history. The two
+    guest-reachable POST routes are rate-limited per IP (see
+    auth.rate_limit_key) since they're no longer behind a login wall.
   - /houses (routes_houses.py): CRUD for saved properties, scoped per user.
   - /predictions (routes_predictions.py): run the model AND persist the
     result, scoped per user -- this is what builds prediction history.
@@ -23,14 +29,17 @@ Run with:
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 from sqlalchemy import text
 
 import db_models
 import llm_service
 import ml_service
-from auth import get_current_user
+from auth import get_current_user, get_optional_user, rate_limit_key
 from database import Base, engine, get_db, SessionLocal
 from routes_auth import router as auth_router
 from routes_dashboard import router as dashboard_router
@@ -100,6 +109,15 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="House Price Predictor API", lifespan=lifespan)
 
+# /predict and /parse-description are reachable by anonymous visitors (see
+# ValuationFlow.jsx's guest mode) as well as signed-in users, so they need
+# a rate limit that didn't matter while every route required a login.
+# rate_limit_key buckets signed-in callers by user id and everyone else by
+# IP, so this only bounds anonymous abuse, not normal signed-in use.
+limiter = Limiter(key_func=rate_limit_key)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Allow the React dev server (any localhost port, since Vite falls back
 # when 5173 is taken) and the deployed Vercel frontend (including preview
 # deployments, which get their own *.vercel.app subdomain).
@@ -122,7 +140,12 @@ def health():
 
 
 @app.post("/predict", response_model=PredictionResponse)
-def predict(features: HouseFeatures, _user: db_models.User = Depends(get_current_user)):
+@limiter.limit("100/hour")
+def predict(
+    request: Request,
+    features: HouseFeatures,
+    _user: db_models.User | None = Depends(get_optional_user),
+):
     values = features.model_dump()
     price_usd, warnings = ml_service.predict(values)
     explanation = ml_service.explain(values)
@@ -153,7 +176,12 @@ def dataset_sample(n: int = Query(500, ge=50, le=2000), _user: db_models.User = 
 
 
 @app.post("/parse-description", response_model=ExtractedFeatures)
-async def parse_description(body: ParseDescriptionRequest, _user: db_models.User = Depends(get_current_user)):
+@limiter.limit("30/hour")
+async def parse_description(
+    request: Request,
+    body: ParseDescriptionRequest,
+    _user: db_models.User | None = Depends(get_optional_user),
+):
     if not llm_service.is_configured():
         raise HTTPException(
             status_code=503,
@@ -188,7 +216,7 @@ async def parse_description(body: ParseDescriptionRequest, _user: db_models.User
 
 
 @app.get("/model-info")
-def model_info(_user: db_models.User = Depends(get_current_user)):
+def model_info():
     mc = ml_service.model_comparison
     served_key = mc["served_model"]
     served = mc["models"][served_key]
@@ -203,7 +231,7 @@ def model_info(_user: db_models.User = Depends(get_current_user)):
 
 
 @app.get("/model-comparison")
-def get_model_comparison(_user: db_models.User = Depends(get_current_user)):
+def get_model_comparison():
     return ml_service.model_comparison
 
 
@@ -228,7 +256,7 @@ def get_model_evaluations(db=Depends(get_db), _user: db_models.User = Depends(ge
 
 
 @app.get("/dataset-stats")
-def get_dataset_stats(_user: db_models.User = Depends(get_current_user)):
+def get_dataset_stats():
     return ml_service.dataset_stats
 
 

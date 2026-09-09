@@ -42,7 +42,9 @@
 
 .investment__field-unit {
   position: absolute;
+  top: 50%;
   right: 14px;
+  transform: translateY(-50%);
   font-size: 0.78rem;
   color: var(--hv-text-tertiary);
   pointer-events: none;

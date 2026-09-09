@@ -7,14 +7,9 @@ import './Auth.css'
 export default function AuthShell({ title, tagline, children }) {
   return (
     <div className="hv-app">
-      <div className="hv-ambient" aria-hidden="true">
-        <span className="hv-ambient__blob hv-ambient__blob--a" />
-        <span className="hv-ambient__blob hv-ambient__blob--b" />
-        <span className="hv-ambient__blob hv-ambient__blob--c" />
-      </div>
       <div className="auth-page">
         <div className="auth-page__brand">
-          <p className="auth-page__brand-eyebrow">AI-Powered Property Intelligence</p>
+          <p className="auth-page__brand-eyebrow">HomeValue</p>
           <h1 className="auth-page__brand-headline">Understand what a property could be worth.</h1>
           <p className="auth-page__brand-copy">
             Machine-learning price estimates with transparent, explainable reasoning behind every

@@ -34,7 +34,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--hv-border);
   margin-bottom: 8px;
 }
 
@@ -105,7 +105,7 @@
 
 .cmdk__item.is-active {
   background: var(--hv-accent-soft);
-  color: var(--color-secondary);
+  color: var(--hv-accent-strong);
 }
 
 .cmdk__hint {
@@ -114,7 +114,7 @@
 }
 
 .cmdk__item.is-active .cmdk__hint {
-  color: color-mix(in srgb, var(--color-secondary) 70%, var(--hv-text-tertiary));
+  color: color-mix(in srgb, var(--hv-accent) 70%, var(--hv-text-tertiary));
 }
 
 @media (prefers-reduced-motion: reduce) {

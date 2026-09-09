@@ -23,24 +23,27 @@
 }
 
 .marketing-hero__eyebrow {
-  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-secondary);
+  color: var(--hv-accent-strong);
+  background: var(--hv-accent-soft);
+  border: 1px solid var(--hv-accent-border);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
 }
 
 .marketing-hero__headline {
   font-family: var(--font-display);
-  font-size: clamp(2.1rem, 5vw, 3.4rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
+  font-size: clamp(2.6rem, 6.4vw, 4.4rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
   margin: 0;
-  background: linear-gradient(155deg, var(--color-text), color-mix(in srgb, var(--color-secondary) 55%, var(--color-text)));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--hv-text);
 }
 
 .marketing-hero__sub {
@@ -105,6 +108,8 @@
 
 .marketing-fact {
   padding: 22px;
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--hv-radius-sm) var(--hv-radius-sm) var(--hv-radius-md) var(--hv-radius-md);
 }
 
 .marketing-fact__value {

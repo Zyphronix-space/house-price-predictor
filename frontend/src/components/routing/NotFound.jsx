@@ -7,11 +7,6 @@ export default function NotFound() {
 
   return (
     <div className="hv-app">
-      <div className="hv-ambient" aria-hidden="true">
-        <span className="hv-ambient__blob hv-ambient__blob--a" />
-        <span className="hv-ambient__blob hv-ambient__blob--b" />
-        <span className="hv-ambient__blob hv-ambient__blob--c" />
-      </div>
       <main className="not-found">
         <div className="hv-glass not-found__card">
           <p className="hv-label">404</p>

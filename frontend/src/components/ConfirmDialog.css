@@ -47,9 +47,12 @@
 }
 
 .confirm-dialog__danger-btn {
-  background: linear-gradient(155deg, var(--hv-negative), color-mix(in srgb, var(--hv-negative) 75%, black));
+  background: var(--hv-negative);
   color: #fff;
-  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--hv-negative) 55%, transparent);
+}
+
+.confirm-dialog__danger-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--hv-negative) 85%, black);
 }
 
 @media (prefers-reduced-motion: reduce) {

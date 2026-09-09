@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import SystemStatus from './SystemStatus'
 import ToastHost from './ToastHost'
 import NotificationCenter from './NotificationCenter'
@@ -8,30 +9,31 @@ import './Layout.css'
 import './UserMenu.css'
 import './NotificationCenter.css'
 
-const TABS = [
+// Primary nav stays to four destinations -- the core loop (see, predict,
+// manage, review) -- everything else (analysis, comparables, what-if,
+// investment, model detail) lives one tap away behind "Insights" so a
+// first-time visitor isn't shown nine top-level destinations at once.
+const CORE_TABS = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'predict', label: 'Predict' },
   { key: 'properties', label: 'Properties' },
-  { key: 'analysis', label: 'Market Analytics', short: 'Analytics' },
-  { key: 'comparables', label: 'Comparable Properties', short: 'Comparables' },
-  { key: 'whatif', label: 'What-If Simulator', short: 'What-If' },
-  { key: 'investment', label: 'Investment Calculator', short: 'Investment' },
-  { key: 'model', label: 'Model Insights', short: 'Insights' },
-  { key: 'history', label: 'Prediction History', short: 'History' },
+  { key: 'history', label: 'History' },
 ]
 
-// Bottom nav (mobile) only has room for a few items readably -- these four
-// cover the core loop (see, predict, understand, review); the rest are one
-// tap away behind "More".
-const CORE_KEYS = ['dashboard', 'predict', 'properties', 'history']
-const CORE_TABS = TABS.filter((t) => CORE_KEYS.includes(t.key))
-const MORE_TABS = TABS.filter((t) => !CORE_KEYS.includes(t.key))
+const INSIGHT_TABS = [
+  { key: 'comparables', label: 'Comparable properties', desc: 'Nearest real matches to your last prediction' },
+  { key: 'whatif', label: 'What-if simulator', desc: 'Change one input and see the new estimate' },
+  { key: 'analysis', label: 'Market analysis', desc: 'Distributions, correlations, model fit' },
+  { key: 'investment', label: 'Investment calculator', desc: 'Mortgage, cash flow, ROI' },
+  { key: 'model', label: 'Model performance', desc: 'Comparison, cross-validation, errors' },
+]
 
 const THEME_ICON = { system: '◐', light: '☀', dark: '☾' }
 
 export default function Layout({ view, setView, children, user, onLogout }) {
   const { theme, cycleTheme } = useTheme()
   const [moreOpen, setMoreOpen] = useState(false)
+  const isInsightView = INSIGHT_TABS.some((t) => t.key === view)
 
   const go = (key) => {
     setView(key)
@@ -40,37 +42,51 @@ export default function Layout({ view, setView, children, user, onLogout }) {
 
   return (
     <div className="hv-app">
-      <div className="hv-ambient" aria-hidden="true">
-        <span className="hv-ambient__blob hv-ambient__blob--a" />
-        <span className="hv-ambient__blob hv-ambient__blob--b" />
-        <span className="hv-ambient__blob hv-ambient__blob--c" />
-      </div>
-
       <header className="hv-topnav-wrap">
         <div className="hv-topnav">
-          <button type="button" className="hv-brand" onClick={() => go('dashboard')}>
-            <span className="hv-brand__mark" aria-hidden="true">HV</span>
-            <span className="hv-brand__word">
-              Home<span className="hv-brand__accent">Value</span>
-            </span>
-          </button>
+          {user ? (
+            <button type="button" className="hv-brand" onClick={() => go('dashboard')}>
+              <span className="hv-brand__mark" aria-hidden="true">HV</span>
+              <span className="hv-brand__word">
+                Home<span className="hv-brand__accent">Value</span>
+              </span>
+            </button>
+          ) : (
+            <Link to="/" className="hv-brand">
+              <span className="hv-brand__mark" aria-hidden="true">HV</span>
+              <span className="hv-brand__word">
+                Home<span className="hv-brand__accent">Value</span>
+              </span>
+            </Link>
+          )}
 
-          <nav className="hv-topnav__links" aria-label="Primary">
-            {TABS.map((tab) => (
+          {user && (
+            <nav className="hv-topnav__links" aria-label="Primary">
+              {CORE_TABS.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  className={`hv-topnav__link ${view === tab.key ? 'is-active' : ''}`}
+                  aria-current={view === tab.key ? 'page' : undefined}
+                  onClick={() => go(tab.key)}
+                >
+                  {tab.label}
+                </button>
+              ))}
               <button
-                key={tab.key}
                 type="button"
-                className={`hv-topnav__link ${view === tab.key ? 'is-active' : ''}`}
-                aria-current={view === tab.key ? 'page' : undefined}
-                onClick={() => go(tab.key)}
+                className={`hv-topnav__link ${isInsightView ? 'is-active' : ''}`}
+                aria-haspopup="dialog"
+                aria-expanded={moreOpen}
+                onClick={() => setMoreOpen((o) => !o)}
               >
-                {tab.short ?? tab.label}
+                Insights
               </button>
-            ))}
-          </nav>
+            </nav>
+          )}
 
           <div className="hv-topnav__meta">
-            <SystemStatus compact />
+            {user && <SystemStatus compact />}
             <button
               type="button"
               className="hv-theme-toggle"
@@ -80,10 +96,19 @@ export default function Layout({ view, setView, children, user, onLogout }) {
             >
               {THEME_ICON[theme]}
             </button>
-            {user && (
+            {user ? (
               <>
                 <NotificationCenter />
                 <UserMenu user={user} onLogout={onLogout} />
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="hv-btn hv-btn-ghost">
+                  Sign in
+                </Link>
+                <Link to="/signup" className="hv-btn hv-btn-primary">
+                  Get started
+                </Link>
               </>
             )}
           </div>
@@ -93,46 +118,50 @@ export default function Layout({ view, setView, children, user, onLogout }) {
       <main className="hv-main">{children}</main>
       <ToastHost />
 
-      {moreOpen && (
-        <div className="hv-more-sheet" role="dialog" aria-label="More sections">
+      {user && moreOpen && (
+        <div className="hv-more-sheet" role="dialog" aria-label="Insights">
           <button type="button" className="hv-more-sheet__backdrop" aria-label="Close" onClick={() => setMoreOpen(false)} />
           <div className="hv-more-sheet__panel">
-            {MORE_TABS.map((tab) => (
+            <p className="hv-more-sheet__heading">Insights</p>
+            {INSIGHT_TABS.map((tab) => (
               <button
                 key={tab.key}
                 type="button"
                 className={`hv-more-sheet__item ${view === tab.key ? 'is-active' : ''}`}
                 onClick={() => go(tab.key)}
               >
-                {tab.label}
+                <span className="hv-more-sheet__item-label">{tab.label}</span>
+                <span className="hv-more-sheet__item-desc">{tab.desc}</span>
               </button>
             ))}
           </div>
         </div>
       )}
 
-      <nav className="hv-bottomnav" aria-label="Primary">
-        {CORE_TABS.map((tab) => (
+      {user && (
+        <nav className="hv-bottomnav" aria-label="Primary">
+          {CORE_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={`hv-bottomnav__link ${view === tab.key ? 'is-active' : ''}`}
+              aria-current={view === tab.key ? 'page' : undefined}
+              onClick={() => go(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
           <button
-            key={tab.key}
             type="button"
-            className={`hv-bottomnav__link ${view === tab.key ? 'is-active' : ''}`}
-            aria-current={view === tab.key ? 'page' : undefined}
-            onClick={() => go(tab.key)}
+            className={`hv-bottomnav__link ${isInsightView ? 'is-active' : ''}`}
+            aria-haspopup="dialog"
+            aria-expanded={moreOpen}
+            onClick={() => setMoreOpen((o) => !o)}
           >
-            {tab.short ?? tab.label}
+            Insights
           </button>
-        ))}
-        <button
-          type="button"
-          className={`hv-bottomnav__link ${MORE_TABS.some((t) => t.key === view) ? 'is-active' : ''}`}
-          aria-haspopup="dialog"
-          aria-expanded={moreOpen}
-          onClick={() => setMoreOpen((o) => !o)}
-        >
-          More
-        </button>
-      </nav>
+        </nav>
+      )}
     </div>
   )
 }
