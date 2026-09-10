@@ -23,20 +23,26 @@
 }
 
 .field-input__control .hv-input {
-  padding-right: 110px;
+  padding-right: 152px;
 }
 
 .field-input__unit {
+  /* Kept to one line on purpose -- a wrapped two-line unit sits with its
+     top line well above the input value's baseline, while single-line
+     units ("years") sit level with it; the mismatch reads as the label
+     floating loose rather than being part of the same control. */
   position: absolute;
   top: 50%;
   right: 14px;
   transform: translateY(-50%);
-  font-size: 0.8rem;
-  line-height: 1.25;
+  font-size: 0.72rem;
   color: var(--hv-text-tertiary);
   pointer-events: none;
   text-align: right;
-  max-width: 100px;
+  max-width: 138px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .field-input__error {
