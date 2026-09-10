@@ -13,21 +13,23 @@
 
 :root {
   /* ---- Canonical color tokens ----
-     Monochrome: near-black ink, white/light-gray surfaces, black doing
-     the work a brand color usually would (buttons, brand mark) via a
-     black-to-charcoal fade rather than a flat fill. Color is reserved for
-     semantic state only (success/warning/danger), never for brand/CTA. */
+     Apple/Samsung technique, not literal Apple colors: a near-monochrome
+     white/black/gray canvas with ONE vivid, saturated color doing the
+     brand/CTA work (buttons, brand mark, active nav, focus), deployed as
+     concentrated "moments" rather than spread flat across everything.
+     Charts get their own separate green (--hv-chart-primary) so data
+     visualization isn't fighting the brand color for the same hue. */
   --color-bg: #ffffff;
   --color-bg-strong: #f5f5f7;
   --color-surface: #ffffff;
   --color-surface-sunken: #f5f5f7;
-  --color-primary: #1d1d1f;
-  --color-primary-soft: #48484a;
-  --color-primary-contrast: #ffffff;
-  --color-secondary: #1d1d1f;
-  --color-accent: #1d1d1f;
-  --color-accent-soft-bg: #f5f5f7;
-  --color-accent-contrast: #ffffff;
+  --color-primary: #c8880c;
+  --color-primary-soft: #e6a52a;
+  --color-primary-contrast: #1a1200;
+  --color-secondary: #c8880c;
+  --color-accent: #c8880c;
+  --color-accent-soft-bg: #faf1dc;
+  --color-accent-contrast: #1a1200;
   --color-success: #1a7d3a;
   --color-warning: #b25000;
   --color-danger: #d70015;
@@ -35,7 +37,7 @@
   --color-text-muted: #6e6e73;
   --color-text-faint: #86868b;
   --color-border: rgba(0, 0, 0, 0.1);
-  --color-border-strong: rgba(0, 0, 0, 0.18);
+  --color-border-strong: rgba(0, 0, 0, 0.28);
   --color-muted-bg: #f5f5f7;
 
   /* Real, visible soft-shadow elevation (not a hairline border doing all
@@ -145,13 +147,13 @@
     --color-bg-strong: #000000;
     --color-surface: #1c1c1e;
     --color-surface-sunken: #161617;
-    --color-primary: #f5f5f7;
-    --color-primary-soft: #d2d2d7;
-    --color-primary-contrast: #000000;
-    --color-secondary: #f5f5f7;
-    --color-accent: #f5f5f7;
-    --color-accent-soft-bg: #2c2c2e;
-    --color-accent-contrast: #000000;
+    --color-primary: #f0b429;
+    --color-primary-soft: #f7cc63;
+    --color-primary-contrast: #1a1200;
+    --color-secondary: #f0b429;
+    --color-accent: #f0b429;
+    --color-accent-soft-bg: #3a2e0f;
+    --color-accent-contrast: #1a1200;
     --color-success: #30d158;
     --color-warning: #ff9f0a;
     --color-danger: #ff453a;
@@ -181,13 +183,13 @@
   --color-bg-strong: #000000;
   --color-surface: #1c1c1e;
   --color-surface-sunken: #161617;
-  --color-primary: #f5f5f7;
-  --color-primary-soft: #d2d2d7;
-  --color-primary-contrast: #000000;
-  --color-secondary: #f5f5f7;
-  --color-accent: #f5f5f7;
-  --color-accent-soft-bg: #2c2c2e;
-  --color-accent-contrast: #000000;
+  --color-primary: #f0b429;
+  --color-primary-soft: #f7cc63;
+  --color-primary-contrast: #1a1200;
+  --color-secondary: #f0b429;
+  --color-accent: #f0b429;
+  --color-accent-soft-bg: #3a2e0f;
+  --color-accent-contrast: #1a1200;
   --color-success: #30d158;
   --color-warning: #ff9f0a;
   --color-danger: #ff453a;

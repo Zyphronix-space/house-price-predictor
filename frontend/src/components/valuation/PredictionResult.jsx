@@ -2,6 +2,7 @@ import { useState } from 'react'
 import AnimatedNumber from '../AnimatedNumber'
 import { api } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
+import Select from '../Select'
 import './PredictionResult.css'
 
 export default function PredictionResult({ result, isGuest, onWhatIf, onSaveComparison, onSaveHistory, onReport, onNewValuation }) {
@@ -54,15 +55,18 @@ export default function PredictionResult({ result, isGuest, onWhatIf, onSaveComp
       )}
 
       {!isGuest && housesRes?.houses.length > 0 && !saved && (
-        <label className="prediction-result__house-picker">
+        <div className="prediction-result__house-picker">
           <span className="hv-label">Attach to a saved property (optional)</span>
-          <select className="hv-input" value={houseId} onChange={(e) => setHouseId(e.target.value)}>
-            <option value="">None, save as a standalone prediction</option>
-            {housesRes.houses.map((h) => (
-              <option key={h.id} value={h.id}>{h.label}</option>
-            ))}
-          </select>
-        </label>
+          <Select
+            ariaLabel="Attach to a saved property"
+            value={houseId}
+            onChange={setHouseId}
+            options={[
+              { value: '', label: 'None, save as a standalone prediction' },
+              ...housesRes.houses.map((h) => ({ value: String(h.id), label: h.label })),
+            ]}
+          />
+        </div>
       )}
 
       <div className="prediction-result__actions">

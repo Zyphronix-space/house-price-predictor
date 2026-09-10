@@ -102,12 +102,12 @@ export default function Dashboard({ setView }) {
       </div>
 
       <div className="dashboard__split">
-        <div className="dashboard__recent">
+        <div className="hv-card dashboard__recent">
           <p className="hv-label">Recent predictions</p>
           {!summary || summary.recent_predictions.length === 0 ? (
             <p className="dashboard__recent-empty">No predictions yet, run your first valuation to see it here.</p>
           ) : (
-            <div className="hv-card dashboard__recent-table-wrap">
+            <div className="dashboard__recent-table-wrap">
               <table className="dashboard__recent-table">
                 <thead>
                   <tr>

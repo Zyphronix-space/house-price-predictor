@@ -27,7 +27,7 @@
 
 .prediction-result__value {
   display: block;
-  color: var(--hv-text);
+  color: var(--hv-chart-primary);
 }
 
 .prediction-result__range {

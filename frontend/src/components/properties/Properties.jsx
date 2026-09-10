@@ -4,10 +4,24 @@ import { showToast } from '../../lib/toast'
 import Modal from '../Modal'
 import ConfirmDialog from '../ConfirmDialog'
 import ErrorState from '../ErrorState'
+import Select from '../Select'
 import HouseForm from './HouseForm'
 import './Properties.css'
 
 const fmtUsd = (v) => `$${Math.round(v).toLocaleString()}`
+
+const SORT_OPTIONS = [
+  { value: 'created_at', label: 'Date added' },
+  { value: 'updated_at', label: 'Last updated' },
+  { value: 'label', label: 'Name' },
+  { value: 'med_inc', label: 'Median income' },
+  { value: 'house_age', label: 'House age' },
+]
+
+const ORDER_OPTIONS = [
+  { value: 'desc', label: 'Descending' },
+  { value: 'asc', label: 'Ascending' },
+]
 
 export default function Properties({ setView }) {
   const [houses, setHouses] = useState(null)
@@ -91,17 +105,20 @@ export default function Properties({ setView }) {
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search by name or notes…"
         />
-        <select className="hv-input properties__select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <option value="created_at">Date added</option>
-          <option value="updated_at">Last updated</option>
-          <option value="label">Name</option>
-          <option value="med_inc">Median income</option>
-          <option value="house_age">House age</option>
-        </select>
-        <select className="hv-input properties__select" value={order} onChange={(e) => setOrder(e.target.value)}>
-          <option value="desc">Descending</option>
-          <option value="asc">Ascending</option>
-        </select>
+        <Select
+          className="properties__select"
+          ariaLabel="Sort by"
+          value={sortBy}
+          onChange={setSortBy}
+          options={SORT_OPTIONS}
+        />
+        <Select
+          className="properties__select"
+          ariaLabel="Sort order"
+          value={order}
+          onChange={setOrder}
+          options={ORDER_OPTIONS}
+        />
       </div>
 
       {error && <ErrorState message={error.message} onRetry={load} />}

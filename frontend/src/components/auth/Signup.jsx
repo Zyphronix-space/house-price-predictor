@@ -118,8 +118,10 @@ export default function Signup() {
             checked={agreedToTerms}
             onChange={(e) => setAgreedToTerms(e.target.checked)}
           />
-          I agree to the <Link to="/terms">Terms and Conditions</Link> and{' '}
-          <Link to="/privacy">Privacy Policy</Link>
+          <span>
+            I agree to the <Link to="/terms">Terms and Conditions</Link> and{' '}
+            <Link to="/privacy">Privacy Policy</Link>
+          </span>
         </label>
 
         {error && <p className="auth-page__error">{error}</p>}

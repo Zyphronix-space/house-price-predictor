@@ -112,7 +112,11 @@
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
+}
+
+.dashboard__recent {
+  padding: 20px;
 }
 
 .dashboard__recent-table-wrap {
@@ -155,6 +159,13 @@
 
 .dashboard__comparison {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard__comparison .hv-btn {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .dashboard__comparison-count {

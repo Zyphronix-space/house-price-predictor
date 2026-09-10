@@ -76,7 +76,7 @@ export default function Login() {
         <div className="auth-page__row">
           <label className="auth-page__checkbox">
             <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
-            Remember me
+            <span>Remember me</span>
           </label>
           <Link to="/forgot-password" className="auth-page__link">
             Forgot password?
