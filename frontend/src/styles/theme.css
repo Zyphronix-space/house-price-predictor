@@ -13,39 +13,48 @@
 
 :root {
   /* ---- Canonical color tokens ----
-     A clean ivory/charcoal canvas (not a warm beige "old paper" tone) with
-     two confident, saturated colors doing all the work: a fresh emerald
-     for brand/trust and a warm gold for the number that matters. Neither
-     is the generic blue/purple AI-SaaS default. */
-  --color-bg: #f7f7f4;
-  --color-bg-strong: #efefea;
+     Monochrome: near-black ink, white/light-gray surfaces, black doing
+     the work a brand color usually would (buttons, brand mark) via a
+     black-to-charcoal fade rather than a flat fill. Color is reserved for
+     semantic state only (success/warning/danger), never for brand/CTA. */
+  --color-bg: #ffffff;
+  --color-bg-strong: #f5f5f7;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f1f1ec;
-  --color-primary: #148a5e;
-  --color-primary-soft: #1ca873;
+  --color-surface-sunken: #f5f5f7;
+  --color-primary: #1d1d1f;
+  --color-primary-soft: #48484a;
   --color-primary-contrast: #ffffff;
-  --color-secondary: #148a5e;
-  --color-accent: #e2a63b;
-  --color-accent-soft-bg: #fbebd2;
-  --color-accent-contrast: #201804;
-  --color-success: #148a5e;
-  --color-warning: #c67f1e;
-  --color-danger: #c0392b;
-  --color-text: #1b1e1c;
-  --color-text-muted: #565c58;
-  --color-text-faint: #868c88;
-  --color-border: rgba(27, 30, 28, 0.12);
-  --color-border-strong: rgba(27, 30, 28, 0.22);
-  --color-muted-bg: #f1f1ec;
+  --color-secondary: #1d1d1f;
+  --color-accent: #1d1d1f;
+  --color-accent-soft-bg: #f5f5f7;
+  --color-accent-contrast: #ffffff;
+  --color-success: #1a7d3a;
+  --color-warning: #b25000;
+  --color-danger: #d70015;
+  --color-text: #1d1d1f;
+  --color-text-muted: #6e6e73;
+  --color-text-faint: #86868b;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-strong: rgba(0, 0, 0, 0.18);
+  --color-muted-bg: #f5f5f7;
 
   /* Real, visible soft-shadow elevation (not a hairline border doing all
      the work) -- this is what reads as "modern product" instead of "flat
      document." Two layers each: a tight contact shadow + a broad soft
      one, the way most contemporary UI shadows are actually built. */
-  --shadow-color: 24, 30, 26;
+  --shadow-color: 0, 0, 0;
   --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.07), 0 1px 1px rgba(var(--shadow-color), 0.05);
   --shadow-md: 0 3px 8px rgba(var(--shadow-color), 0.09), 0 16px 32px -8px rgba(var(--shadow-color), 0.18);
   --shadow-lg: 0 6px 16px rgba(var(--shadow-color), 0.1), 0 32px 64px -16px rgba(var(--shadow-color), 0.28);
+
+  /* Frosted glass for floating chrome ONLY -- dropdowns, popover menus,
+     the sticky nav once content scrolls under it. Never on a card sitting
+     in normal page flow (that's what made the old system read as one
+     undifferentiated blur-everywhere effect). Blur signals "this is
+     floating above other content," which is exactly the case here and
+     nowhere else. */
+  --hv-overlay-bg: rgba(255, 255, 255, 0.78);
+  --hv-overlay-blur: 20px;
 
   /* Modal/dialog dismissal scrim only -- not used for decorative panels */
   --scrim: rgba(20, 17, 12, 0.4);
@@ -98,13 +107,26 @@
   --hv-brand: var(--color-primary);
   --hv-brand-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
 
+  /* The Apple treatment: black fading to charcoal, not a flat fill, on
+     the highest-impact elements only -- buttons, the brand mark. Inverts
+     to white-fading-to-light-gray in dark mode (see below). Never used
+     for body text or small UI. */
+  --hv-gradient-accent: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
+  --hv-gradient-brand: linear-gradient(135deg, var(--color-primary-soft), var(--color-primary));
+
   --hv-positive: var(--color-success);
   --hv-negative: var(--color-danger);
   --hv-warning: var(--color-warning);
   --hv-critical: var(--color-danger);
 
-  --hv-grid: rgba(28, 26, 22, 0.1);
-  --hv-axis: rgba(28, 26, 22, 0.24);
+  /* Charts/graphs get their own fixed color, independent of the
+     monochrome UI chrome (buttons, nav, brand) -- data visualization
+     reads better with real color than with flat black bars/dots. */
+  --hv-chart-primary: #148a5e;
+  --hv-chart-secondary: #5ba98b;
+
+  --hv-grid: rgba(0, 0, 0, 0.08);
+  --hv-axis: rgba(0, 0, 0, 0.22);
 
   --hv-shadow-sm: var(--shadow-sm);
   --hv-shadow-md: var(--shadow-md);
@@ -119,66 +141,71 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #141613;
-    --color-bg-strong: #0d0f0c;
-    --color-surface: #1c1f1b;
-    --color-surface-sunken: #23261f;
-    --color-primary: #34c98a;
-    --color-primary-soft: #5ed9a5;
-    --color-primary-contrast: #06150e;
-    --color-secondary: #34c98a;
-    --color-accent: #f0b65b;
-    --color-accent-soft-bg: #3a2c13;
-    --color-accent-contrast: #201804;
-    --color-success: #34c98a;
-    --color-warning: #e3ae55;
-    --color-danger: #e2685a;
-    --color-text: #f1f3ef;
-    --color-text-muted: #b4bab4;
-    --color-text-faint: #7d847e;
-    --color-border: rgba(220, 228, 220, 0.14);
-    --color-border-strong: rgba(220, 228, 220, 0.24);
-    --color-muted-bg: #1e211b;
+    --color-bg: #000000;
+    --color-bg-strong: #000000;
+    --color-surface: #1c1c1e;
+    --color-surface-sunken: #161617;
+    --color-primary: #f5f5f7;
+    --color-primary-soft: #d2d2d7;
+    --color-primary-contrast: #000000;
+    --color-secondary: #f5f5f7;
+    --color-accent: #f5f5f7;
+    --color-accent-soft-bg: #2c2c2e;
+    --color-accent-contrast: #000000;
+    --color-success: #30d158;
+    --color-warning: #ff9f0a;
+    --color-danger: #ff453a;
+    --color-text: #f5f5f7;
+    --color-text-muted: #98989d;
+    --color-text-faint: #6e6e73;
+    --color-border: rgba(255, 255, 255, 0.14);
+    --color-border-strong: rgba(255, 255, 255, 0.24);
+    --color-muted-bg: #1c1c1e;
+    --hv-overlay-bg: rgba(28, 28, 30, 0.72);
 
     --shadow-color: 0, 0, 0;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 28px -10px rgba(0, 0, 0, 0.55);
     --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.4), 0 28px 56px -16px rgba(0, 0, 0, 0.65);
 
-    --hv-grid: rgba(230, 220, 200, 0.09);
-    --hv-axis: rgba(230, 220, 200, 0.22);
+    --hv-chart-primary: #34c98a;
+    --hv-chart-secondary: #7fd4ae;
+
+    --hv-grid: rgba(255, 255, 255, 0.08);
+    --hv-axis: rgba(255, 255, 255, 0.22);
   }
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #141613;
-  --color-bg-strong: #0d0f0c;
-  --color-surface: #1c1f1b;
-  --color-surface-sunken: #23261f;
-  --color-primary: #34c98a;
-  --color-primary-soft: #5ed9a5;
-  --color-primary-contrast: #06150e;
-  --color-secondary: #34c98a;
-  --color-accent: #f0b65b;
-  --color-accent-soft-bg: #3a2c13;
-  --color-accent-contrast: #201804;
-  --color-success: #34c98a;
-  --color-warning: #e3ae55;
-  --color-danger: #e2685a;
-  --color-text: #f1f3ef;
-  --color-text-muted: #b4bab4;
-  --color-text-faint: #7d847e;
-  --color-border: rgba(220, 228, 220, 0.14);
-  --color-border-strong: rgba(220, 228, 220, 0.24);
-  --color-muted-bg: #1e211b;
+  --color-bg: #000000;
+  --color-bg-strong: #000000;
+  --color-surface: #1c1c1e;
+  --color-surface-sunken: #161617;
+  --color-primary: #f5f5f7;
+  --color-primary-soft: #d2d2d7;
+  --color-primary-contrast: #000000;
+  --color-secondary: #f5f5f7;
+  --color-accent: #f5f5f7;
+  --color-accent-soft-bg: #2c2c2e;
+  --color-accent-contrast: #000000;
+  --color-success: #30d158;
+  --color-warning: #ff9f0a;
+  --color-danger: #ff453a;
+  --color-text: #f5f5f7;
+  --color-text-muted: #98989d;
+  --color-text-faint: #6e6e73;
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-border-strong: rgba(255, 255, 255, 0.24);
+  --color-muted-bg: #1c1c1e;
+  --hv-overlay-bg: rgba(28, 28, 30, 0.72);
 
   --shadow-color: 0, 0, 0;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.35), 0 16px 32px -10px rgba(0, 0, 0, 0.55);
   --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.4), 0 32px 64px -16px rgba(0, 0, 0, 0.65);
 
-  --hv-grid: rgba(230, 220, 200, 0.09);
-  --hv-axis: rgba(230, 220, 200, 0.22);
+  --hv-grid: rgba(255, 255, 255, 0.08);
+  --hv-axis: rgba(255, 255, 255, 0.22);
 }
 
 /* ==========================================================================
@@ -301,13 +328,13 @@ button.hv-card:active:not(:disabled) {
 }
 
 .hv-btn-primary {
-  background: var(--color-accent);
+  background: var(--hv-gradient-accent);
   color: var(--hv-accent-contrast);
   box-shadow: 0 1px 2px rgba(var(--shadow-color), 0.08), 0 10px 22px -8px color-mix(in srgb, var(--color-accent) 55%, transparent);
 }
 
 .hv-btn-primary:hover:not(:disabled) {
-  background: var(--hv-accent-strong);
+  filter: brightness(1.06) saturate(1.05);
   box-shadow: 0 1px 2px rgba(var(--shadow-color), 0.08), 0 16px 30px -8px color-mix(in srgb, var(--color-accent) 65%, transparent);
   transform: translateY(-1px);
 }
@@ -394,6 +421,27 @@ button.hv-card:active:not(:disabled) {
 .hv-input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* select's closed state is already themed via .hv-input; the open native
+   popup list is OS-rendered and only partially themeable -- Chromium and
+   Firefox both respect background/color on <option>, which is the part
+   that actually matters (the list reads as ours, not a browser default). */
+select.hv-input {
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--hv-text-secondary) 50%),
+    linear-gradient(135deg, var(--hv-text-secondary) 50%, transparent 50%);
+  background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 36px;
+}
+
+select.hv-input option {
+  background: var(--hv-bg-elevated);
+  color: var(--hv-text);
 }
 
 :focus-visible {

@@ -52,7 +52,7 @@
 }
 
 .model-check__dot {
-  fill: var(--hv-accent);
+  fill: var(--hv-chart-primary);
   fill-opacity: 0.65;
   stroke: var(--hv-bg-elevated);
   stroke-width: 1;

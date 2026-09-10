@@ -108,8 +108,6 @@
 
 .marketing-fact {
   padding: 22px;
-  border-top: 3px solid var(--color-primary);
-  border-radius: var(--hv-radius-sm) var(--hv-radius-sm) var(--hv-radius-md) var(--hv-radius-md);
 }
 
 .marketing-fact__value {

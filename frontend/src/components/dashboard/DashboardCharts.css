@@ -10,12 +10,12 @@
 }
 
 .dashboard-chart__bar {
-  fill: var(--hv-accent);
+  fill: var(--hv-chart-primary);
   transition: fill 0.15s ease;
 }
 
 .dashboard-chart__bar--accent2 {
-  fill: var(--hv-positive);
+  fill: var(--hv-chart-secondary);
 }
 
 .dashboard-chart__bar:hover {

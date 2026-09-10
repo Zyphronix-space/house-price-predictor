@@ -30,7 +30,7 @@
 }
 
 .residual-histogram__bar.is-under {
-  fill: var(--hv-accent);
+  fill: var(--hv-chart-primary);
 }
 
 .residual-histogram__tick {
