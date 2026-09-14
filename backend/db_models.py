@@ -37,6 +37,15 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     password_salt = Column(String, nullable=False)
     created_at = Column(DateTime, default=_now)
+    is_admin = Column(Boolean, nullable=False, default=False)
+    # Admin-initiated removal is a soft delete -- NULL means active, a
+    # timestamp means deactivated. The row (and their houses/predictions)
+    # stays intact for audit/recovery; a deleted account just can't log in
+    # or be counted as active. Self-service account deletion (routes_auth's
+    # DELETE /auth/me) is intentionally unaffected by this and stays a real
+    # hard delete -- that's the user exercising their own "delete my data"
+    # right, not something that should be reversible without their say-so.
+    deleted_at = Column(DateTime, nullable=True)
 
     houses = relationship("House", back_populates="owner", cascade="all, delete-orphan")
     predictions = relationship("Prediction", back_populates="owner", cascade="all, delete-orphan")

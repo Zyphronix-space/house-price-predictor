@@ -10,7 +10,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import './Account.css'
 
 const TABS = ['General', 'Appearance', 'Notifications', 'Security', 'Privacy', 'Account']
-const THEME_OPTIONS = ['system', 'light', 'dark']
+const THEME_OPTIONS = ['light', 'dark']
 
 export default function Settings() {
   const [tab, setTab] = useState('General')
@@ -103,11 +103,11 @@ function AppearanceTab() {
               className={`account-pill ${theme === opt ? 'is-active' : ''}`}
               onClick={() => setTheme(opt)}
             >
-              {opt === 'system' ? 'System' : opt === 'light' ? 'Light' : 'Dark'}
+              {opt === 'light' ? 'Light' : 'Dark'}
             </button>
           ))}
         </div>
-        <p className="account-hint">"System" follows your OS light/dark setting automatically.</p>
+        <p className="account-hint">Automatically matches your device's light/dark setting until you pick one here.</p>
       </div>
 
       <div className="hv-card account-card account-toggle-row">

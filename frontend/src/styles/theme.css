@@ -1,35 +1,51 @@
 /* ==========================================================================
-   HomeValue design system -- "Ledger": a flat, editorial, property-report
-   language. Warm paper surfaces, ink text, deep forest primary (land/value)
-   + warm clay accent (the number that matters). No blur, no floating
-   ambient decoration, no gradient text -- hierarchy comes from type,
-   spacing and a single accent color, not decoration.
+   HomeValue design system -- "Liquid Glass": frosted, translucent surfaces
+   floating over a soft vibrant gradient atmosphere, in the same visual
+   language as the rest of the portfolio (CityScope). Every surface that
+   used to be a flat, solid card is now real glass: backdrop-filter blur +
+   translucency + a light hairline border. Surfaces holding dense numeric
+   content (stat tiles, tables, the prediction result) stay on the HIGH end
+   of the opacity range (78-90%) rather than the usual 15-30% glassmorphism
+   default -- this is a financial product where a table of numbers has to
+   stay legible through the blur, not just look pretty; only genuinely
+   decorative/floating chrome (nav, modals, dropdowns, toasts) uses the
+   lighter, more transparent glass tier.
 
    Every component consumes the hv- prefixed aliases below, derived from
-   the canonical color/space/radius tokens so light, dark and reduced
+   the canonical color/space/radius/glass tokens so light, dark and reduced
    motion stay a single source of truth. Never hardcode a color or shadow
    in a component file; add or reuse a token here instead.
    ========================================================================== */
 
 :root {
   /* ---- Canonical color tokens ----
-     Apple/Samsung technique, not literal Apple colors: a near-monochrome
-     white/black/gray canvas with ONE vivid, saturated color doing the
-     brand/CTA work (buttons, brand mark, active nav, focus), deployed as
-     concentrated "moments" rather than spread flat across everything.
-     Charts get their own separate green (--hv-chart-primary) so data
-     visualization isn't fighting the brand color for the same hue. */
+     apple.com's actual palette: near-monochrome white/black/gray
+     (--color-text/#1d1d1f, --color-text-faint/#86868b are apple.com's own
+     values) plus its one vivid accent, the #0071e3 CTA/link blue, deployed
+     as concentrated "moments" (buttons, brand mark, active nav, focus)
+     rather than spread flat across everything. Warning/success/danger in
+     dark mode are Apple's real HIG system colors (#ff9f0a/#30d158/
+     #ff453a). Neutral data viz (--hv-chart-primary/secondary) uses that
+     same accent blue -- one accent color site-wide -- while true
+     positive/negative data keeps the green/red semantic colors. */
   --color-bg: #ffffff;
   --color-bg-strong: #f5f5f7;
   --color-surface: #ffffff;
   --color-surface-sunken: #f5f5f7;
-  --color-primary: #c8880c;
-  --color-primary-soft: #e6a52a;
-  --color-primary-contrast: #1a1200;
-  --color-secondary: #c8880c;
-  --color-accent: #c8880c;
-  --color-accent-soft-bg: #faf1dc;
-  --color-accent-contrast: #1a1200;
+  /* apple.com's actual site-wide CTA/link blue (every "Buy", "Learn
+     more"), not a generic blue -- this is the one color apple.com spends
+     everywhere the rest of the palette stays neutral. */
+  --color-primary: #0071e3;
+  --color-primary-soft: #42a5f5;
+  --color-primary-contrast: #ffffff;
+  --color-secondary: #0071e3;
+  --color-accent: #0071e3;
+  --color-accent-soft-bg: #e8f2fe;
+  /* Every real consumer of this token pairs it with a SOLID
+     var(--hv-accent) background (active tabs, .hv-btn-primary) never the
+     pale --color-accent-soft-bg -- so it needs to be white, matching
+     apple.com's actual white-on-blue buttons, not a dark contrast color. */
+  --color-accent-contrast: #ffffff;
   --color-success: #1a7d3a;
   --color-warning: #b25000;
   --color-danger: #d70015;
@@ -49,13 +65,17 @@
   --shadow-md: 0 3px 8px rgba(var(--shadow-color), 0.09), 0 16px 32px -8px rgba(var(--shadow-color), 0.18);
   --shadow-lg: 0 6px 16px rgba(var(--shadow-color), 0.1), 0 32px 64px -16px rgba(var(--shadow-color), 0.28);
 
-  /* Frosted glass for floating chrome ONLY -- dropdowns, popover menus,
-     the sticky nav once content scrolls under it. Never on a card sitting
-     in normal page flow (that's what made the old system read as one
-     undifferentiated blur-everywhere effect). Blur signals "this is
-     floating above other content," which is exactly the case here and
-     nowhere else. */
-  --hv-overlay-bg: rgba(255, 255, 255, 0.78);
+  /* Glass tiers. "content" = cards/tiles/tables that hold real numbers,
+     kept high-opacity so data stays legible through the blur. "chrome" =
+     nav, modals, dropdowns, toasts -- genuinely floating above other
+     content, so it can run more transparent. */
+  --hv-glass-blur: 20px;
+  --hv-glass-content-bg: rgba(255, 255, 255, 0.72);
+  --hv-glass-content-bg-strong: rgba(255, 255, 255, 0.86);
+  --hv-glass-border: rgba(255, 255, 255, 0.55);
+  --hv-glass-highlight: rgba(255, 255, 255, 0.8);
+
+  --hv-overlay-bg: rgba(255, 255, 255, 0.55);
   --hv-overlay-blur: 20px;
 
   /* Modal/dialog dismissal scrim only -- not used for decorative panels */
@@ -79,14 +99,24 @@
   --space-7: 48px;
   --space-8: 64px;
 
+  /* Apple's own site leans on one smooth decelerate curve for almost
+     everything -- entrances, hovers, reveals -- rather than switching
+     easing per interaction. --ease-out below *is* that curve; used
+     consistently is what reads as "Apple," not the exact numbers. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 0.12s;
   --duration-base: 0.18s;
   --duration-slow: 0.32s;
+  --duration-reveal: 0.6s;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  /* Was 'Newsreader' (serif, "editorial/Ledger" heritage) -- an Apple.com
+     look runs entirely on the system sans stack, never a serif. Every
+     headline in the app already reads var(--font-display), so this one
+     line reaches all of them: marketing hero, dashboard greeting, auth,
+     modals, the valuation flow, 404. */
+  --font-display: var(--font-sans);
 
   /* ---- Component aliases, derived, never redefined per-theme ---- */
   --hv-bg: var(--color-bg);
@@ -109,23 +139,28 @@
   --hv-brand: var(--color-primary);
   --hv-brand-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
 
-  /* The Apple treatment: black fading to charcoal, not a flat fill, on
-     the highest-impact elements only -- buttons, the brand mark. Inverts
-     to white-fading-to-light-gray in dark mode (see below). Never used
-     for body text or small UI. */
-  --hv-gradient-accent: linear-gradient(135deg, var(--color-primary), var(--color-primary-soft));
-  --hv-gradient-brand: linear-gradient(135deg, var(--color-primary-soft), var(--color-primary));
+  /* The actual apple.com treatment: a flat, solid fill -- no gradient.
+     apple.com's buttons are solid #0071e3, full stop; hover/active states
+     darken via filter (see .hv-btn-primary below), they don't shift hue
+     or add a second color. Keeping these as plain colors (not literal
+     gradients) means every existing background: var(--hv-gradient-*)
+     consumer gets the flat-fill look for free. */
+  --hv-gradient-accent: var(--color-primary);
+  --hv-gradient-brand: var(--color-primary);
 
   --hv-positive: var(--color-success);
   --hv-negative: var(--color-danger);
   --hv-warning: var(--color-warning);
   --hv-critical: var(--color-danger);
 
-  /* Charts/graphs get their own fixed color, independent of the
-     monochrome UI chrome (buttons, nav, brand) -- data visualization
-     reads better with real color than with flat black bars/dots. */
-  --hv-chart-primary: #148a5e;
-  --hv-chart-secondary: #5ba98b;
+  /* Charts/graphs use the same apple.com accent blue as everything else
+     -- one accent color site-wide, not a separate hue competing with it.
+     True positive/negative data (feature contributions, ROI) still uses
+     --hv-positive/--hv-negative (green/red) elsewhere; these two are for
+     neutral data (activity, distributions, scatter/residual plots) that
+     isn't inherently "good" or "bad." */
+  --hv-chart-primary: var(--color-primary);
+  --hv-chart-secondary: var(--color-primary-soft);
 
   --hv-grid: rgba(0, 0, 0, 0.08);
   --hv-axis: rgba(0, 0, 0, 0.22);
@@ -147,13 +182,16 @@
     --color-bg-strong: #000000;
     --color-surface: #1c1c1e;
     --color-surface-sunken: #161617;
-    --color-primary: #f0b429;
-    --color-primary-soft: #f7cc63;
-    --color-primary-contrast: #1a1200;
-    --color-secondary: #f0b429;
-    --color-accent: #f0b429;
-    --color-accent-soft-bg: #3a2e0f;
-    --color-accent-contrast: #1a1200;
+    /* Apple's real dark-mode systemBlue (used across iOS/macOS dark UI,
+       including white-text buttons -- unlike a lighter blue, this stays
+       comfortably readable with white text on top of it). */
+    --color-primary: #0a84ff;
+    --color-primary-soft: #409cff;
+    --color-primary-contrast: #ffffff;
+    --color-secondary: #0a84ff;
+    --color-accent: #0a84ff;
+    --color-accent-soft-bg: #0c2b4a;
+    --color-accent-contrast: #ffffff;
     --color-success: #30d158;
     --color-warning: #ff9f0a;
     --color-danger: #ff453a;
@@ -163,15 +201,19 @@
     --color-border: rgba(255, 255, 255, 0.14);
     --color-border-strong: rgba(255, 255, 255, 0.24);
     --color-muted-bg: #1c1c1e;
-    --hv-overlay-bg: rgba(28, 28, 30, 0.72);
+    --hv-overlay-bg: rgba(28, 28, 30, 0.5);
+    --hv-glass-content-bg: rgba(28, 28, 32, 0.66);
+    --hv-glass-content-bg-strong: rgba(28, 28, 32, 0.86);
+    --hv-glass-border: rgba(255, 255, 255, 0.12);
+    --hv-glass-highlight: rgba(255, 255, 255, 0.14);
 
     --shadow-color: 0, 0, 0;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 28px -10px rgba(0, 0, 0, 0.55);
     --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.4), 0 28px 56px -16px rgba(0, 0, 0, 0.65);
 
-    --hv-chart-primary: #34c98a;
-    --hv-chart-secondary: #7fd4ae;
+    --hv-chart-primary: var(--color-primary);
+    --hv-chart-secondary: var(--color-primary-soft);
 
     --hv-grid: rgba(255, 255, 255, 0.08);
     --hv-axis: rgba(255, 255, 255, 0.22);
@@ -183,13 +225,13 @@
   --color-bg-strong: #000000;
   --color-surface: #1c1c1e;
   --color-surface-sunken: #161617;
-  --color-primary: #f0b429;
-  --color-primary-soft: #f7cc63;
-  --color-primary-contrast: #1a1200;
-  --color-secondary: #f0b429;
-  --color-accent: #f0b429;
-  --color-accent-soft-bg: #3a2e0f;
-  --color-accent-contrast: #1a1200;
+  --color-primary: #0a84ff;
+  --color-primary-soft: #409cff;
+  --color-primary-contrast: #ffffff;
+  --color-secondary: #0a84ff;
+  --color-accent: #0a84ff;
+  --color-accent-soft-bg: #0c2b4a;
+  --color-accent-contrast: #ffffff;
   --color-success: #30d158;
   --color-warning: #ff9f0a;
   --color-danger: #ff453a;
@@ -199,7 +241,11 @@
   --color-border: rgba(255, 255, 255, 0.14);
   --color-border-strong: rgba(255, 255, 255, 0.24);
   --color-muted-bg: #1c1c1e;
-  --hv-overlay-bg: rgba(28, 28, 30, 0.72);
+  --hv-overlay-bg: rgba(28, 28, 30, 0.5);
+  --hv-glass-content-bg: rgba(28, 28, 32, 0.66);
+  --hv-glass-content-bg-strong: rgba(28, 28, 32, 0.86);
+  --hv-glass-border: rgba(255, 255, 255, 0.12);
+  --hv-glass-highlight: rgba(255, 255, 255, 0.14);
 
   --shadow-color: 0, 0, 0;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
@@ -214,19 +260,36 @@
    Base
    ========================================================================== */
 
-/* A static, low-contrast brand wash instead of one flat paper color --
-   this is what separates "designed" from "plain document." No blur, no
-   animation, no motion: just two soft, fixed gradients baked straight
-   into the background paint. */
+/* Flat, solid -- apple.com's actual canvas. Deliberately NOT a multi-color
+   gradient wash behind the glass: that soft-pastel-blobs-behind-frosted-
+   cards look is a generic "AI landing page" tell, and it's not how
+   apple.com itself looks either -- apple.com is stark white or black,
+   full stop, with color coming from product photography or a single flat
+   section background, never a decorative gradient. Depth here comes from
+   the glass cards' own blur/translucency/shadow against this flat field,
+   not from something colorful painted behind them. */
 body {
-  background:
-    radial-gradient(1100px 640px at 88% -12%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 60%),
-    radial-gradient(900px 700px at -10% 8%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 62%),
-    var(--hv-bg);
+  background: var(--hv-bg);
   background-attachment: fixed;
   color: var(--hv-text);
   font-family: var(--hv-font);
   transition: background-color var(--duration-slow) var(--ease-standard), color var(--duration-base) ease;
+}
+
+/* Light/dark toggle smoothness: .hv-card and a few other classes already
+   declare their own background-color/border-color transition, but most of
+   the app (plain text, icons, dividers, chart axes) has none at all -- so
+   a theme switch reads as "mostly fades, but some things snap instantly."
+   This is a low-specificity fallback (any component's own transition
+   still wins) that gives every element a shared, consistent fade instead.
+   Excludes transform/opacity so it never fights the scroll-reveal
+   animation or hover lift transforms, and prefers-reduced-motion already
+   collapses all transition-duration to ~0 via the rule at the bottom of
+   this file. */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-standard);
 }
 
 .hv-app {
@@ -246,20 +309,21 @@ body {
 }
 
 /* ==========================================================================
-   Surfaces -- real soft-shadow elevation does the work of separating a
-   card from the page; the border is just a faint edge, not the primary
-   definition (that flatter, border-led look was reading as a plain
-   bordered document instead of a designed product). .hv-card is the
+   Surfaces -- every card is real glass now: backdrop-filter blur over the
+   vibrant body gradient, kept at high opacity (see --hv-glass-content-bg)
+   so dense numeric content stays legible through it. .hv-card is the
    standard surface; .hv-glass (name kept for compatibility) is the more
    elevated "report" surface used for the prediction result and other
-   single-focus key output.
+   single-focus key output, on the stronger/more opaque glass tier.
    ========================================================================== */
 
 .hv-card {
-  background: var(--hv-bg-elevated);
-  border: 1px solid color-mix(in srgb, var(--hv-border) 55%, transparent);
+  background: var(--hv-glass-content-bg);
+  border: 1px solid var(--hv-glass-border);
   border-radius: var(--hv-radius-md);
   box-shadow: var(--hv-shadow-md);
+  backdrop-filter: blur(var(--hv-glass-blur));
+  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
   transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out),
     transform var(--duration-base) var(--ease-out), background-color var(--duration-base) ease;
 }
@@ -284,10 +348,33 @@ button.hv-card:active:not(:disabled) {
 }
 
 .hv-glass {
-  background: var(--hv-bg-elevated);
-  border: 1px solid var(--hv-border-strong);
+  background: var(--hv-glass-content-bg-strong);
+  border: 1px solid var(--hv-glass-highlight);
   border-radius: var(--hv-radius-lg);
   box-shadow: var(--hv-shadow-lg);
+  backdrop-filter: blur(var(--hv-glass-blur));
+  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
+}
+
+/* The sticky nav gains a shadow/border only once content has actually
+   scrolled under it -- flat and borderless at the very top of the page
+   (like apple.com's nav over a hero), solidifying as you scroll, via the
+   same scroll-driven-animation mechanism bound to document scroll instead
+   of element visibility. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hv-topnav-wrap {
+      box-shadow: none;
+      animation: hv-nav-solidify linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 240px;
+    }
+  }
+}
+
+@keyframes hv-nav-solidify {
+  from { box-shadow: none; }
+  to { box-shadow: var(--hv-shadow-sm); }
 }
 
 .hv-label {
@@ -342,9 +429,13 @@ button.hv-card:active:not(:disabled) {
 }
 
 .hv-btn-secondary {
-  background: var(--hv-bg-elevated);
+  background: var(--hv-glass-content-bg);
   color: var(--hv-text);
+  /* Same fix as .hv-input: a visible border regardless of the flat
+     background behind it, not one tuned for a gradient that's gone. */
   border-color: var(--hv-border-strong);
+  backdrop-filter: blur(var(--hv-glass-blur));
+  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
 }
 
 .hv-btn-secondary:hover:not(:disabled) {
@@ -394,12 +485,20 @@ button.hv-card:active:not(:disabled) {
   font-family: inherit;
   font-size: 1rem;
   color: var(--hv-text);
-  background: var(--hv-bg-elevated);
+  background: var(--hv-glass-content-bg);
+  /* --hv-glass-border (translucent white) was tuned to show up against a
+     colorful gradient backdrop. Against the flat solid apple.com-style
+     background it's now nearly invisible in both themes -- an input with
+     no visible edge just reads as bare text, not something you can type
+     into. --hv-border-strong is a real, always-visible neutral border
+     regardless of what's behind it. */
   border: 1px solid var(--hv-border-strong);
   border-radius: var(--hv-radius-sm);
   padding: 11px 14px;
   width: 100%;
   box-sizing: border-box;
+  backdrop-filter: blur(var(--hv-glass-blur));
+  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
   transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) ease,
     background-color var(--duration-base) ease;
 }
@@ -425,10 +524,10 @@ button.hv-card:active:not(:disabled) {
   margin: 0;
 }
 
-/* select's closed state is already themed via .hv-input; the open native
-   popup list is OS-rendered and only partially themeable -- Chromium and
-   Firefox both respect background/color on <option>, which is the part
-   that actually matters (the list reads as ours, not a browser default). */
+/* select's closed state is already themed via .hv-input. The open popup
+   list is OS-rendered and only partially themeable by default -- Chromium
+   and Firefox both respect background/color on <option>, so at minimum
+   the list reads as ours, not a browser default. */
 select.hv-input {
   cursor: pointer;
   background-image: linear-gradient(45deg, transparent 50%, var(--hv-text-secondary) 50%),
@@ -444,6 +543,48 @@ select.hv-input {
 select.hv-input option {
   background: var(--hv-bg-elevated);
   color: var(--hv-text);
+}
+
+/* Customizable Select API (Chromium): opts the *open* dropdown list into
+   real glass too, instead of stopping at the closed control. Browsers
+   without support just ignore this block and keep the fallback above. */
+@supports (appearance: base-select) {
+  select.hv-input {
+    appearance: base-select;
+    /* base-select renders its own native arrow -- drop the manual
+       chevron above or the two stack. */
+    background-image: none;
+    padding-right: 14px;
+  }
+  select.hv-input::picker(select) {
+    appearance: base-select;
+    margin-top: 6px;
+    padding: 6px;
+    border-radius: var(--hv-radius-md);
+    border: 1px solid var(--hv-glass-highlight);
+    background: var(--hv-glass-content-bg-strong);
+    box-shadow: var(--hv-shadow-lg);
+    backdrop-filter: blur(var(--hv-glass-blur));
+    -webkit-backdrop-filter: blur(var(--hv-glass-blur));
+  }
+  select.hv-input option {
+    padding: 9px 12px;
+    border-radius: var(--hv-radius-sm);
+    background: transparent;
+  }
+  select.hv-input option:hover,
+  select.hv-input option:focus {
+    background: var(--hv-surface);
+  }
+  select.hv-input option:checked {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+  /* The accent highlight above is enough to show the selected option --
+     drop the native checkmark glyph base-select adds on top of it. */
+  select.hv-input option::checkmark {
+    display: none;
+  }
 }
 
 :focus-visible {

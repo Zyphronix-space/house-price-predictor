@@ -4,6 +4,7 @@ import { signup } from '../../lib/auth'
 import { useAuth } from '../../lib/authContext'
 import { showToast } from '../../lib/toast'
 import { EyeIcon, EyeOffIcon } from '../icons'
+import { markOnboardingPending } from '../Onboarding'
 import AuthShell from './AuthShell'
 
 export default function Signup() {
@@ -36,6 +37,7 @@ export default function Signup() {
     try {
       const data = await signup(email, password, name.trim())
       signIn(data, true)
+      markOnboardingPending()
       showToast('Account created. Welcome aboard.', 'success')
       navigate('/dashboard', { replace: true })
     } catch (err) {

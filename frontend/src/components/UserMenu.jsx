@@ -51,6 +51,11 @@ export default function UserMenu({ user, onLogout }) {
           <Link to="/settings" className="user-menu__item" role="menuitem" onClick={() => setOpen(false)}>
             Settings
           </Link>
+          {user.is_admin && (
+            <Link to="/admin" className="user-menu__item" role="menuitem" onClick={() => setOpen(false)}>
+              Admin
+            </Link>
+          )}
           <button
             type="button"
             className="user-menu__item user-menu__item--danger"

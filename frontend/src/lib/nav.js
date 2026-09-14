@@ -19,6 +19,7 @@ export const VIEW_PATHS = {
   compare: '/compare',
   profile: '/profile',
   settings: '/settings',
+  admin: '/admin',
 }
 
 const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_PATHS).map(([key, path]) => [path, key]))

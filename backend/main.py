@@ -31,16 +31,17 @@ from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 from sqlalchemy import text
 
 import db_models
 import llm_service
 import ml_service
-from auth import get_current_user, get_optional_user, rate_limit_key
+from auth import get_current_user, get_optional_user
 from database import Base, engine, get_db, SessionLocal
+from rate_limit import limiter
+from routes_admin import router as admin_router
 from routes_auth import router as auth_router
 from routes_dashboard import router as dashboard_router
 from routes_houses import router as houses_router
@@ -67,6 +68,10 @@ def _ensure_schema() -> None:
         existing_cols = {row[1] for row in conn.execute(text("PRAGMA table_info(users)"))}
         if "display_name" not in existing_cols:
             conn.execute(text("ALTER TABLE users ADD COLUMN display_name VARCHAR"))
+        if "is_admin" not in existing_cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
+        if "deleted_at" not in existing_cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN deleted_at DATETIME"))
 
 
 def _sync_model_evaluations() -> None:
@@ -111,12 +116,29 @@ app = FastAPI(title="House Price Predictor API", lifespan=lifespan)
 
 # /predict and /parse-description are reachable by anonymous visitors (see
 # ValuationFlow.jsx's guest mode) as well as signed-in users, so they need
-# a rate limit that didn't matter while every route required a login.
-# rate_limit_key buckets signed-in callers by user id and everyone else by
-# IP, so this only bounds anonymous abuse, not normal signed-in use.
-limiter = Limiter(key_func=rate_limit_key)
+# a rate limit that didn't matter while every route required a login. The
+# Limiter instance itself lives in rate_limit.py (not here) so route files
+# can apply @limiter.limit(...) too, without importing this module.
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+# Baseline response hardening -- headers a real edge firewall/WAF would
+# also set, cheap to do at the application layer and effective regardless
+# of what (if anything) sits in front of this process: no MIME-sniffing
+# a JSON response into something executable, no embedding this API's
+# (non-existent, but defense in depth) HTML in a third-party frame, don't
+# leak the full referrer URL to third-party API calls, and don't let an
+# embedding page hand out camera/mic/geolocation "on behalf of" this origin.
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+    return response
+
 
 # Allow the React dev server (any localhost port, since Vite falls back
 # when 5173 is taken) and the deployed Vercel frontend (including preview
@@ -132,6 +154,7 @@ app.include_router(auth_router)
 app.include_router(houses_router)
 app.include_router(predictions_router)
 app.include_router(dashboard_router)
+app.include_router(admin_router)
 
 
 @app.get("/health")

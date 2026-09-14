@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { CheckIcon } from './icons'
 import './Select.css'
 
 // A themed replacement for native <select>. Browsers render the open
@@ -106,7 +107,8 @@ export default function Select({ value, onChange, options, ariaLabel, className 
               onMouseEnter={() => setActiveIndex(i)}
               onClick={() => commit(i)}
             >
-              {opt.label}
+              <span>{opt.label}</span>
+              {opt.value === value && <CheckIcon className="hv-select__check" />}
             </li>
           ))}
         </ul>

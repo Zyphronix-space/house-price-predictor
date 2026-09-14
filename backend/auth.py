@@ -67,8 +67,23 @@ def get_current_user(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in required")
     user_id = _decode_token(credentials.credentials)
     user = db.query(db_models.User).filter_by(id=user_id).first()
-    if not user:
+    if not user or user.deleted_at is not None:
+        # A still-valid JWT for an account an admin just soft-deleted
+        # shouldn't keep working until it expires -- deactivation takes
+        # effect on the caller's very next request, not up to 7 days later.
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in required")
+    return user
+
+
+def get_current_admin(
+    user: db_models.User = Depends(get_current_user),
+) -> db_models.User:
+    """Same as get_current_user, plus a 403 for anyone signed in but not an
+    admin -- distinct from the 401 get_current_user already raises for
+    "not signed in at all", so the frontend can tell "log in" from "you're
+    logged in but this isn't for you" apart."""
+    if not user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
     return user
 
 
@@ -85,7 +100,8 @@ def get_optional_user(
         user_id = _decode_token(credentials.credentials)
     except HTTPException:
         return None
-    return db.query(db_models.User).filter_by(id=user_id).first()
+    user = db.query(db_models.User).filter_by(id=user_id).first()
+    return user if user and user.deleted_at is None else None
 
 
 def rate_limit_key(request) -> str:

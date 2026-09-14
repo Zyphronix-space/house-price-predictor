@@ -59,24 +59,39 @@ export function usePolling(fetcher, intervalMs) {
   return state
 }
 
-// Cycles 'system' -> 'light' -> 'dark' -> 'system'. 'system' means no
-// explicit preference is stored, so index.css's prefers-color-scheme media
-// query decides. An explicit choice is stamped as data-theme on <html> and
-// persisted.
-const THEME_ORDER = ['system', 'light', 'dark']
+// Just light/dark -- no separate "system" option to pick. The OS
+// preference decides automatically for anyone who hasn't made an explicit
+// choice yet (initial state below, plus a live listener so it keeps
+// tracking OS changes right up until the first manual toggle); clicking
+// the toggle makes an explicit, persisted choice that then stays sticky
+// regardless of OS preference, same as any plain light/dark switch.
+const THEME_ORDER = ['light', 'dark']
+
+function osPrefersDark() {
+  return typeof window !== 'undefined' && window.matchMedia
+    ? window.matchMedia('(prefers-color-scheme: dark)').matches
+    : false
+}
 
 export function useTheme() {
-  const [theme, setThemeState] = useState(() => getStoredTheme() || 'system')
+  const [theme, setThemeState] = useState(() => getStoredTheme() || (osPrefersDark() ? 'dark' : 'light'))
 
   useEffect(() => {
-    const root = document.documentElement
-    if (theme === 'system') root.removeAttribute('data-theme')
-    else root.setAttribute('data-theme', theme)
+    document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  // No stored choice yet: keep following the OS preference live.
+  useEffect(() => {
+    if (getStoredTheme() || !window.matchMedia) return
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = (e) => setThemeState(e.matches ? 'dark' : 'light')
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   const setTheme = (next) => {
     setThemeState(next)
-    setStoredTheme(next === 'system' ? null : next)
+    setStoredTheme(next)
   }
 
   const cycleTheme = () => {

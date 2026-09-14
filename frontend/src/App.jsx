@@ -3,6 +3,7 @@ import { AuthProvider } from './lib/authContext'
 import { useSetView } from './lib/nav'
 
 import RequireAuth from './components/routing/RequireAuth'
+import RequireAdmin from './components/routing/RequireAdmin'
 import GuestOnly from './components/routing/GuestOnly'
 import AppShell from './components/routing/AppShell'
 import NotFound from './components/routing/NotFound'
@@ -29,6 +30,11 @@ import ModelHub from './components/model/ModelHub'
 import Properties from './components/properties/Properties'
 import Profile from './components/account/Profile'
 import Settings from './components/account/Settings'
+import AdminShell from './components/admin/AdminShell'
+import AdminOverview from './components/admin/AdminOverview'
+import AdminUsersPage from './components/admin/AdminUsersPage'
+import AdminPropertiesPage from './components/admin/AdminPropertiesPage'
+import AdminPredictionsPage from './components/admin/AdminPredictionsPage'
 
 // Every existing page component below already accepts a `setView(key)`
 // prop (from the pre-router version of this app, where navigation was
@@ -94,6 +100,19 @@ function App() {
             <Route path="/compare" element={<CompareRoute />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
+          </Route>
+
+          {/* The admin panel is deliberately NOT nested under <AppShell> --
+              it owns the whole viewport with its own sidebar/shell
+              (AdminShell) instead of sitting inside the customer-facing
+              nav + footer. RequireAuth still gates it first (so an
+              anonymous visitor is sent to /login, not straight to a 403
+              feel), then RequireAdmin. */}
+          <Route element={<RequireAuth><RequireAdmin><AdminShell /></RequireAdmin></RequireAuth>}>
+            <Route path="/admin" element={<AdminOverview />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/properties" element={<AdminPropertiesPage />} />
+            <Route path="/admin/predictions" element={<AdminPredictionsPage />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

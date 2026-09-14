@@ -123,6 +123,19 @@ export const api = {
   updateProfile: (payload) => request('/auth/me', { method: 'PATCH', ...jsonBody(payload) }),
   changePassword: (payload) => request('/auth/change-password', { method: 'POST', ...jsonBody(payload) }),
   deleteAccount: () => request('/auth/me', { method: 'DELETE' }),
+
+  admin: {
+    stats: () => request('/admin/stats'),
+    users: () => request('/admin/users'),
+    updateUser: (id, payload) => request(`/admin/users/${id}`, { method: 'PATCH', ...jsonBody(payload) }),
+    deleteUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE' }),
+    restoreUser: (id) => request(`/admin/users/${id}/restore`, { method: 'POST' }),
+    houses: () => request('/admin/houses'),
+    updateHouse: (id, payload) => request(`/admin/houses/${id}`, { method: 'PATCH', ...jsonBody(payload) }),
+    deleteHouse: (id) => request(`/admin/houses/${id}`, { method: 'DELETE' }),
+    predictions: () => request('/admin/predictions'),
+    deletePrediction: (id) => request(`/admin/predictions/${id}`, { method: 'DELETE' }),
+  },
 }
 
 export { ApiError, API_URL }

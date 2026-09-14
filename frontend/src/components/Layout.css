@@ -1,19 +1,29 @@
 .hv-topnav-wrap {
   position: sticky;
-  top: 0;
+  top: 14px;
   z-index: 40;
-  /* Floating above scrolling content is exactly the case blur is for. */
+  /* A detached, floating bar (not a flush edge-to-edge strip) -- inset
+     from the top and sides with its own rounded corners, border and
+     shadow all the way around instead of just a bottom hairline.
+     Floating above scrolling content is exactly the case blur is for. */
+  max-width: calc(1180px + 32px);
+  margin: 0 auto;
+  padding: 0 16px;
   background: var(--hv-overlay-bg);
   backdrop-filter: blur(var(--hv-overlay-blur)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--hv-overlay-blur)) saturate(160%);
-  border-bottom: 1px solid var(--hv-border);
+  border: 1px solid var(--hv-border);
+  border-radius: var(--hv-radius-lg);
+  box-shadow: var(--hv-shadow-md);
 }
 
 .hv-topnav {
   display: flex;
   align-items: center;
   gap: 28px;
-  padding: 14px 24px;
+  /* Horizontal inset now comes from .hv-topnav-wrap's own padding (it's a
+     floating bar with its own edges) -- just vertical padding here. */
+  padding: 14px 0;
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -130,7 +140,7 @@
 }
 
 :root[data-density='compact'] .hv-topnav {
-  padding: 9px 16px;
+  padding: 9px 0;
   gap: 20px;
 }
 
@@ -219,8 +229,14 @@
 }
 
 @media (max-width: 860px) {
+  .hv-topnav-wrap {
+    top: 8px;
+    padding: 0 12px;
+    border-radius: var(--hv-radius-md);
+  }
+
   .hv-topnav {
-    padding: 12px 16px;
+    padding: 10px 0;
   }
 
   .hv-topnav__links {
@@ -295,4 +311,125 @@
 @keyframes hv-sheet-in-mobile {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Full-bleed band, not a floating inset card -- a real site footer runs
+   edge to edge with its own solid surface, the way the nav is deliberately
+   the opposite (detached, rounded, floating above content). */
+.hv-app-footer {
+  width: 100%;
+  margin-top: var(--space-7);
+  background: var(--hv-bg-elevated);
+  border-top: 1px solid var(--hv-border);
+  color: var(--hv-text-secondary);
+  font-size: 0.9rem;
+}
+
+.hv-app-footer__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-4);
+}
+
+.hv-app-footer__grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: var(--space-5);
+}
+
+.hv-app-footer__about {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: var(--space-4);
+}
+
+.hv-app-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hv-app-footer__brand .hv-brand__mark {
+  width: 34px;
+  height: 34px;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.hv-app-footer__brand-name {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--hv-text);
+}
+
+.hv-app-footer__eyebrow {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hv-text-tertiary);
+  margin-top: 2px;
+}
+
+.hv-app-footer__tagline {
+  line-height: 1.55;
+  margin: 0;
+}
+
+.hv-app-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.hv-app-footer__heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hv-text);
+  margin: 0 0 2px;
+}
+
+.hv-app-footer__col a {
+  color: var(--hv-text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-base) ease;
+}
+
+.hv-app-footer__col a:hover {
+  color: var(--hv-accent);
+}
+
+.hv-app-footer__bottom {
+  border-top: 1px solid var(--hv-border);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+}
+
+.hv-app-footer__copy {
+  font-size: 0.82rem;
+  color: var(--hv-text-tertiary);
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .hv-app-footer__grid {
+    grid-template-columns: 1fr 1fr;
+    row-gap: var(--space-5);
+  }
+  .hv-app-footer__about {
+    grid-column: 1 / -1;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hv-app-footer__grid {
+    grid-template-columns: 1fr;
+  }
 }

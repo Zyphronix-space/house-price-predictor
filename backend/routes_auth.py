@@ -11,7 +11,7 @@ deployment (which would drop reset_token from the response and email it).
 import secrets
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 import db_models
@@ -28,14 +28,21 @@ from auth_models import (
     UserOut,
 )
 from database import get_db
+from rate_limit import limiter
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+# These are the classic brute-force/credential-stuffing/signup-spam
+# targets, and unlike /predict they're not behind a login -- nobody has a
+# token yet, so rate_limit_key's per-user bucketing falls through to its
+# per-IP fallback for every caller here, which is exactly what's wanted.
 
 RESET_TOKEN_LIFETIME = timedelta(minutes=30)
 
 
 @router.post("/signup", response_model=TokenOut)
-def signup(payload: SignupIn, db: Session = Depends(get_db)):
+@limiter.limit("10/hour")
+def signup(request: Request, payload: SignupIn, db: Session = Depends(get_db)):
     existing = db.query(db_models.User).filter_by(email=payload.email.lower()).first()
     if existing:
         raise HTTPException(status_code=400, detail="An account with this email already exists")
@@ -55,9 +62,16 @@ def signup(payload: SignupIn, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenOut)
-def login(payload: LoginIn, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def login(request: Request, payload: LoginIn, db: Session = Depends(get_db)):
     user = db.query(db_models.User).filter_by(email=payload.email.lower()).first()
     if not user or not verify_password(payload.password, user.password_hash, user.password_salt):
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
+    if user.deleted_at is not None:
+        # Same message as a wrong password -- a deactivated account isn't
+        # distinguishable from "doesn't exist" to whoever's trying to log
+        # into it, same reasoning as forgot-password's account enumeration
+        # guard above.
         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     return TokenOut(access_token=create_access_token(user.id), user=UserOut.model_validate(user))
@@ -93,7 +107,9 @@ def delete_account(
 
 
 @router.post("/change-password", status_code=204)
+@limiter.limit("10/hour")
 def change_password(
+    request: Request,
     payload: ChangePasswordIn,
     user: db_models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -108,7 +124,8 @@ def change_password(
 
 
 @router.post("/forgot-password", response_model=ForgotPasswordOut)
-def forgot_password(payload: ForgotPasswordIn, db: Session = Depends(get_db)):
+@limiter.limit("5/hour")
+def forgot_password(request: Request, payload: ForgotPasswordIn, db: Session = Depends(get_db)):
     generic_message = "If an account exists for that email, a reset link has been generated."
     user = db.query(db_models.User).filter_by(email=payload.email.lower()).first()
     if not user:
@@ -133,7 +150,8 @@ def forgot_password(payload: ForgotPasswordIn, db: Session = Depends(get_db)):
 
 
 @router.post("/reset-password", status_code=204)
-def reset_password(payload: ResetPasswordIn, db: Session = Depends(get_db)):
+@limiter.limit("10/hour")
+def reset_password(request: Request, payload: ResetPasswordIn, db: Session = Depends(get_db)):
     row = db.query(db_models.PasswordResetToken).filter_by(token=payload.token).first()
     now = datetime.now(timezone.utc)
     if not row or row.used_at is not None or row.expires_at.replace(tzinfo=timezone.utc) < now:

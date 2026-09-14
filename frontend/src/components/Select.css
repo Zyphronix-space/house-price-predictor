@@ -47,20 +47,37 @@
 }
 
 .hv-select__option {
-  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
   border-radius: var(--radius-xs);
   font-size: 0.94rem;
   color: var(--hv-text);
   cursor: pointer;
   white-space: nowrap;
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.hv-select__option + .hv-select__option {
+  margin-top: 1px;
 }
 
 .hv-select__option.is-active {
-  background: var(--hv-surface);
+  background: var(--hv-accent-soft);
 }
 
 .hv-select__option.is-selected {
   font-weight: 650;
+  color: var(--hv-accent-strong);
+}
+
+.hv-select__check {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--hv-accent);
 }
 
 @keyframes hv-select-in {

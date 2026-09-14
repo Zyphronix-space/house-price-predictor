@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import SystemStatus from './SystemStatus'
 import ToastHost from './ToastHost'
 import NotificationCenter from './NotificationCenter'
 import UserMenu from './UserMenu'
+import { SunIcon, MoonIcon } from './icons'
 import { useTheme } from '../lib/hooks'
 import './Layout.css'
 import './UserMenu.css'
@@ -28,12 +28,15 @@ const INSIGHT_TABS = [
   { key: 'model', label: 'Model performance', desc: 'Comparison, cross-validation, errors' },
 ]
 
-const THEME_ICON = { system: '◐', light: '☀', dark: '☾' }
+const THEME_ICON = { light: SunIcon, dark: MoonIcon }
 
 export default function Layout({ view, setView, children, user, onLogout }) {
   const { theme, cycleTheme } = useTheme()
   const [moreOpen, setMoreOpen] = useState(false)
   const isInsightView = INSIGHT_TABS.some((t) => t.key === view)
+  // Fall back to SunIcon for a stale/invalid stored theme value instead
+  // of crashing the whole layout (THEME_ICON[theme] undefined).
+  const ThemeIcon = THEME_ICON[theme] || SunIcon
 
   const go = (key) => {
     setView(key)
@@ -86,7 +89,6 @@ export default function Layout({ view, setView, children, user, onLogout }) {
           )}
 
           <div className="hv-topnav__meta">
-            {user && <SystemStatus compact />}
             <button
               type="button"
               className="hv-theme-toggle"
@@ -94,7 +96,7 @@ export default function Layout({ view, setView, children, user, onLogout }) {
               aria-label={`Theme: ${theme}. Click to change.`}
               title={`Theme: ${theme}`}
             >
-              {THEME_ICON[theme]}
+              <ThemeIcon />
             </button>
             {user ? (
               <>
@@ -116,6 +118,63 @@ export default function Layout({ view, setView, children, user, onLogout }) {
       </header>
 
       <main className="hv-main">{children}</main>
+
+      <footer className="hv-app-footer">
+        <div className="hv-app-footer__inner">
+        <div className="hv-app-footer__grid">
+          <div className="hv-app-footer__about">
+            <div className="hv-app-footer__brand">
+              <span className="hv-brand__mark" aria-hidden="true">HV</span>
+              <div>
+                <span className="hv-app-footer__brand-name">
+                  Home<span className="hv-brand__accent">Value</span>
+                </span>
+                <span className="hv-app-footer__eyebrow">AI Real Estate Intelligence</span>
+              </div>
+            </div>
+            <p className="hv-app-footer__tagline">
+              Predict a property's value, see why, and decide with real numbers. One real trained
+              model, not a black box.
+            </p>
+          </div>
+
+          <div className="hv-app-footer__col">
+            <p className="hv-app-footer__heading">Explore</p>
+            <Link to="/predict">Predict</Link>
+            <Link to="/compare">Compare</Link>
+            <Link to="/what-if">What-If Simulator</Link>
+            <Link to="/investment">Investment Calculator</Link>
+            <Link to="/model-insights">Model Insights</Link>
+          </div>
+
+          <div className="hv-app-footer__col">
+            <p className="hv-app-footer__heading">Account</p>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/properties">Properties</Link>
+            <Link to="/history">History</Link>
+            <Link to="/settings">Settings</Link>
+          </div>
+
+          <div className="hv-app-footer__col">
+            <p className="hv-app-footer__heading">Legal &amp; Support</p>
+            <Link to="/about">About</Link>
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms and Conditions</Link>
+            <a href="https://github.com/Zyphronix-space/house-price-predictor" target="_blank" rel="noopener">
+              Source on GitHub
+            </a>
+            <a href="mailto:stephanwasalathanthrige@gmail.com">Contact</a>
+          </div>
+        </div>
+
+        <div className="hv-app-footer__bottom">
+          <p className="hv-app-footer__copy">
+            &copy; {new Date().getFullYear()} HomeValue. Not a licensed appraisal service.
+          </p>
+        </div>
+        </div>
+      </footer>
+
       <ToastHost />
 
       {user && moreOpen && (

@@ -1,10 +1,11 @@
+import { useState } from 'react'
 import { api } from '../lib/api'
 import { useAsync } from '../lib/hooks'
 import { useAuth } from '../lib/authContext'
 import { getComparison } from '../lib/storage'
-import SystemStatus from './SystemStatus'
 import ActivityChart from './dashboard/ActivityChart'
 import PredictionDistributionChart from './dashboard/PredictionDistributionChart'
+import Onboarding, { shouldShowOnboarding } from './Onboarding'
 import './Dashboard.css'
 
 const fmtUsd = (v) => `$${Math.round(v).toLocaleString()}`
@@ -30,6 +31,10 @@ export default function Dashboard({ setView }) {
   const { user } = useAuth()
   const { data: summary } = useAsync(() => api.dashboardSummary(), [])
   const { data: predictionsRes } = useAsync(() => api.predictions.list(), [])
+  // Lazy init reads localStorage once, synchronously, before first paint --
+  // avoids a flash where the dashboard renders first and the tour pops in
+  // a beat later.
+  const [showOnboarding, setShowOnboarding] = useState(shouldShowOnboarding)
 
   const predictions = predictionsRes?.predictions ?? []
   const comparisonCount = getComparison().length
@@ -47,7 +52,6 @@ export default function Dashboard({ setView }) {
           <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
             Start a valuation
           </button>
-          <SystemStatus />
         </div>
       </div>
 
@@ -148,6 +152,8 @@ export default function Dashboard({ setView }) {
           </button>
         </div>
       </div>
+
+      <Onboarding open={showOnboarding} onDone={() => setShowOnboarding(false)} />
     </section>
   )
 }
