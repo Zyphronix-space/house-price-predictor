@@ -17,10 +17,10 @@ investment math, and track prediction history, all backed by a real
 per-user database, not local-only demo state.
 
 **Live demo:** https://house-price-predictor-three-nu.vercel.app
-(frontend on Vercel; backend on Azure App Service at
-`house-price-predictor-stephan.azurewebsites.net`, see
-[Deployment](#deployment) for redeploy instructions). Sign up with any
-email, there's no seeded account.
+(frontend and backend both on Vercel; the backend API is at
+`house-price-api-stephan.vercel.app`, see [Deployment](#deployment)).
+Sign up with any email, there's no seeded account. Accounts and saved
+properties on the demo are temporary (see Deployment).
 
 ## Project overview
 
@@ -298,13 +298,16 @@ under `frontend/`, no test runner is configured for the frontend yet.
 
 ## Deployment
 
-- **Backend**: Azure App Service (Linux, Python 3.12). SQLite lives under
-  `/home` (`DATABASE_URL=sqlite:////home/house_price.db`) because the
-  app's own code directory is extracted fresh into an ephemeral location
-  on every restart, anywhere else would silently lose data. Redeploy
-  with a zip built via Python's `zipfile` module (not PowerShell's
-  `Compress-Archive`, which writes backslash paths that break on Linux):
-  `az webapp deploy -g <rg> -n <app> --src-path backend.zip --type zip`.
+- **Backend**: a Vercel Python function (FastAPI, Fluid Compute). Copy the
+  model artifacts in first, since they're gitignored build outputs, then
+  deploy from `backend/`:
+  `mkdir -p backend/ml && cp ml/*.joblib ml/*.json backend/ml/ && cd backend && vercel --prod`.
+  Vercel's filesystem is ephemeral, so the demo runs with
+  `DATABASE_URL=sqlite:////tmp/house_price.db`: predictions and analysis
+  work fully, but accounts and saved properties reset whenever the
+  instance is recycled. Point `DATABASE_URL` at a hosted Postgres for
+  persistent data. `JWT_SECRET_KEY` and `GEMINI_API_KEY` are set as
+  Vercel environment variables.
 - **Frontend**: Vercel. `VITE_API_URL` is set as a Production environment
   variable in the Vercel project (not committed). Redeploy with
   `vercel --prod` from `frontend/`.

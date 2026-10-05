@@ -17,3 +17,9 @@ dist/
 # `python compare_models.py` (see README). Kept out of git: the Random
 # Forest model file is tens of MB and is just a build output.
 ml/*.joblib
+
+.vercel
+.env*
+
+# Copied from ml/ at deploy time (see README Deployment)
+backend/ml/
