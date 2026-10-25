@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../../lib/authContext'
-import { OverviewIcon, UsersIcon, HomeIcon, DocumentIcon, ArrowLeftIcon } from '../icons'
+import { OverviewIcon, UsersIcon, HomeIcon, DocumentIcon, ArrowLeftIcon, LogoMark } from '../icons'
 import './Admin.css'
 
 // Deliberately NOT nested in the regular <AppShell>/<Layout> -- an admin
@@ -21,7 +21,7 @@ export default function AdminShell() {
     <div className="admin-shell">
       <aside className="admin-shell__sidebar">
         <div className="admin-shell__brand">
-          <span className="hv-brand__mark" aria-hidden="true">HV</span>
+          <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
           <div>
             <span className="admin-shell__brand-name">HomeValue</span>
             <span className="admin-shell__brand-badge">Admin</span>

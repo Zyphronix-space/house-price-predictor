@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import './Auth.css'
+import { LogoMark } from '../icons'
 
 // Shared split-screen frame for every auth page (login/signup/forgot/reset).
 // Left: brand + an illustrative preview (clearly a static example, not a
@@ -38,7 +39,7 @@ export default function AuthShell({ title, tagline, children }) {
 
         <div className="hv-card auth-page__card">
           <Link to="/" className="auth-page__brand-link">
-            <span className="hv-brand__mark" aria-hidden="true">HV</span>
+            <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
             Home<span className="hv-brand__accent">Value</span>
           </Link>
           <h1 className="auth-page__headline">{title}</h1>

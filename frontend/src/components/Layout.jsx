@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import ToastHost from './ToastHost'
 import NotificationCenter from './NotificationCenter'
 import UserMenu from './UserMenu'
-import { SunIcon, MoonIcon } from './icons'
+import { SunIcon, MoonIcon, LogoMark } from './icons'
 import { useTheme } from '../lib/hooks'
 import './Layout.css'
 import './UserMenu.css'
@@ -49,14 +49,14 @@ export default function Layout({ view, setView, children, user, onLogout }) {
         <div className="hv-topnav">
           {user ? (
             <button type="button" className="hv-brand" onClick={() => go('dashboard')}>
-              <span className="hv-brand__mark" aria-hidden="true">HV</span>
+              <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
               <span className="hv-brand__word">
                 Home<span className="hv-brand__accent">Value</span>
               </span>
             </button>
           ) : (
             <Link to="/" className="hv-brand">
-              <span className="hv-brand__mark" aria-hidden="true">HV</span>
+              <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
               <span className="hv-brand__word">
                 Home<span className="hv-brand__accent">Value</span>
               </span>
@@ -124,7 +124,7 @@ export default function Layout({ view, setView, children, user, onLogout }) {
         <div className="hv-app-footer__grid">
           <div className="hv-app-footer__about">
             <div className="hv-app-footer__brand">
-              <span className="hv-brand__mark" aria-hidden="true">HV</span>
+              <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
               <div>
                 <span className="hv-app-footer__brand-name">
                   Home<span className="hv-brand__accent">Value</span>

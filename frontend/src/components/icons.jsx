@@ -121,3 +121,16 @@ export function ThemeAutoIcon(props) {
     </svg>
   )
 }
+
+// The HomeValue logo mark: a house with a rising value line inside it.
+// Drawn in currentColor so it sits on the brand-coloured .hv-brand__mark tile.
+export function LogoMark(props) {
+  return (
+    <svg {...base} strokeWidth={2} {...props}>
+      <path d="M3.5 11.5 12 4.5l8.5 7" />
+      <path d="M6 9.6V19.5h12V9.6" />
+      <path d="M8.75 16.5l2.5-2.6 1.9 1.6 2.6-3" />
+      <path d="M13.9 12.5h1.85v1.85" />
+    </svg>
+  )
+}

@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../lib/authContext'
 import './Marketing.css'
+import { LogoMark } from '../icons'
 
 export default function PublicNav() {
   const { user, authChecked } = useAuth()
@@ -9,7 +10,7 @@ export default function PublicNav() {
     <header className="hv-topnav-wrap">
       <div className="hv-topnav">
         <Link to="/" className="hv-brand">
-          <span className="hv-brand__mark" aria-hidden="true">HV</span>
+          <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
           <span className="hv-brand__word">
             Home<span className="hv-brand__accent">Value</span>
           </span>
