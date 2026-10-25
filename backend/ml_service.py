@@ -14,8 +14,8 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
 _here = Path(__file__).resolve().parent
-# Local dev: backend/ with a sibling ../ml/. Azure zip deploy flattens the
-# backend to the app root with ml/ copied alongside it, so fall back to that.
+# Local dev: backend/ with a sibling ../ml/. The Vercel deploy runs from
+# backend/ alone, with the model artifacts copied into backend/ml/ first.
 ML_DIR = _here.parent / "ml" if (_here.parent / "ml").exists() else _here / "ml"
 
 FEATURE_ORDER = [

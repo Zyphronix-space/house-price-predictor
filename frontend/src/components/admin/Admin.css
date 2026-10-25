@@ -115,7 +115,7 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 2px 7px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
   background: var(--hv-accent-soft);
   color: var(--hv-accent-strong);
 }

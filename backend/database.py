@@ -2,12 +2,10 @@
 SQLite persistence for user accounts, saved properties, predictions, and
 model evaluation snapshots.
 
-The path is overridable via the DATABASE_URL env var. This matters on
-platforms like Azure App Service, where the app's own code directory is
-extracted fresh into an ephemeral location on every restart, a relative
-path there would silently lose all data on restart. Set DATABASE_URL to a
-file under /home (Azure's persistent, network-mounted storage) in that
-environment.
+The path is overridable via the DATABASE_URL env var. On Vercel the code
+directory is read-only and the filesystem is ephemeral, so the deployment
+points DATABASE_URL at a SQLite file under /tmp: accounts and saved data
+reset whenever the instance is recycled (see README, Deployment).
 """
 
 import os

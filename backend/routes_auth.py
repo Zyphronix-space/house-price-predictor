@@ -1,13 +1,14 @@
 """Sign-up / sign-in / account routes.
 
-Forgot/reset password runs in "demo mode": no email service is configured
-for this project, so instead of emailing the reset link, /auth/forgot-password
-returns the token directly in the response (only when the account exists,
-and clearly flagged demo_mode=true). It's still a real, single-use, expiring
-token validated server-side -- just delivered differently than a production
-deployment (which would drop reset_token from the response and email it).
+No email service is configured for this project, so a reset link has no
+safe delivery channel. Returning the token in the HTTP response ("demo
+mode") lets anyone who knows an account's email take that account over, so
+it is OFF unless PASSWORD_RESET_DEMO_MODE=true is set explicitly (local
+development and tests only). With it off, /auth/forgot-password gives the
+same response for every email and creates no token.
 """
 
+import os
 import secrets
 from datetime import datetime, timedelta, timezone
 
@@ -123,9 +124,23 @@ def change_password(
     db.commit()
 
 
+RESET_UNAVAILABLE_MESSAGE = (
+    "Password reset by email isn't available on this deployment. "
+    "Contact the site owner to recover your account."
+)
+
+
+def _reset_demo_mode_enabled() -> bool:
+    # Read per request so tests can toggle it; never enable in production.
+    return os.environ.get("PASSWORD_RESET_DEMO_MODE", "").strip().lower() in {"1", "true", "yes"}
+
+
 @router.post("/forgot-password", response_model=ForgotPasswordOut)
 @limiter.limit("5/hour")
 def forgot_password(request: Request, payload: ForgotPasswordIn, db: Session = Depends(get_db)):
+    if not _reset_demo_mode_enabled():
+        return ForgotPasswordOut(demo_mode=False, message=RESET_UNAVAILABLE_MESSAGE)
+
     generic_message = "If an account exists for that email, a reset link has been generated."
     user = db.query(db_models.User).filter_by(email=payload.email.lower()).first()
     if not user:

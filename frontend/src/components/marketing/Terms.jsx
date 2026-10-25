@@ -7,7 +7,7 @@ export default function Terms() {
         <p className="marketing-hero__eyebrow">Terms and Conditions</p>
         <h1 className="marketing-hero__headline">The rules for using HomeValue.</h1>
         <p className="marketing-hero__sub">
-          Last updated: September 2026. Please read these terms before creating an account or using
+          Last updated: October 2026. Please read these terms before creating an account or using
           the app.
         </p>
       </section>
@@ -64,8 +64,8 @@ export default function Terms() {
       <section className="hv-card marketing-about-block">
         <p className="hv-label">Third-party services</p>
         <p className="marketing-about-copy">
-          The app relies on third-party infrastructure, including Microsoft Azure, Vercel, Google
-          Fonts, and, for the optional free-text description feature, Google's Gemini API. Their
+          The app relies on third-party infrastructure, including Vercel, Google Fonts,
+          and, for the optional free-text description feature, Google's Gemini API. Their
           availability and performance are outside the operator's control.
         </p>
       </section>

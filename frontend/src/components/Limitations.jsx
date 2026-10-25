@@ -4,8 +4,8 @@ export default function Limitations() {
   return (
     <details className="hv-card limitations">
       <summary className="limitations__summary">
-        <span className="hv-label">About this estimate</span>
-        <span className="limitations__chevron" aria-hidden="true">⌄</span>
+        <span className="limitations__title">Model limitations</span>
+        <span className="limitations__chevron" aria-hidden="true" />
       </summary>
       <ul className="limitations__list">
         <li>The model is trained on the public California Housing dataset, not live listings.</li>

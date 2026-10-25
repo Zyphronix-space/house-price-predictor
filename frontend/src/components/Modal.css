@@ -13,8 +13,6 @@
   inset: 0;
   border: none;
   background: var(--scrim);
-  backdrop-filter: blur(var(--scrim-blur));
-  -webkit-backdrop-filter: blur(var(--scrim-blur));
   cursor: pointer;
   animation: modal-backdrop-in var(--duration-base) var(--ease-out);
 }
@@ -51,7 +49,7 @@
   color: var(--hv-text-secondary);
   cursor: pointer;
   padding: 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   transition: background-color var(--duration-base) ease, color var(--duration-base) ease;
 }
 

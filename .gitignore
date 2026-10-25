@@ -23,3 +23,6 @@ ml/*.joblib
 
 # Copied from ml/ at deploy time (see README Deployment)
 backend/ml/
+
+# Placeholder-only templates are safe to commit.
+!.env.example

@@ -5,68 +5,70 @@ export const FEATURE_ORDER = [
 
 // Field groups shown as sections on a single page (not a multi-step
 // wizard) -- with only 8 fields total, paginating them cost more clicks
-// than it saved in clarity.
+// than it saved in clarity. Every field is a statistic for a census block
+// group (a neighbourhood-sized area), not a description of one house, and
+// the labels say so.
 export const SECTIONS = [
-  { key: 'property', title: 'Property basics', fields: ['MedInc', 'HouseAge'] },
-  { key: 'home', title: 'Home size', fields: ['AveRooms', 'AveBedrms'] },
-  { key: 'neighborhood', title: 'Neighborhood', fields: ['Population', 'AveOccup'] },
+  { key: 'economics', title: 'Income and housing stock', fields: ['MedInc', 'HouseAge'] },
+  { key: 'home', title: 'Dwelling size', fields: ['AveRooms', 'AveBedrms'] },
+  { key: 'neighborhood', title: 'Population', fields: ['Population', 'AveOccup'] },
   { key: 'location', title: 'Location', fields: ['Latitude', 'Longitude'] },
 ]
 
 export const FIELD_META = {
   MedInc: {
-    label: 'Median Income',
-    unit: '$10k / household',
-    explanation: 'Median household income for the surrounding block group.',
+    label: 'Median household income',
+    unit: '× $10,000',
+    explanation: 'Block group median, in tens of thousands of 1990 dollars (8.3 = $83,000).',
     placeholder: 'e.g. 8.3',
     example: 8.3,
   },
   HouseAge: {
-    label: 'House Age',
+    label: 'Median house age',
     unit: 'years',
-    explanation: 'Median age of the houses in the block group.',
+    explanation: 'Median age of the homes in the block group.',
     placeholder: 'e.g. 41',
     example: 41,
   },
   AveRooms: {
-    label: 'Average Rooms',
-    unit: 'rooms / household',
+    label: 'Rooms per household',
+    unit: 'rooms',
     explanation: 'Average number of rooms per household.',
     placeholder: 'e.g. 6.98',
     example: 6.98,
   },
   AveBedrms: {
-    label: 'Average Bedrooms',
-    unit: 'bedrooms / household',
+    label: 'Bedrooms per household',
+    unit: 'bedrooms',
     explanation: 'Average number of bedrooms per household.',
     placeholder: 'e.g. 1.02',
     example: 1.02,
   },
   Population: {
-    label: 'Population',
+    label: 'Block group population',
     unit: 'people',
-    explanation: 'Total population of the block group.',
+    explanation: 'Total number of residents in the block group.',
     placeholder: 'e.g. 322',
     example: 322,
   },
   AveOccup: {
-    label: 'Average Occupancy',
-    unit: 'people / household',
-    explanation: 'Average number of people per household.',
+    label: 'People per household',
+    unit: 'people',
+    explanation: 'Average household size.',
     placeholder: 'e.g. 2.5',
     example: 2.5,
   },
   Latitude: {
     label: 'Latitude',
-    unit: 'degrees',
-    explanation: 'North-south coordinate of the block group.',
+    unit: '°N',
+    explanation: 'North-south position of the block group.',
     placeholder: 'e.g. 37.88',
     example: 37.88,
   },
   Longitude: {
     label: 'Longitude',
-    unit: 'degrees',
-    explanation: 'East-west coordinate of the block group.',
+    unit: '°',
+    explanation: 'East-west position; negative in California.',
     placeholder: 'e.g. -122.23',
     example: -122.23,
   },

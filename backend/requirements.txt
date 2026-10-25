@@ -1,8 +1,10 @@
 fastapi
 uvicorn[standard]
-scikit-learn
-joblib
-numpy
+# Pinned to the versions that produced ml/*.joblib: pickled scikit-learn
+# models are not guaranteed to load or predict identically across versions.
+scikit-learn==1.9.0
+joblib==1.6.0
+numpy==2.5.3
 google-genai
 python-dotenv
 sqlalchemy

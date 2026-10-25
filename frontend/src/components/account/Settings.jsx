@@ -8,6 +8,7 @@ import { downloadJson } from '../../lib/exportHistory'
 import { showToast } from '../../lib/toast'
 import ConfirmDialog from '../ConfirmDialog'
 import './Account.css'
+import { parseApiDate } from '../../lib/format'
 
 const TABS = ['General', 'Appearance', 'Notifications', 'Security', 'Privacy', 'Account']
 const THEME_OPTIONS = ['light', 'dark']
@@ -360,7 +361,7 @@ function AccountTab({ user, signOut }) {
       <div className="hv-card account-card">
         <p className="hv-label">Member since</p>
         <p className="account-value">
-          {new Date(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+          {parseApiDate(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
       </div>
       <div className="hv-card account-card">

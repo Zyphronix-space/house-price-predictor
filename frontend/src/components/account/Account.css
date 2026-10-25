@@ -44,7 +44,7 @@
   border: 1px solid var(--hv-border);
   color: var(--hv-text-secondary);
   padding: 8px 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background-color var(--duration-base) ease, color var(--duration-base) ease, border-color var(--duration-base) ease;
 }
@@ -170,7 +170,7 @@
   border: 1px solid var(--hv-border-strong);
   color: var(--hv-text-secondary);
   padding: 8px 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
   cursor: pointer;
   transition: background-color var(--duration-base) ease, color var(--duration-base) ease;
 }

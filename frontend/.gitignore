@@ -25,3 +25,6 @@ dist-ssr
 
 .vercel
 .env*
+
+# Placeholder-only templates are safe to commit.
+!.env.example

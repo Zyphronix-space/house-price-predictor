@@ -27,7 +27,13 @@ from sqlalchemy.orm import Session
 import db_models
 from database import get_db
 
-SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-only-insecure-secret-change-me")
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "").strip()
+if not SECRET_KEY:
+    # The fallback below is public (it is in this repository), so any token
+    # signed with it can be forged. Refuse to run that way on Vercel.
+    if os.environ.get("VERCEL"):
+        raise RuntimeError("JWT_SECRET_KEY must be set for deployed environments")
+    SECRET_KEY = "dev-only-insecure-secret-change-me"
 ALGORITHM = "HS256"
 TOKEN_LIFETIME = timedelta(days=7)
 PBKDF2_ITERATIONS = 260_000

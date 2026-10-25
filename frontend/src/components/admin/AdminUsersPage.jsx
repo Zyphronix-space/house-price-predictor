@@ -6,8 +6,8 @@ import { showToast } from '../../lib/toast'
 import ConfirmDialog from '../ConfirmDialog'
 import Modal from '../Modal'
 import './Admin.css'
+import { formatDate as fmtDate } from '../../lib/format'
 
-const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 
 export default function AdminUsersPage() {
   const { user: me } = useAuth()

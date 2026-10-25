@@ -1,93 +1,74 @@
 /* ==========================================================================
-   HomeValue design system -- "Liquid Glass": frosted, translucent surfaces
-   floating over a soft vibrant gradient atmosphere, in the same visual
-   language as the rest of the portfolio (CityScope). Every surface that
-   used to be a flat, solid card is now real glass: backdrop-filter blur +
-   translucency + a light hairline border. Surfaces holding dense numeric
-   content (stat tiles, tables, the prediction result) stay on the HIGH end
-   of the opacity range (78-90%) rather than the usual 15-30% glassmorphism
-   default -- this is a financial product where a table of numbers has to
-   stay legible through the blur, not just look pretty; only genuinely
-   decorative/floating chrome (nav, modals, dropdowns, toasts) uses the
-   lighter, more transparent glass tier.
+   HomeValue design system -- "Ledger": an editorial property-analytics
+   look. Warm off-white paper, white working surfaces separated by thin
+   rules rather than floating cards, one muted forest-green accent spent
+   only where it means something (primary action, active route, focus,
+   the estimate itself), and tabular numerals everywhere a price appears.
+
+   No glass, no gradients, no glow. Depth comes from hairline borders and
+   the occasional low shadow on things that genuinely float (menus,
+   dialogs, toasts).
 
    Every component consumes the hv- prefixed aliases below, derived from
-   the canonical color/space/radius/glass tokens so light, dark and reduced
+   the canonical color/space/radius tokens, so light, dark and reduced
    motion stay a single source of truth. Never hardcode a color or shadow
    in a component file; add or reuse a token here instead.
+
+   Some token names (--hv-glass-*, --hv-gradient-*, --hv-overlay-blur)
+   predate this system. They are kept as flat aliases so existing
+   component CSS keeps resolving, but they no longer produce translucency,
+   blur or gradients.
    ========================================================================== */
 
 :root {
-  /* ---- Canonical color tokens ----
-     apple.com's actual palette: near-monochrome white/black/gray
-     (--color-text/#1d1d1f, --color-text-faint/#86868b are apple.com's own
-     values) plus its one vivid accent, the #0071e3 CTA/link blue, deployed
-     as concentrated "moments" (buttons, brand mark, active nav, focus)
-     rather than spread flat across everything. Warning/success/danger in
-     dark mode are Apple's real HIG system colors (#ff9f0a/#30d158/
-     #ff453a). Neutral data viz (--hv-chart-primary/secondary) uses that
-     same accent blue -- one accent color site-wide -- while true
-     positive/negative data keeps the green/red semantic colors. */
-  --color-bg: #ffffff;
-  --color-bg-strong: #f5f5f7;
+  /* ---- Canonical color tokens ---- */
+  --color-bg: #f7f7f4;
+  --color-bg-strong: #efefea;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f5f5f7;
-  /* apple.com's actual site-wide CTA/link blue (every "Buy", "Learn
-     more"), not a generic blue -- this is the one color apple.com spends
-     everywhere the rest of the palette stays neutral. */
-  --color-primary: #0071e3;
-  --color-primary-soft: #42a5f5;
+  --color-surface-sunken: #f2f2ee;
+  --color-primary: #28745b;
+  --color-primary-soft: #7fae9c;
   --color-primary-contrast: #ffffff;
-  --color-secondary: #0071e3;
-  --color-accent: #0071e3;
-  --color-accent-soft-bg: #e8f2fe;
-  /* Every real consumer of this token pairs it with a SOLID
-     var(--hv-accent) background (active tabs, .hv-btn-primary) never the
-     pale --color-accent-soft-bg -- so it needs to be white, matching
-     apple.com's actual white-on-blue buttons, not a dark contrast color. */
+  --color-secondary: #28745b;
+  --color-accent: #28745b;
+  --color-accent-soft-bg: #e6efea;
   --color-accent-contrast: #ffffff;
-  --color-success: #1a7d3a;
-  --color-warning: #b25000;
-  --color-danger: #d70015;
-  --color-text: #1d1d1f;
-  --color-text-muted: #6e6e73;
-  --color-text-faint: #86868b;
-  --color-border: rgba(0, 0, 0, 0.1);
-  --color-border-strong: rgba(0, 0, 0, 0.28);
-  --color-muted-bg: #f5f5f7;
+  --color-success: #2f7a4f;
+  --color-warning: #9a5b0b;
+  --color-danger: #b42318;
+  --color-text: #17212b;
+  --color-text-muted: #4f5b66;
+  --color-text-faint: #75808a;
+  --color-border: #e3e3dd;
+  --color-border-strong: #c9cac2;
+  --color-muted-bg: #f2f2ee;
 
-  /* Real, visible soft-shadow elevation (not a hairline border doing all
-     the work) -- this is what reads as "modern product" instead of "flat
-     document." Two layers each: a tight contact shadow + a broad soft
-     one, the way most contemporary UI shadows are actually built. */
-  --shadow-color: 0, 0, 0;
-  --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.07), 0 1px 1px rgba(var(--shadow-color), 0.05);
-  --shadow-md: 0 3px 8px rgba(var(--shadow-color), 0.09), 0 16px 32px -8px rgba(var(--shadow-color), 0.18);
-  --shadow-lg: 0 6px 16px rgba(var(--shadow-color), 0.1), 0 32px 64px -16px rgba(var(--shadow-color), 0.28);
+  /* Shadows are rare: menus, dialogs, toasts. Surfaces sit flat. */
+  --shadow-color: 23, 33, 43;
+  --shadow-sm: 0 1px 2px rgba(var(--shadow-color), 0.05);
+  --shadow-md: 0 1px 2px rgba(var(--shadow-color), 0.06), 0 4px 12px rgba(var(--shadow-color), 0.06);
+  --shadow-lg: 0 2px 4px rgba(var(--shadow-color), 0.06), 0 12px 32px rgba(var(--shadow-color), 0.12);
 
-  /* Glass tiers. "content" = cards/tiles/tables that hold real numbers,
-     kept high-opacity so data stays legible through the blur. "chrome" =
-     nav, modals, dropdowns, toasts -- genuinely floating above other
-     content, so it can run more transparent. */
-  --hv-glass-blur: 20px;
-  --hv-glass-content-bg: rgba(255, 255, 255, 0.72);
-  --hv-glass-content-bg-strong: rgba(255, 255, 255, 0.86);
-  --hv-glass-border: rgba(255, 255, 255, 0.55);
-  --hv-glass-highlight: rgba(255, 255, 255, 0.8);
+  /* Legacy glass tokens, now solid. */
+  --hv-glass-blur: 0px;
+  --hv-glass-content-bg: var(--color-surface);
+  --hv-glass-content-bg-strong: var(--color-surface);
+  --hv-glass-border: var(--color-border);
+  --hv-glass-highlight: var(--color-border);
 
-  --hv-overlay-bg: rgba(255, 255, 255, 0.55);
-  --hv-overlay-blur: 20px;
+  --hv-overlay-bg: var(--color-surface);
+  --hv-overlay-blur: 0px;
 
-  /* Modal/dialog dismissal scrim only -- not used for decorative panels */
-  --scrim: rgba(20, 17, 12, 0.4);
-  --scrim-blur: 3px;
+  /* Modal/dialog dismissal scrim only */
+  --scrim: rgba(23, 33, 43, 0.36);
+  --scrim-blur: 0px;
 
   /* ---- Radius / spacing / motion ---- */
-  --radius-xs: 8px;
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-xl: 30px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
   --radius-pill: 999px;
 
   --space-1: 4px;
@@ -99,23 +80,14 @@
   --space-7: 48px;
   --space-8: 64px;
 
-  /* Apple's own site leans on one smooth decelerate curve for almost
-     everything -- entrances, hovers, reveals -- rather than switching
-     easing per interaction. --ease-out below *is* that curve; used
-     consistently is what reads as "Apple," not the exact numbers. */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 0.12s;
-  --duration-base: 0.18s;
-  --duration-slow: 0.32s;
-  --duration-reveal: 0.6s;
+  --duration-base: 0.16s;
+  --duration-slow: 0.2s;
+  --duration-reveal: 0.2s;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  /* Was 'Newsreader' (serif, "editorial/Ledger" heritage) -- an Apple.com
-     look runs entirely on the system sans stack, never a serif. Every
-     headline in the app already reads var(--font-display), so this one
-     line reaches all of them: marketing hero, dashboard greeting, auth,
-     modals, the valuation flow, 404. */
   --font-display: var(--font-sans);
 
   /* ---- Component aliases, derived, never redefined per-theme ---- */
@@ -129,22 +101,18 @@
   --hv-text: var(--color-text);
   --hv-text-secondary: var(--color-text-muted);
   --hv-text-tertiary: var(--color-text-faint);
+  --hv-text-faint: var(--color-text-faint);
 
   --hv-accent: var(--color-accent);
-  --hv-accent-strong: color-mix(in srgb, var(--color-accent) 82%, black);
-  --hv-accent-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  --hv-accent-border: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  --hv-accent-strong: color-mix(in srgb, var(--color-accent) 80%, black);
+  --hv-accent-soft: var(--color-accent-soft-bg);
+  --hv-accent-border: color-mix(in srgb, var(--color-accent) 40%, transparent);
   --hv-accent-contrast: var(--color-accent-contrast);
 
   --hv-brand: var(--color-primary);
-  --hv-brand-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --hv-brand-soft: var(--color-accent-soft-bg);
 
-  /* The actual apple.com treatment: a flat, solid fill -- no gradient.
-     apple.com's buttons are solid #0071e3, full stop; hover/active states
-     darken via filter (see .hv-btn-primary below), they don't shift hue
-     or add a second color. Keeping these as plain colors (not literal
-     gradients) means every existing background: var(--hv-gradient-*)
-     consumer gets the flat-fill look for free. */
+  /* Legacy gradient tokens, now flat fills. */
   --hv-gradient-accent: var(--color-primary);
   --hv-gradient-brand: var(--color-primary);
 
@@ -153,17 +121,13 @@
   --hv-warning: var(--color-warning);
   --hv-critical: var(--color-danger);
 
-  /* Charts/graphs use the same apple.com accent blue as everything else
-     -- one accent color site-wide, not a separate hue competing with it.
-     True positive/negative data (feature contributions, ROI) still uses
-     --hv-positive/--hv-negative (green/red) elsewhere; these two are for
-     neutral data (activity, distributions, scatter/residual plots) that
-     isn't inherently "good" or "bad." */
+  /* Neutral data (activity, distributions, scatter) is drawn in the
+     accent; positive/negative contributions use the semantic pair. */
   --hv-chart-primary: var(--color-primary);
   --hv-chart-secondary: var(--color-primary-soft);
 
-  --hv-grid: rgba(0, 0, 0, 0.08);
-  --hv-axis: rgba(0, 0, 0, 0.22);
+  --hv-grid: rgba(23, 33, 43, 0.07);
+  --hv-axis: rgba(23, 33, 43, 0.28);
 
   --hv-shadow-sm: var(--shadow-sm);
   --hv-shadow-md: var(--shadow-md);
@@ -178,118 +142,81 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #000000;
-    --color-bg-strong: #000000;
-    --color-surface: #1c1c1e;
-    --color-surface-sunken: #161617;
-    /* Apple's real dark-mode systemBlue (used across iOS/macOS dark UI,
-       including white-text buttons -- unlike a lighter blue, this stays
-       comfortably readable with white text on top of it). */
-    --color-primary: #0a84ff;
-    --color-primary-soft: #409cff;
-    --color-primary-contrast: #ffffff;
-    --color-secondary: #0a84ff;
-    --color-accent: #0a84ff;
-    --color-accent-soft-bg: #0c2b4a;
-    --color-accent-contrast: #ffffff;
-    --color-success: #30d158;
-    --color-warning: #ff9f0a;
-    --color-danger: #ff453a;
-    --color-text: #f5f5f7;
-    --color-text-muted: #98989d;
-    --color-text-faint: #6e6e73;
-    --color-border: rgba(255, 255, 255, 0.14);
-    --color-border-strong: rgba(255, 255, 255, 0.24);
-    --color-muted-bg: #1c1c1e;
-    --hv-overlay-bg: rgba(28, 28, 30, 0.5);
-    --hv-glass-content-bg: rgba(28, 28, 32, 0.66);
-    --hv-glass-content-bg-strong: rgba(28, 28, 32, 0.86);
-    --hv-glass-border: rgba(255, 255, 255, 0.12);
-    --hv-glass-highlight: rgba(255, 255, 255, 0.14);
+    --color-bg: #121614;
+    --color-bg-strong: #0d100f;
+    --color-surface: #1a1f1d;
+    --color-surface-sunken: #161a18;
+    --color-primary: #5fb394;
+    --color-primary-soft: #3f7f68;
+    --color-primary-contrast: #0e1a15;
+    --color-secondary: #5fb394;
+    --color-accent: #5fb394;
+    --color-accent-soft-bg: #1f3129;
+    --color-accent-contrast: #0e1a15;
+    --color-success: #6cc08a;
+    --color-warning: #e0a650;
+    --color-danger: #f0776b;
+    --color-text: #e9ebe7;
+    --color-text-muted: #a8b0aa;
+    --color-text-faint: #7f8882;
+    --color-border: #2a312e;
+    --color-border-strong: #3c4541;
+    --color-muted-bg: #161a18;
 
     --shadow-color: 0, 0, 0;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 28px -10px rgba(0, 0, 0, 0.55);
-    --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.4), 0 28px 56px -16px rgba(0, 0, 0, 0.65);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+    --scrim: rgba(0, 0, 0, 0.55);
 
-    --hv-chart-primary: var(--color-primary);
-    --hv-chart-secondary: var(--color-primary-soft);
-
-    --hv-grid: rgba(255, 255, 255, 0.08);
-    --hv-axis: rgba(255, 255, 255, 0.22);
+    --hv-grid: rgba(255, 255, 255, 0.07);
+    --hv-axis: rgba(255, 255, 255, 0.28);
   }
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #000000;
-  --color-bg-strong: #000000;
-  --color-surface: #1c1c1e;
-  --color-surface-sunken: #161617;
-  --color-primary: #0a84ff;
-  --color-primary-soft: #409cff;
-  --color-primary-contrast: #ffffff;
-  --color-secondary: #0a84ff;
-  --color-accent: #0a84ff;
-  --color-accent-soft-bg: #0c2b4a;
-  --color-accent-contrast: #ffffff;
-  --color-success: #30d158;
-  --color-warning: #ff9f0a;
-  --color-danger: #ff453a;
-  --color-text: #f5f5f7;
-  --color-text-muted: #98989d;
-  --color-text-faint: #6e6e73;
-  --color-border: rgba(255, 255, 255, 0.14);
-  --color-border-strong: rgba(255, 255, 255, 0.24);
-  --color-muted-bg: #1c1c1e;
-  --hv-overlay-bg: rgba(28, 28, 30, 0.5);
-  --hv-glass-content-bg: rgba(28, 28, 32, 0.66);
-  --hv-glass-content-bg-strong: rgba(28, 28, 32, 0.86);
-  --hv-glass-border: rgba(255, 255, 255, 0.12);
-  --hv-glass-highlight: rgba(255, 255, 255, 0.14);
+  --color-bg: #121614;
+  --color-bg-strong: #0d100f;
+  --color-surface: #1a1f1d;
+  --color-surface-sunken: #161a18;
+  --color-primary: #5fb394;
+  --color-primary-soft: #3f7f68;
+  --color-primary-contrast: #0e1a15;
+  --color-secondary: #5fb394;
+  --color-accent: #5fb394;
+  --color-accent-soft-bg: #1f3129;
+  --color-accent-contrast: #0e1a15;
+  --color-success: #6cc08a;
+  --color-warning: #e0a650;
+  --color-danger: #f0776b;
+  --color-text: #e9ebe7;
+  --color-text-muted: #a8b0aa;
+  --color-text-faint: #7f8882;
+  --color-border: #2a312e;
+  --color-border-strong: #3c4541;
+  --color-muted-bg: #161a18;
 
   --shadow-color: 0, 0, 0;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.35), 0 16px 32px -10px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.4), 0 32px 64px -16px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+  --scrim: rgba(0, 0, 0, 0.55);
 
-  --hv-grid: rgba(255, 255, 255, 0.08);
-  --hv-axis: rgba(255, 255, 255, 0.22);
+  --hv-grid: rgba(255, 255, 255, 0.07);
+  --hv-axis: rgba(255, 255, 255, 0.28);
 }
 
 /* ==========================================================================
    Base
    ========================================================================== */
 
-/* Flat, solid -- apple.com's actual canvas. Deliberately NOT a multi-color
-   gradient wash behind the glass: that soft-pastel-blobs-behind-frosted-
-   cards look is a generic "AI landing page" tell, and it's not how
-   apple.com itself looks either -- apple.com is stark white or black,
-   full stop, with color coming from product photography or a single flat
-   section background, never a decorative gradient. Depth here comes from
-   the glass cards' own blur/translucency/shadow against this flat field,
-   not from something colorful painted behind them. */
 body {
   background: var(--hv-bg);
-  background-attachment: fixed;
   color: var(--hv-text);
   font-family: var(--hv-font);
-  transition: background-color var(--duration-slow) var(--ease-standard), color var(--duration-base) ease;
-}
-
-/* Light/dark toggle smoothness: .hv-card and a few other classes already
-   declare their own background-color/border-color transition, but most of
-   the app (plain text, icons, dividers, chart axes) has none at all -- so
-   a theme switch reads as "mostly fades, but some things snap instantly."
-   This is a low-specificity fallback (any component's own transition
-   still wins) that gives every element a shared, consistent fade instead.
-   Excludes transform/opacity so it never fights the scroll-reveal
-   animation or hover lift transforms, and prefers-reduced-motion already
-   collapses all transition-duration to ~0 via the rule at the bottom of
-   this file. */
-*, *::before, *::after {
-  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-  transition-duration: var(--duration-slow);
-  transition-timing-function: var(--ease-standard);
+  font-size: 15px;
+  line-height: 1.5;
+  font-feature-settings: 'cv11', 'ss01';
 }
 
 .hv-app {
@@ -299,88 +226,44 @@ body {
   position: relative;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 /* ==========================================================================
-   Surfaces -- every card is real glass now: backdrop-filter blur over the
-   vibrant body gradient, kept at high opacity (see --hv-glass-content-bg)
-   so dense numeric content stays legible through it. .hv-card is the
-   standard surface; .hv-glass (name kept for compatibility) is the more
-   elevated "report" surface used for the prediction result and other
-   single-focus key output, on the stronger/more opaque glass tier.
+   Surfaces. .hv-card is the standard working surface: white, hairline
+   border, no shadow. .hv-glass (name kept for compatibility) is the
+   single-focus "report" surface for the estimate; it differs only by a
+   heavier top rule, not by elevation.
    ========================================================================== */
 
 .hv-card {
-  background: var(--hv-glass-content-bg);
-  border: 1px solid var(--hv-glass-border);
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border);
   border-radius: var(--hv-radius-md);
-  box-shadow: var(--hv-shadow-md);
-  backdrop-filter: blur(var(--hv-glass-blur));
-  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
-  transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out),
-    transform var(--duration-base) var(--ease-out), background-color var(--duration-base) ease;
+  transition: border-color var(--duration-base) ease, background-color var(--duration-base) ease;
 }
 
 button.hv-card {
   font: inherit;
   text-align: inherit;
   color: inherit;
+  cursor: pointer;
 }
 
 button.hv-card:hover:not(:disabled),
 a.hv-card:hover,
 .hv-card--interactive:hover {
   border-color: var(--hv-border-strong);
-  box-shadow: var(--hv-shadow-lg);
-  transform: translateY(-3px);
-}
-
-button.hv-card:active:not(:disabled) {
-  box-shadow: var(--hv-shadow-md);
-  transform: translateY(-1px);
 }
 
 .hv-glass {
-  background: var(--hv-glass-content-bg-strong);
-  border: 1px solid var(--hv-glass-highlight);
-  border-radius: var(--hv-radius-lg);
-  box-shadow: var(--hv-shadow-lg);
-  backdrop-filter: blur(var(--hv-glass-blur));
-  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
-}
-
-/* The sticky nav gains a shadow/border only once content has actually
-   scrolled under it -- flat and borderless at the very top of the page
-   (like apple.com's nav over a hero), solidifying as you scroll, via the
-   same scroll-driven-animation mechanism bound to document scroll instead
-   of element visibility. */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .hv-topnav-wrap {
-      box-shadow: none;
-      animation: hv-nav-solidify linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 240px;
-    }
-  }
-}
-
-@keyframes hv-nav-solidify {
-  from { box-shadow: none; }
-  to { box-shadow: var(--hv-shadow-sm); }
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border);
+  border-top: 3px solid var(--hv-accent);
+  border-radius: var(--hv-radius-md);
 }
 
 .hv-label {
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--hv-text-tertiary);
 }
@@ -391,63 +274,60 @@ button.hv-card:active:not(:disabled) {
 
 .hv-btn {
   font-family: inherit;
-  font-size: 0.94rem;
+  font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.2;
   border-radius: var(--hv-radius-sm);
-  padding: 12px 22px;
+  padding: 10px 16px;
   border: 1px solid transparent;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-base) ease,
-    opacity var(--duration-fast) ease, background-color var(--duration-base) ease,
-    border-color var(--duration-base) ease, color var(--duration-base) ease;
-}
-
-.hv-btn:active:not(:disabled) {
-  transform: scale(0.98);
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
 }
 
 .hv-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-  transform: none;
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .hv-btn-primary {
-  background: var(--hv-gradient-accent);
+  background: var(--hv-accent);
   color: var(--hv-accent-contrast);
-  box-shadow: 0 1px 2px rgba(var(--shadow-color), 0.08), 0 10px 22px -8px color-mix(in srgb, var(--color-accent) 55%, transparent);
 }
 
 .hv-btn-primary:hover:not(:disabled) {
-  filter: brightness(1.06) saturate(1.05);
-  box-shadow: 0 1px 2px rgba(var(--shadow-color), 0.08), 0 16px 30px -8px color-mix(in srgb, var(--color-accent) 65%, transparent);
-  transform: translateY(-1px);
+  background: var(--hv-accent-strong);
+}
+
+.hv-btn-primary:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 70%, black);
 }
 
 .hv-btn-secondary {
-  background: var(--hv-glass-content-bg);
+  background: var(--hv-bg-elevated);
   color: var(--hv-text);
-  /* Same fix as .hv-input: a visible border regardless of the flat
-     background behind it, not one tuned for a gradient that's gone. */
   border-color: var(--hv-border-strong);
-  backdrop-filter: blur(var(--hv-glass-blur));
-  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
 }
 
 .hv-btn-secondary:hover:not(:disabled) {
-  border-color: var(--hv-accent-border);
-  color: var(--hv-accent-strong);
+  border-color: var(--hv-text-tertiary);
+  background: var(--hv-surface);
+}
+
+.hv-btn-secondary:active:not(:disabled) {
+  background: var(--color-bg-strong);
 }
 
 .hv-btn-ghost {
   background: transparent;
   color: var(--hv-text-secondary);
   border-color: transparent;
-  padding: 10px 14px;
+  padding: 10px 12px;
 }
 
 .hv-btn-ghost:hover:not(:disabled) {
@@ -455,20 +335,19 @@ button.hv-card:active:not(:disabled) {
   background: var(--hv-surface);
 }
 
-/* Loading state: dim label via opacity + inline spinner (add
-   aria-busy="true" and a <span class="hv-spinner"/> before the label) */
+/* Loading state: add aria-busy="true" and a <span class="hv-spinner"/>
+   before the label. */
 .hv-btn[aria-busy='true'] {
   cursor: progress;
-  opacity: 0.85;
 }
 
 .hv-spinner {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 2px solid currentColor;
   border-top-color: transparent;
-  opacity: 0.7;
+  opacity: 0.8;
   animation: hv-spin 0.7s linear infinite;
   flex-shrink: 0;
 }
@@ -483,34 +362,39 @@ button.hv-card:active:not(:disabled) {
 
 .hv-input {
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--hv-text);
-  background: var(--hv-glass-content-bg);
-  /* --hv-glass-border (translucent white) was tuned to show up against a
-     colorful gradient backdrop. Against the flat solid apple.com-style
-     background it's now nearly invisible in both themes -- an input with
-     no visible edge just reads as bare text, not something you can type
-     into. --hv-border-strong is a real, always-visible neutral border
-     regardless of what's behind it. */
+  background: var(--hv-bg-elevated);
   border: 1px solid var(--hv-border-strong);
   border-radius: var(--hv-radius-sm);
-  padding: 11px 14px;
+  padding: 9px 12px;
   width: 100%;
   box-sizing: border-box;
-  backdrop-filter: blur(var(--hv-glass-blur));
-  -webkit-backdrop-filter: blur(var(--hv-glass-blur));
-  transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) ease,
-    background-color var(--duration-base) ease;
+  font-variant-numeric: tabular-nums;
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
 }
 
 .hv-input:hover:not(:disabled):not(:focus) {
-  border-color: var(--hv-text-faint);
+  border-color: var(--hv-text-tertiary);
 }
 
 .hv-input:focus-visible {
   outline: none;
-  border-color: var(--color-accent);
+  border-color: var(--hv-accent);
   box-shadow: 0 0 0 3px var(--hv-accent-soft);
+}
+
+.hv-input[aria-invalid='true'] {
+  border-color: var(--hv-critical);
+}
+
+.hv-input[aria-invalid='true']:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hv-critical) 18%, transparent);
+}
+
+.hv-input:disabled {
+  background: var(--hv-surface);
+  color: var(--hv-text-tertiary);
 }
 
 .hv-input[type='number'] {
@@ -524,20 +408,16 @@ button.hv-card:active:not(:disabled) {
   margin: 0;
 }
 
-/* select's closed state is already themed via .hv-input. The open popup
-   list is OS-rendered and only partially themeable by default -- Chromium
-   and Firefox both respect background/color on <option>, so at minimum
-   the list reads as ours, not a browser default. */
 select.hv-input {
   cursor: pointer;
   background-image: linear-gradient(45deg, transparent 50%, var(--hv-text-secondary) 50%),
     linear-gradient(135deg, var(--hv-text-secondary) 50%, transparent 50%);
-  background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
   appearance: none;
   -webkit-appearance: none;
-  padding-right: 36px;
+  padding-right: 34px;
 }
 
 select.hv-input option {
@@ -545,58 +425,17 @@ select.hv-input option {
   color: var(--hv-text);
 }
 
-/* Customizable Select API (Chromium): opts the *open* dropdown list into
-   real glass too, instead of stopping at the closed control. Browsers
-   without support just ignore this block and keep the fallback above. */
-@supports (appearance: base-select) {
-  select.hv-input {
-    appearance: base-select;
-    /* base-select renders its own native arrow -- drop the manual
-       chevron above or the two stack. */
-    background-image: none;
-    padding-right: 14px;
-  }
-  select.hv-input::picker(select) {
-    appearance: base-select;
-    margin-top: 6px;
-    padding: 6px;
-    border-radius: var(--hv-radius-md);
-    border: 1px solid var(--hv-glass-highlight);
-    background: var(--hv-glass-content-bg-strong);
-    box-shadow: var(--hv-shadow-lg);
-    backdrop-filter: blur(var(--hv-glass-blur));
-    -webkit-backdrop-filter: blur(var(--hv-glass-blur));
-  }
-  select.hv-input option {
-    padding: 9px 12px;
-    border-radius: var(--hv-radius-sm);
-    background: transparent;
-  }
-  select.hv-input option:hover,
-  select.hv-input option:focus {
-    background: var(--hv-surface);
-  }
-  select.hv-input option:checked {
-    background: var(--color-accent);
-    color: var(--color-accent-contrast);
-  }
-  /* The accent highlight above is enough to show the selected option --
-     drop the native checkmark glyph base-select adds on top of it. */
-  select.hv-input option::checkmark {
-    display: none;
-  }
-}
-
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--hv-accent);
   outline-offset: 2px;
 }
 
 .hv-stat-value {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 6.4vw, 4rem);
+  font-size: clamp(2.2rem, 5vw, 3.1rem);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
   color: var(--hv-text);
   font-variant-numeric: tabular-nums;
 }
@@ -613,6 +452,7 @@ select.hv-input option {
   position: relative;
   overflow: hidden;
   background: var(--hv-surface);
+  border-radius: var(--radius-xs);
 }
 
 .hv-skeleton::after {
@@ -622,7 +462,7 @@ select.hv-input option {
   background: linear-gradient(
     100deg,
     transparent 30%,
-    color-mix(in srgb, var(--hv-text) 6%, transparent) 50%,
+    color-mix(in srgb, var(--hv-text) 5%, transparent) 50%,
     transparent 70%
   );
   background-size: 200% 100%;
@@ -634,23 +474,18 @@ select.hv-input option {
   to { background-position: -200% 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hv-skeleton::after { animation: none; }
-}
-
-/* Empty-state icon badge -- a small accent-tinted circle above the label
-   in empty states (see history/comparables/etc). */
+/* Empty-state marker above the label (history, comparables, etc). */
 .hv-empty-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
-  background: var(--hv-accent-soft);
-  border: 1px solid var(--hv-accent-border);
-  color: var(--hv-accent);
-  font-size: 1.5rem;
-  font-weight: 300;
+  background: var(--hv-surface);
+  border: 1px solid var(--hv-border);
+  color: var(--hv-text-secondary);
+  font-size: 1.2rem;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -692,9 +527,9 @@ select.hv-input option {
 }
 
 :root[data-density='compact'] .hv-btn {
-  padding: 9px 16px;
+  padding: 8px 14px;
 }
 
 :root[data-density='compact'] .hv-input {
-  padding: 8px 12px;
+  padding: 7px 10px;
 }

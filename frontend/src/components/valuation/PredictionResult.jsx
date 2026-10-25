@@ -1,11 +1,29 @@
 import { useState } from 'react'
-import AnimatedNumber from '../AnimatedNumber'
 import { api } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
+import { FEATURE_ORDER, FIELD_META } from '../../lib/fields'
+import { formatUsd } from '../../lib/format'
 import Select from '../Select'
 import './PredictionResult.css'
 
-export default function PredictionResult({ result, isGuest, onWhatIf, onSaveComparison, onSaveHistory, onReport, onNewValuation }) {
+const fmtInput = (name, v) => {
+  const n = Number(v)
+  if (name === 'MedInc') return `${formatUsd(n * 10_000)}`
+  if (name === 'Population') return Math.round(n).toLocaleString()
+  if (name === 'Latitude' || name === 'Longitude') return n.toFixed(2)
+  return Number(n.toFixed(2)).toLocaleString()
+}
+
+export default function PredictionResult({
+  result,
+  inputs,
+  stale,
+  isGuest,
+  onWhatIf,
+  onSaveComparison,
+  onSaveHistory,
+  onReport,
+}) {
   const { data: modelInfo } = useAsync(() => api.modelInfo(), [])
   const { data: housesRes } = useAsync(() => (isGuest ? Promise.resolve(null) : api.houses.list()), [isGuest])
   const [houseId, setHouseId] = useState('')
@@ -17,52 +35,79 @@ export default function PredictionResult({ result, isGuest, onWhatIf, onSaveComp
     try {
       await onSaveHistory(houseId || null)
       setSaved(true)
+    } catch {
+      // onSaveHistory already surfaced the error as a toast; keep the
+      // button enabled so the user can retry.
     } finally {
       setSaving(false)
     }
   }
 
-  return (
-    <section className="hv-glass prediction-result">
-      <p className="hv-label prediction-result__label">Model-estimated value</p>
-      <AnimatedNumber value={result.predicted_price_usd} className="hv-stat-value prediction-result__value" />
+  const range = result.estimated_range
 
-      {result.estimated_range && (
-        <p className="prediction-result__range">
-          Estimated range: ${Math.round(result.estimated_range.low_usd).toLocaleString()} – $
-          {Math.round(result.estimated_range.high_usd).toLocaleString()}
-          <span className="prediction-result__range-basis"> · {result.estimated_range.basis}</span>
+  return (
+    <section className={`hv-glass prediction-result${stale ? ' is-stale' : ''}`} aria-labelledby="prediction-result-label" aria-live="polite">
+      <p id="prediction-result-label" className="prediction-result__label">
+        Estimated median home value
+      </p>
+      <p className="hv-stat-value prediction-result__value">{formatUsd(result.predicted_price_usd)}</p>
+      <p className="prediction-result__qualifier">
+        {modelInfo?.model_name ?? 'Model'} estimate for this block group, in 1990 US dollars. Not an
+        appraisal or a sale price.
+      </p>
+
+      {stale && (
+        <p className="prediction-result__stale" role="status">
+          Inputs have changed since this estimate. Run the estimate again to update it.
         </p>
       )}
 
-      <div className="prediction-result__meta">
-        <span>
-          <span className="prediction-result__meta-label">Model</span>
-          {modelInfo?.model_name ?? '-'}
-        </span>
-        <span>
-          <span className="prediction-result__meta-label">Dataset</span>
-          {modelInfo?.dataset ?? '-'}
-        </span>
-      </div>
+      {range && (
+        <div className="prediction-result__range">
+          <div className="prediction-result__range-row">
+            <span>Typical error range</span>
+            <span className="hv-tabular">
+              {formatUsd(range.low_usd)} – {formatUsd(range.high_usd)}
+            </span>
+          </div>
+          <p className="prediction-result__range-basis">
+            The middle 80% of this model's errors on held-out test data, applied to this estimate.
+            It is an empirical range, not a statistical confidence interval.
+          </p>
+        </div>
+      )}
 
       {result.warnings?.length > 0 && (
-        <div className="prediction-result__warnings">
+        <div className="prediction-result__warnings" role="note">
           {result.warnings.map((w) => (
             <p key={w}>{w}</p>
           ))}
         </div>
       )}
 
+      {inputs && (
+        <details className="prediction-result__inputs">
+          <summary>Inputs used</summary>
+          <dl>
+            {FEATURE_ORDER.map((name) => (
+              <div key={name}>
+                <dt>{FIELD_META[name].label}</dt>
+                <dd className="hv-tabular">{fmtInput(name, inputs[name])}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
+
       {!isGuest && housesRes?.houses.length > 0 && !saved && (
         <div className="prediction-result__house-picker">
-          <span className="hv-label">Attach to a saved property (optional)</span>
+          <span className="prediction-result__picker-label">Link to a saved property (optional)</span>
           <Select
-            ariaLabel="Attach to a saved property"
+            ariaLabel="Link to a saved property"
             value={houseId}
             onChange={setHouseId}
             options={[
-              { value: '', label: 'None, save as a standalone prediction' },
+              { value: '', label: 'None' },
               ...housesRes.houses.map((h) => ({ value: String(h.id), label: h.label })),
             ]}
           />
@@ -70,24 +115,28 @@ export default function PredictionResult({ result, isGuest, onWhatIf, onSaveComp
       )}
 
       <div className="prediction-result__actions">
-        <button type="button" className="hv-btn hv-btn-primary" onClick={onWhatIf}>
-          Try What-If
-        </button>
         {!isGuest && (
-          <>
-            <button type="button" className="hv-btn hv-btn-secondary" onClick={onSaveComparison}>
-              Save to Comparison
-            </button>
-            <button type="button" className="hv-btn hv-btn-secondary" onClick={handleSaveHistory} disabled={saving || saved}>
-              {saved ? 'Saved to History' : saving ? 'Saving…' : 'Save to History'}
-            </button>
-          </>
+          <button
+            type="button"
+            className="hv-btn hv-btn-primary"
+            onClick={handleSaveHistory}
+            disabled={saving || saved || stale}
+            aria-busy={saving}
+          >
+            {saving && <span className="hv-spinner" aria-hidden="true" />}
+            {saved ? 'Saved to history' : saving ? 'Saving' : 'Save to history'}
+          </button>
         )}
-        <button type="button" className="hv-btn hv-btn-secondary" onClick={onReport}>
-          Generate Report
+        {!isGuest && (
+          <button type="button" className="hv-btn hv-btn-secondary" onClick={onSaveComparison} disabled={stale}>
+            Add to comparison
+          </button>
+        )}
+        <button type="button" className="hv-btn hv-btn-secondary" onClick={onWhatIf} disabled={stale}>
+          What-if
         </button>
-        <button type="button" className="hv-btn hv-btn-ghost" onClick={onNewValuation}>
-          New Valuation
+        <button type="button" className="hv-btn hv-btn-secondary" onClick={onReport} disabled={stale}>
+          Report
         </button>
       </div>
     </section>

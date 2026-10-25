@@ -13,8 +13,6 @@
   inset: 0;
   border: none;
   background: var(--scrim);
-  backdrop-filter: blur(var(--scrim-blur));
-  -webkit-backdrop-filter: blur(var(--scrim-blur));
   cursor: pointer;
   animation: modal-backdrop-in var(--duration-base) var(--ease-out);
 }

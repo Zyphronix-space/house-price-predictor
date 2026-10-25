@@ -1,178 +1,376 @@
-.valuation-flow {
-  padding: 32px 0 40px;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.valuation-flow__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3.4vw, 2rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 4px 0 8px;
-  color: var(--hv-text);
-}
-
-.valuation-flow__intro {
-  font-size: 0.94rem;
-  color: var(--hv-text-secondary);
-  max-width: 520px;
-  margin: 0 0 20px;
-  line-height: 1.5;
-}
-
-.valuation-flow__panel {
-  padding: 28px 28px 24px;
-}
-
-.valuation-flow__section {
-  /* min-width:0 undoes the native <fieldset> sizing quirk; .hv-card and
-     .valuation-flow__panel (both also applied) already cover its border
-     and padding at higher specificity than the UA fieldset stylesheet. */
-  min-width: 0;
-  margin: 0 0 16px;
-}
-
-.valuation-flow__section-title {
-  display: block;
-  width: 100%;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--hv-text);
-  padding: 0;
-  margin: 0 0 16px;
-}
-
-.valuation-flow__error-summary {
-  border: 1px solid color-mix(in srgb, var(--hv-critical) 40%, var(--hv-border-strong));
-  background: color-mix(in srgb, var(--hv-critical) 6%, var(--hv-bg-elevated));
-  border-radius: var(--hv-radius-md);
-  padding: 16px 18px;
-  margin: 0 0 20px;
-}
-
-.valuation-flow__error-summary-title {
-  font-weight: 650;
-  color: var(--hv-critical);
-  margin: 0 0 6px;
-}
-
-.valuation-flow__error-summary ul {
-  margin: 0;
-  padding-left: 18px;
-}
-
-.valuation-flow__error-summary a {
-  color: var(--hv-critical);
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.valuation-flow__mode-toggle {
+.vf {
   display: flex;
-  gap: 4px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.vf__header {
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--hv-border);
 }
 
-.valuation-flow__mode-btn {
-  font-family: inherit;
-  font-size: 0.88rem;
-  font-weight: 600;
+.vf__title {
+  font-size: 1.75rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.vf__lede {
+  margin-top: 6px;
+  max-width: 68ch;
+  color: var(--hv-text-secondary);
+}
+
+/* Form on the left, estimate on the right and sticky, so changing an
+   input and re-running never scrolls the result out of view. */
+.vf__workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.vf__form {
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border);
+  border-radius: var(--hv-radius-md);
+  min-width: 0;
+}
+
+.vf__modes {
+  display: flex;
+  gap: 4px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--hv-border);
+}
+
+.vf__mode {
+  position: relative;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--hv-text-secondary);
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--hv-text-tertiary);
-  padding: 8px 4px 10px;
-  margin-right: 20px;
+  padding: 12px 10px;
   cursor: pointer;
+  transition: color var(--duration-fast) ease;
 }
 
-.valuation-flow__mode-btn.is-active {
+.vf__mode::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+}
+
+.vf__mode:hover {
   color: var(--hv-text);
-  border-bottom-color: var(--hv-accent);
 }
 
-.valuation-flow__fields {
+.vf__mode.is-active {
+  color: var(--hv-text);
+  font-weight: 600;
+}
+
+.vf__mode.is-active::after {
+  background: var(--hv-accent);
+}
+
+.vf__mode:focus-visible {
+  outline-offset: -4px;
+}
+
+.vf__describe {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--hv-border);
+  background: var(--hv-surface);
+}
+
+.vf__error-summary {
+  margin: 18px 20px 0;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--hv-critical) 40%, transparent);
+  border-left-width: 3px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--hv-critical) 6%, var(--hv-bg-elevated));
+  font-size: 0.86rem;
+}
+
+.vf__error-summary:focus-visible {
+  outline-offset: 2px;
+}
+
+.vf__error-summary-title {
+  font-weight: 600;
+  color: var(--hv-critical);
+  margin-bottom: 4px;
+}
+
+.vf__error-summary ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--hv-text-secondary);
+}
+
+.vf__error-summary a {
+  color: var(--hv-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Sections are divided by rules inside one form surface, not boxed. */
+.vf__section {
+  margin: 0;
+  padding: 18px 20px 20px;
+  border: none;
+  border-top: 1px solid var(--hv-border);
+  min-width: 0;
+}
+
+.vf__modes + .vf__section,
+.vf__describe + .vf__section,
+.vf__error-summary + .vf__section {
+  border-top: none;
+}
+
+.vf__section-title {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hv-text-tertiary);
+}
+
+.vf__section-body {
+  clear: both;
+}
+
+.vf__fields {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+  align-items: start;
 }
 
-.valuation-flow__submit-row {
+.vf__section--location .vf__section-body {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.vf__section--location .vf__fields {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.vf__submit-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.valuation-flow__submit {
-  min-width: 200px;
-}
-
-@media (max-width: 520px) {
-  .valuation-flow__submit-row {
-    justify-content: stretch;
-  }
-  .valuation-flow__submit {
-    width: 100%;
-  }
-}
-
-.valuation-flow__result-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 32px 0 40px;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.valuation-flow__notice {
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--hv-positive);
-  margin: -8px 0 0;
-}
-
-.valuation-flow__footer-actions {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.valuation-flow__guest-cta {
-  text-align: center;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  border-top: 3px solid var(--hv-accent);
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--hv-border);
+  background: var(--hv-surface);
+  border-radius: 0 0 var(--hv-radius-md) var(--hv-radius-md);
 }
 
-.valuation-flow__guest-cta-title {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
+.vf__submit {
+  min-width: 160px;
+}
+
+.vf__aside {
+  position: sticky;
+  top: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: 72px;
+}
+
+.vf__placeholder {
+  border: 1px dashed var(--hv-border-strong);
+  border-radius: var(--hv-radius-md);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--hv-text-secondary);
+}
+
+.vf__placeholder-title {
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--hv-text);
-  margin: 0;
 }
 
-.valuation-flow__guest-cta-copy {
-  font-size: 0.9rem;
+.vf__placeholder-note {
+  font-size: 0.8rem;
+  color: var(--hv-text-tertiary);
+}
+
+.vf__skeleton {
+  display: block;
+}
+
+.vf__skeleton--label {
+  width: 45%;
+  height: 12px;
+}
+
+.vf__skeleton--value {
+  width: 70%;
+  height: 40px;
+  margin-bottom: 6px;
+}
+
+.vf__skeleton--line {
+  width: 100%;
+  height: 12px;
+}
+
+.vf__error {
+  border: 1px solid color-mix(in srgb, var(--hv-critical) 40%, transparent);
+  border-left-width: 3px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--hv-critical) 6%, var(--hv-bg-elevated));
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.86rem;
   color: var(--hv-text-secondary);
-  max-width: 440px;
-  margin: 0 0 10px;
-  line-height: 1.5;
 }
 
-@media (max-width: 520px) {
-  .valuation-flow__panel {
-    padding: 24px 20px;
+.vf__error-title {
+  font-weight: 600;
+  color: var(--hv-critical);
+}
+
+.vf__details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.vf__details-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.vf__panel {
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border);
+  border-radius: var(--hv-radius-md);
+  padding: 18px 20px 20px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vf__panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--hv-text);
+}
+
+.vf__next {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: -8px 0 -8px -12px;
+}
+
+.vf__guest {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  background: var(--hv-accent-soft);
+  border: 1px solid var(--hv-accent-border);
+  border-radius: var(--hv-radius-md);
+}
+
+.vf__guest-copy {
+  margin-top: 4px;
+  font-size: 0.86rem;
+  color: var(--hv-text-secondary);
+  max-width: 60ch;
+}
+
+@media (max-width: 1100px) {
+  .vf__workspace {
+    grid-template-columns: minmax(0, 1fr) 340px;
   }
-  .valuation-flow__fields {
-    grid-template-columns: 1fr;
+}
+
+@media (max-width: 1024px) {
+  .vf__workspace,
+  .vf__details-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vf__aside {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .vf__title {
+    font-size: 1.45rem;
+  }
+
+  .vf__fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .vf__section,
+  .vf__describe {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .vf__modes {
+    padding: 0 8px;
+  }
+
+  .vf__section--location .vf__section-body {
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  /* Keep the estimate action reachable on a long single-column form:
+     the submit bar sticks just above the mobile bottom nav. */
+  .vf__submit-row {
+    position: sticky;
+    bottom: calc(58px + env(safe-area-inset-bottom));
+    z-index: 5;
+    padding: 12px 16px;
+    background: var(--hv-bg-elevated);
+  }
+
+  .vf__submit {
+    flex: 1;
+  }
+
+  .vf__guest {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

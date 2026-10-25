@@ -6,6 +6,8 @@ from pathlib import Path
 # engine is created against this file, never the real house_price.db.
 os.environ.setdefault("DATABASE_URL", "sqlite:///./test_house_price.db")
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key")
+# Reset tokens are only returned in demo mode, which tests opt into.
+os.environ.setdefault("PASSWORD_RESET_DEMO_MODE", "true")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -15,6 +17,7 @@ from fastapi.testclient import TestClient
 import database
 import db_models
 import main
+from rate_limit import limiter
 
 
 @pytest.fixture(autouse=True)
@@ -23,6 +26,9 @@ def _fresh_db():
     dependence between tests."""
     db_models.Base.metadata.drop_all(bind=database.engine)
     db_models.Base.metadata.create_all(bind=database.engine)
+    # Rate-limit counters are in-memory and outlive a test; without this,
+    # later tests hit 429s from earlier tests' signups and resets.
+    limiter.reset()
     yield
 
 

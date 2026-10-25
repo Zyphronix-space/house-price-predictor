@@ -2,6 +2,7 @@ import { api, ApiError } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
 import ErrorState from '../ErrorState'
 import './ComparableProperties.css'
+import { formatUsd } from '../../lib/format'
 
 const ROWS = [
   { key: 'MedInc', title: 'Income', format: (f) => `$${Math.round(f.MedInc * 10_000).toLocaleString()}` },
@@ -28,20 +29,20 @@ function ComparablesTable({ features }) {
         <thead>
           <tr>
             <th scope="col">Similarity</th>
+            <th scope="col">Recorded value</th>
             {ROWS.map((r) => (
               <th scope="col" key={r.key}>{r.title}</th>
             ))}
-            <th scope="col">Recorded value</th>
           </tr>
         </thead>
         <tbody>
           {data.comparables.map((c, i) => (
             <tr key={i}>
               <td className="comparables__similarity">{c.similarity_pct.toFixed(0)}%</td>
+              <td className="comparables__price">{formatUsd(c.actual_price_usd)}</td>
               {ROWS.map((r) => (
                 <td key={r.key}>{r.format(c.features)}</td>
               ))}
-              <td className="comparables__price">${Math.round(c.actual_price_usd).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

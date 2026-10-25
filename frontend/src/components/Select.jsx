@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { CheckIcon } from './icons'
 import './Select.css'
 
@@ -11,8 +11,13 @@ import './Select.css'
 export default function Select({ value, onChange, options, ariaLabel, className = '' }) {
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(() => Math.max(0, options.findIndex((o) => o.value === value)))
+  // Which edge the open list aligns to: the trigger's left edge by
+  // default, flipped to its right edge when the list would overflow the
+  // viewport (e.g. a sort control at the right of a toolbar).
+  const [align, setAlign] = useState('start')
   const rootRef = useRef(null)
   const listRef = useRef(null)
+  const idBase = useId()
 
   const selectedIndex = options.findIndex((o) => o.value === value)
   const selected = options[selectedIndex] ?? options[0]
@@ -24,6 +29,13 @@ export default function Select({ value, onChange, options, ariaLabel, className 
     }
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
+  }, [open])
+
+  useLayoutEffect(() => {
+    if (!open || !listRef.current) return
+    const rect = listRef.current.getBoundingClientRect()
+    setAlign(rect.right > window.innerWidth - 8 ? 'end' : 'start')
+    return () => setAlign('start')
   }, [open])
 
   useEffect(() => {
@@ -89,25 +101,25 @@ export default function Select({ value, onChange, options, ariaLabel, className 
 
       {open && (
         <ul
-          className="hv-select__list"
+          className={`hv-select__list${align === 'end' ? ' is-align-end' : ''}`}
           role="listbox"
           tabIndex={-1}
           aria-label={ariaLabel}
-          aria-activedescendant={`hv-select-opt-${activeIndex}`}
+          aria-activedescendant={`${idBase}-opt-${activeIndex}`}
           ref={listRef}
           onKeyDown={onListKeyDown}
         >
           {options.map((opt, i) => (
             <li
               key={opt.value}
-              id={`hv-select-opt-${i}`}
+              id={`${idBase}-opt-${i}`}
               role="option"
               aria-selected={opt.value === value}
               className={`hv-select__option ${i === activeIndex ? 'is-active' : ''} ${opt.value === value ? 'is-selected' : ''}`}
               onMouseEnter={() => setActiveIndex(i)}
               onClick={() => commit(i)}
             >
-              <span>{opt.label}</span>
+              <span className="hv-select__option-label">{opt.label}</span>
               {opt.value === value && <CheckIcon className="hv-select__check" />}
             </li>
           ))}

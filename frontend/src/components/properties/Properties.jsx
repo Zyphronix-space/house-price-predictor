@@ -101,6 +101,7 @@ export default function Properties({ setView }) {
         <input
           className="hv-input properties__search"
           type="search"
+          aria-label="Search properties"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search by name or notes…"

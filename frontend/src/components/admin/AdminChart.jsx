@@ -1,6 +1,6 @@
 import '../dashboard/DashboardCharts.css'
 
-// Same visual language as dashboard/ActivityChart, but takes already
+// A daily bar chart that takes already
 // server-bucketed { date, count } rows (see routes_admin.py) instead of a
 // raw list to bucket client-side -- the admin stats endpoint aggregates
 // across every user, which isn't data client code should ever hold

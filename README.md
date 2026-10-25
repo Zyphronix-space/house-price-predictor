@@ -89,10 +89,13 @@ back/forward all work. `RequireAuth` gates the authenticated routes;
   optional display name. Every route except `/health` and `/auth/*`
   requires a signed-in user.
 - **Forgot / reset password**: a real, single-use, 30-minute-expiring
-  token flow. No email service is configured for this project, so it runs
-  in **demo mode**: the reset link is shown directly in the UI (clearly
-  labeled) instead of emailed. Swap in a real provider by having
-  `/auth/forgot-password` send the token by email instead of returning it.
+  token flow. No email service is configured, so in deployed environments
+  `/auth/forgot-password` returns the same "not available" message for
+  every email and issues no token. Setting `PASSWORD_RESET_DEMO_MODE=true`
+  (local development only) shows the reset link directly in the UI instead;
+  never enable it on a public deployment, because anyone who knows an
+  account's email could then reset its password. To support resets in
+  production, email the token through a real provider instead.
 - **Property management**: full CRUD on saved properties (the model's
   actual 8 input features, not invented fields like square footage that
   the model was never trained on), with search, sort, and per-user
@@ -192,7 +195,7 @@ back/forward all work. `RequireAuth` gates the authenticated routes;
 | PATCH | `/auth/me` | ✓ | Update display name |
 | DELETE | `/auth/me` | ✓ | Delete account (cascades to houses/predictions) |
 | POST | `/auth/change-password` | ✓ | Change password |
-| POST | `/auth/forgot-password` |, | Generates a reset token (demo mode: returned in the response if the account exists; never reveals whether it does) |
+| POST | `/auth/forgot-password` |, | Disabled unless `PASSWORD_RESET_DEMO_MODE=true` (local only), which returns a reset token for existing accounts |
 | POST | `/auth/reset-password` |, | Consumes a valid, unexpired, unused token to set a new password |
 | POST | `/predict` | ✓ | Stateless prediction preview (not persisted) |
 | POST | `/comparables` | ✓ | k-NN nearest real properties by feature similarity |

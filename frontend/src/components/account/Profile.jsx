@@ -4,6 +4,7 @@ import { api } from '../../lib/api'
 import { useAuth } from '../../lib/authContext'
 import { showToast } from '../../lib/toast'
 import './Account.css'
+import { parseApiDate } from '../../lib/format'
 
 export default function Profile() {
   const { user, setUser } = useAuth()
@@ -41,7 +42,7 @@ export default function Profile() {
           <p className="account-identity__name">{user.display_name || 'No name set'}</p>
           <p className="account-identity__email">{user.email}</p>
           <p className="account-identity__since">
-            Member since {new Date(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+            Member since {parseApiDate(user.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
           </p>
         </div>
       </div>

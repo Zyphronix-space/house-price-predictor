@@ -1,159 +1,207 @@
 import { useState } from 'react'
 import { api } from '../lib/api'
 import { useAsync } from '../lib/hooks'
-import { useAuth } from '../lib/authContext'
 import { getComparison } from '../lib/storage'
-import ActivityChart from './dashboard/ActivityChart'
-import PredictionDistributionChart from './dashboard/PredictionDistributionChart'
+import { formatDateTime, formatUsd, timeAgo } from '../lib/format'
+import DatasetPositionChart from './dashboard/DatasetPositionChart'
 import Onboarding, { shouldShowOnboarding } from './Onboarding'
 import './Dashboard.css'
 
-const fmtUsd = (v) => `$${Math.round(v).toLocaleString()}`
+const TOOLS = [
+  { key: 'comparables', label: 'Comparable block groups', desc: 'Nearest real records to your latest estimate' },
+  { key: 'whatif', label: 'What-if simulator', desc: 'Change one input and re-run the model' },
+  { key: 'compare', label: 'Compare estimates', desc: 'Side-by-side view of saved estimates' },
+  { key: 'investment', label: 'Investment calculator', desc: 'Mortgage, cash flow and return' },
+  { key: 'analysis', label: 'Dataset analysis', desc: 'Distributions and correlations in the training data' },
+  { key: 'model', label: 'Model performance', desc: 'Model comparison, cross-validation, error analysis' },
+]
 
-function timeAgo(iso) {
-  const seconds = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000))
-  if (seconds < 60) return 'just now'
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  return `${Math.floor(hours / 24)}d ago`
-}
-
-function greeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return 'Good morning'
-  if (hour < 18) return 'Good afternoon'
-  return 'Good evening'
+function formatLocation(features) {
+  if (!features || features.Latitude == null) return '-'
+  return `${Number(features.Latitude).toFixed(2)}, ${Number(features.Longitude).toFixed(2)}`
 }
 
 export default function Dashboard({ setView }) {
-  const { user } = useAuth()
-  const { data: summary } = useAsync(() => api.dashboardSummary(), [])
-  const { data: predictionsRes } = useAsync(() => api.predictions.list(), [])
+  const { data: summary, loading: summaryLoading } = useAsync(() => api.dashboardSummary(), [])
+  const { data: predictionsRes, loading: predictionsLoading } = useAsync(() => api.predictions.list(), [])
+  const { data: datasetStats } = useAsync(() => api.datasetStats(), [])
+  const { data: modelInfo } = useAsync(() => api.modelInfo(), [])
   // Lazy init reads localStorage once, synchronously, before first paint --
   // avoids a flash where the dashboard renders first and the tour pops in
   // a beat later.
   const [showOnboarding, setShowOnboarding] = useState(shouldShowOnboarding)
 
-  const predictions = predictionsRes?.predictions ?? []
+  const predictions = [...(predictionsRes?.predictions ?? [])].sort(
+    (a, b) => (a.created_at < b.created_at ? 1 : -1)
+  )
+  const recent = predictions.slice(0, 6)
+  const latest = predictions[0]
   const comparisonCount = getComparison().length
-  const mostRecent = summary?.recent_predictions?.[0]
+  const loading = summaryLoading || predictionsLoading
+  const isEmpty = !loading && predictions.length === 0
 
   return (
-    <section className="dashboard">
-      <div className="dashboard__hero">
-        <p className="hv-label">{greeting()}{user?.display_name ? `, ${user.display_name}` : ''}</p>
-        <h1 className="dashboard__headline">What would you like to value today?</h1>
-        <p className="dashboard__tagline">
-          Predict a property's value, see why, and pick up where you left off below.
-        </p>
-        <div className="dashboard__cta">
+    <div className="dash">
+      <header className="dash__header">
+        <div>
+          <h1 className="dash__title">Property valuation</h1>
+          <p className="dash__lede">
+            Estimate the median home value of a California census block group from eight
+            neighbourhood statistics, then save, compare and explain the result.
+          </p>
+        </div>
+        <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
+          Estimate a property
+        </button>
+      </header>
+
+      <dl className="dash__summary" aria-busy={loading}>
+        <div className="dash__summary-item">
+          <dt>Estimates run</dt>
+          <dd className="hv-tabular">{summary ? summary.total_predictions.toLocaleString() : '–'}</dd>
+        </div>
+        <div className="dash__summary-item">
+          <dt>Average estimate</dt>
+          <dd className="hv-tabular">
+            {summary?.average_predicted_price_usd != null ? formatUsd(summary.average_predicted_price_usd) : '–'}
+          </dd>
+        </div>
+        <div className="dash__summary-item">
+          <dt>Saved properties</dt>
+          <dd className="hv-tabular">{summary ? summary.total_properties.toLocaleString() : '–'}</dd>
+        </div>
+        <div className="dash__summary-item">
+          <dt>Last estimate</dt>
+          <dd>{latest ? timeAgo(latest.created_at) : loading ? '–' : 'None yet'}</dd>
+        </div>
+      </dl>
+
+      {isEmpty ? (
+        <section className="dash__empty">
+          <h2 className="dash__section-title">No estimates yet</h2>
+          <p>
+            Enter a block group's median income, housing age, room counts, population and location.
+            The model returns an estimated median home value, an empirical error range and the
+            features that moved it. Saved estimates appear here.
+          </p>
           <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
-            Start a valuation
+            Run your first estimate
           </button>
-        </div>
-      </div>
-
-      <div className="dashboard__stats">
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Predictions made</p>
-          <p className="dashboard__stat-value">{summary?.total_predictions ?? '-'}</p>
-        </div>
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Saved properties</p>
-          <p className="dashboard__stat-value">{summary?.total_properties ?? '-'}</p>
-        </div>
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Average predicted value</p>
-          <p className="dashboard__stat-value dashboard__stat-value--small">
-            {summary?.average_predicted_price_usd != null ? fmtUsd(summary.average_predicted_price_usd) : '-'}
-          </p>
-        </div>
-        <div className="hv-card dashboard__stat">
-          <p className="hv-label">Last activity</p>
-          <p className="dashboard__stat-value dashboard__stat-value--small">
-            {mostRecent ? timeAgo(mostRecent.created_at) : 'No activity yet'}
-          </p>
-        </div>
-      </div>
-
-      {predictions.length >= 2 ? (
-        <div className="dashboard__charts">
-          <ActivityChart predictions={predictions} />
-          <PredictionDistributionChart predictions={predictions} />
-        </div>
+        </section>
       ) : (
-        <div className="hv-card dashboard-chart--empty">
-          Run a couple more valuations to unlock your activity and distribution charts.
-        </div>
-      )}
-
-      <div className="dashboard__quicklinks">
-        <p className="hv-label dashboard__quicklinks-label">Insights</p>
-        {[
-          { key: 'comparables', label: 'Comparable properties', desc: 'Nearest real matches to your last prediction' },
-          { key: 'whatif', label: 'What-if simulator', desc: 'Change one input and see the new estimate' },
-          { key: 'analysis', label: 'Market analysis', desc: 'Distributions, correlations, model fit' },
-          { key: 'investment', label: 'Investment calculator', desc: 'Mortgage, cash flow, ROI' },
-          { key: 'model', label: 'Model performance', desc: 'Comparison, cross-validation, errors' },
-        ].map((link) => (
-          <button key={link.key} type="button" className="hv-card dashboard__quicklink" onClick={() => setView(link.key)}>
-            <span className="dashboard__quicklink-label">{link.label}</span>
-            <span className="dashboard__quicklink-desc">{link.desc}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="dashboard__split">
-        <div className="hv-card dashboard__recent">
-          <p className="hv-label">Recent predictions</p>
-          {!summary || summary.recent_predictions.length === 0 ? (
-            <p className="dashboard__recent-empty">No predictions yet, run your first valuation to see it here.</p>
-          ) : (
-            <div className="dashboard__recent-table-wrap">
-              <table className="dashboard__recent-table">
+        <div className="dash__grid">
+          <section className="dash__panel dash__recent" aria-labelledby="dash-recent-title">
+            <div className="dash__panel-head">
+              <h2 id="dash-recent-title" className="dash__section-title">Recent estimates</h2>
+              <button type="button" className="dash__text-link" onClick={() => setView('history')}>
+                All history
+              </button>
+            </div>
+            <div className="dash__table-wrap">
+              <table className="dash__table">
                 <thead>
                   <tr>
                     <th scope="col">Date</th>
-                    <th scope="col">Predicted value</th>
-                    <th scope="col">Property</th>
+                    <th scope="col" className="is-wide-only">Location (lat, long)</th>
+                    <th scope="col" className="is-wide-only">Property</th>
+                    <th scope="col" className="is-num">Estimate</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {summary.recent_predictions.map((entry) => (
-                    <tr key={entry.id}>
-                      <td>
-                        {new Date(entry.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                      </td>
-                      <td className="hv-tabular">{fmtUsd(entry.predicted_price_usd)}</td>
-                      <td>{entry.house_label ?? '-'}</td>
+                  {loading &&
+                    Array.from({ length: 3 }, (_, i) => (
+                      <tr key={i} aria-hidden="true">
+                        <td colSpan={4}>
+                          <span className="hv-skeleton dash__skeleton-row" />
+                        </td>
+                      </tr>
+                    ))}
+                  {recent.map((p) => (
+                    <tr key={p.id}>
+                      <td>{formatDateTime(p.created_at)}</td>
+                      <td className="hv-tabular is-wide-only">{formatLocation(p.features)}</td>
+                      <td className="is-wide-only">{summary?.recent_predictions.find((r) => r.id === p.id)?.house_label ?? <span className="dash__muted">Unlinked</span>}</td>
+                      <td className="is-num hv-tabular">{formatUsd(p.predicted_price_usd)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          )}
-        </div>
+          </section>
 
-        <div className="hv-card dashboard__comparison">
-          <p className="hv-label">Comparison basket</p>
-          {comparisonCount === 0 ? (
-            <p className="dashboard__recent-empty">
-              No properties saved for comparison yet, save one after a prediction.
-            </p>
-          ) : (
-            <p className="dashboard__comparison-count">
-              {comparisonCount} propert{comparisonCount === 1 ? 'y' : 'ies'} ready to compare.
-            </p>
-          )}
-          <button type="button" className="hv-btn hv-btn-secondary" onClick={() => setView('compare')}>
-            {comparisonCount === 0 ? 'Go to Compare' : 'View Comparison'}
-          </button>
+          <section className="dash__panel dash__position" aria-labelledby="dash-position-title">
+            <div className="dash__panel-head">
+              <h2 id="dash-position-title" className="dash__section-title">Your estimates in context</h2>
+            </div>
+            {datasetStats ? (
+              <DatasetPositionChart
+                histogram={datasetStats.target.histogram}
+                cappedAt={datasetStats.target.capped_at_usd}
+                markers={predictions.slice(0, 20).map((p, i) => ({
+                  value: p.predicted_price_usd,
+                  label: i === 0 ? `Latest ${formatUsd(p.predicted_price_usd)}` : undefined,
+                  emphasis: i === 0,
+                }))}
+                caption={`Grey bars: median home values of all ${datasetStats.n_records.toLocaleString()} block groups the model was trained on. Green lines: your ${Math.min(predictions.length, 20)} most recent estimates.`}
+              />
+            ) : (
+              <span className="hv-skeleton dash__skeleton-chart" aria-hidden="true" />
+            )}
+          </section>
         </div>
+      )}
+
+      <div className="dash__grid dash__grid--secondary">
+        <section className="dash__panel" aria-labelledby="dash-tools-title">
+          <h2 id="dash-tools-title" className="dash__section-title">Tools</h2>
+          <ul className="dash__tools">
+            {TOOLS.map((tool) => (
+              <li key={tool.key}>
+                <button type="button" className="dash__tool" onClick={() => setView(tool.key)}>
+                  <span className="dash__tool-label">
+                    {tool.label}
+                    {tool.key === 'compare' && comparisonCount > 0 && (
+                      <span className="dash__count">{comparisonCount} saved</span>
+                    )}
+                  </span>
+                  <span className="dash__tool-desc">{tool.desc}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="dash__panel" aria-labelledby="dash-model-title">
+          <h2 id="dash-model-title" className="dash__section-title">About the model</h2>
+          <dl className="dash__facts">
+            <div>
+              <dt>Model</dt>
+              <dd>{modelInfo?.model_name ?? '–'}</dd>
+            </div>
+            <div>
+              <dt>Mean absolute error (test set)</dt>
+              <dd className="hv-tabular">{modelInfo ? formatUsd(modelInfo.metrics.mae_usd) : '–'}</dd>
+            </div>
+            <div>
+              <dt>R² (test set)</dt>
+              <dd className="hv-tabular">{modelInfo ? modelInfo.metrics.r2.toFixed(3) : '–'}</dd>
+            </div>
+            <div>
+              <dt>Training data</dt>
+              <dd>
+                {modelInfo?.dataset ?? '–'}
+                {datasetStats ? `, ${datasetStats.n_records.toLocaleString()} block groups (1990 census)` : ''}
+              </dd>
+            </div>
+          </dl>
+          <p className="dash__note">
+            Estimates are model output, not appraisals or sale prices. Values are in the dataset's
+            own 1990 US dollars.
+          </p>
+        </section>
       </div>
 
       <Onboarding open={showOnboarding} onDone={() => setShowOnboarding(false)} />
-    </section>
+    </div>
   )
 }

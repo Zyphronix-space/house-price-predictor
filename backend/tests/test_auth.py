@@ -156,3 +156,43 @@ VALID_FEATURES_HOUSE = {
     "latitude": 34.2,
     "longitude": -118.3,
 }
+
+
+def test_forgot_password_returns_no_token_unless_demo_mode_enabled(client, monkeypatch):
+    monkeypatch.setenv("PASSWORD_RESET_DEMO_MODE", "false")
+    client.post("/auth/signup", json={"email": "victim@test.com", "password": "password123"})
+    known = client.post("/auth/forgot-password", json={"email": "victim@test.com"}).json()
+    unknown = client.post("/auth/forgot-password", json={"email": "nobody@test.com"}).json()
+    assert known["reset_token"] is None
+    assert known["demo_mode"] is False
+    # Identical responses, so the endpoint can't be used to enumerate accounts.
+    assert known == unknown
+
+
+def test_forgot_password_stores_no_token_when_demo_mode_disabled(client, monkeypatch):
+    import database
+    import db_models
+
+    monkeypatch.setenv("PASSWORD_RESET_DEMO_MODE", "")
+    client.post("/auth/signup", json={"email": "notoken@test.com", "password": "password123"})
+    client.post("/auth/forgot-password", json={"email": "notoken@test.com"})
+    with database.SessionLocal() as db:
+        assert db.query(db_models.PasswordResetToken).count() == 0
+
+
+def test_forgot_password_rate_limit_applies_to_known_and_unknown_emails(client, monkeypatch):
+    monkeypatch.setenv("PASSWORD_RESET_DEMO_MODE", "false")
+    client.post("/auth/signup", json={"email": "limited@test.com", "password": "password123"})
+    emails = ["limited@test.com", "nobody1@test.com"] * 3  # 6 requests, limit is 5/hour
+    statuses = [client.post("/auth/forgot-password", json={"email": e}).status_code for e in emails]
+    assert statuses[:5] == [200] * 5
+    assert statuses[5] == 429
+
+
+def test_reset_flow_end_to_end_in_demo_mode(client, monkeypatch):
+    monkeypatch.setenv("PASSWORD_RESET_DEMO_MODE", "true")
+    client.post("/auth/signup", json={"email": "legit@test.com", "password": "password123"})
+    token = client.post("/auth/forgot-password", json={"email": "legit@test.com"}).json()["reset_token"]
+    assert client.post("/auth/reset-password", json={"token": token, "new_password": "newpassword456"}).status_code == 204
+    assert client.post("/auth/login", json={"email": "legit@test.com", "password": "password123"}).status_code == 401
+    assert client.post("/auth/login", json={"email": "legit@test.com", "password": "newpassword456"}).status_code == 200

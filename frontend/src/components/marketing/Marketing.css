@@ -33,7 +33,7 @@
   background: var(--hv-accent-soft);
   border: 1px solid var(--hv-accent-border);
   padding: 6px 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
 }
 
 .marketing-hero__headline {

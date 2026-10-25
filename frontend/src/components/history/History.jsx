@@ -7,9 +7,10 @@ import { addToComparison, clearComparison } from '../../lib/storage'
 import { exportHistoryAsCsv, exportHistoryAsJson } from '../../lib/exportHistory'
 import { showToast } from '../../lib/toast'
 import './History.css'
+import { parseApiDate } from '../../lib/format'
 
 function dayLabel(iso) {
-  const date = new Date(iso)
+  const date = parseApiDate(iso)
   const today = new Date()
   const yesterday = new Date()
   yesterday.setDate(today.getDate() - 1)
@@ -176,7 +177,7 @@ export default function History({ setView }) {
                       ${Math.round(entry.predicted_price_usd).toLocaleString()}
                     </span>
                     <span className="history__row-time">
-                      {new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {parseApiDate(entry.created_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
                     </span>
                   </button>
                   <button

@@ -28,6 +28,19 @@
   min-width: 200px;
 }
 
+/* On phones the search takes its own full row and the two sort controls
+   share the next one, instead of wrapping unevenly. */
+@media (max-width: 560px) {
+  .properties__search {
+    flex-basis: 100%;
+  }
+
+  .properties__toolbar > .properties__select {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
 .properties__select {
   width: auto;
 }

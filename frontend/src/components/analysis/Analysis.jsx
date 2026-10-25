@@ -57,7 +57,7 @@ export default function Analysis() {
 
   return (
     <section className="analysis">
-      <p className="hv-label analysis__title">Market Analytics</p>
+      <p className="hv-label analysis__title">Dataset analysis</p>
       <p className="analysis__intro">
         Real, computed views of the training data and the served model's behavior, nothing
         here is illustrative or hardcoded.

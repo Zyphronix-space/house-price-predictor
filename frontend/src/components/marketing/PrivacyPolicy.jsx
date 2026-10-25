@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
         <p className="marketing-hero__eyebrow">Privacy Policy</p>
         <h1 className="marketing-hero__headline">How HomeValue handles your data.</h1>
         <p className="marketing-hero__sub">
-          Last updated: September 2026. HomeValue is an individual student portfolio project, not a
+          Last updated: October 2026. HomeValue is an individual student portfolio project, not a
           registered company. This page explains, plainly, what is collected and why.
         </p>
       </section>
@@ -61,8 +61,7 @@ export default function PrivacyPolicy() {
       <section className="hv-card marketing-about-block">
         <p className="hv-label">Third-party services</p>
         <p className="marketing-about-copy">
-          The backend is hosted on Microsoft Azure App Service and the frontend on Vercel; both
-          process traffic (including your IP address) as part of normal web hosting. Page fonts are
+          Both the backend and the frontend are hosted on Vercel, which processes traffic (including your IP address) as part of normal web hosting. Page fonts are
           loaded from Google Fonts, which means your browser makes a direct request to Google's
           servers, sharing your IP address with Google in the process. If you use the free-text
           property description feature, the text you enter is sent to Google's Gemini API to be

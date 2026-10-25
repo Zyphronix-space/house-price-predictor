@@ -4,9 +4,9 @@ import { useAsync } from '../../lib/hooks'
 import { showToast } from '../../lib/toast'
 import ConfirmDialog from '../ConfirmDialog'
 import './Admin.css'
+import { formatDateTime as fmtDate } from '../../lib/format'
 
 const fmtUsd = (v) => `$${Math.round(v).toLocaleString()}`
-const fmtDate = (iso) => new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 
 export default function AdminPredictionsPage() {
   const [reloadKey, setReloadKey] = useState(0)

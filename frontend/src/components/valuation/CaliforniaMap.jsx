@@ -67,9 +67,7 @@ export default function CaliforniaMap({ latitude, longitude, onPick }) {
         )}
       </svg>
       <p className="ca-map__caption">
-        Tap the map for an approximate location, or enter coordinates directly. The
-        dataset describes block groups, not exact addresses, so treat this as a
-        neighborhood-level pick.
+        Click to set an approximate location, or type coordinates.
       </p>
     </div>
   )

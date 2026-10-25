@@ -6,9 +6,9 @@ import { showToast } from '../../lib/toast'
 import ConfirmDialog from '../ConfirmDialog'
 import AdminChart from './AdminChart'
 import './Admin.css'
+import { formatDate as fmtDate } from '../../lib/format'
 
 const fmtUsd = (v) => (v == null ? '—' : `$${Math.round(v).toLocaleString()}`)
-const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 
 export default function AdminDashboard() {
   const { user: me } = useAuth()

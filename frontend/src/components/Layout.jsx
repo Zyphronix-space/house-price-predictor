@@ -15,7 +15,7 @@ import './NotificationCenter.css'
 // first-time visitor isn't shown nine top-level destinations at once.
 const CORE_TABS = [
   { key: 'dashboard', label: 'Dashboard' },
-  { key: 'predict', label: 'Predict' },
+  { key: 'predict', label: 'Estimate' },
   { key: 'properties', label: 'Properties' },
   { key: 'history', label: 'History' },
 ]
@@ -23,7 +23,7 @@ const CORE_TABS = [
 const INSIGHT_TABS = [
   { key: 'comparables', label: 'Comparable properties', desc: 'Nearest real matches to your last prediction' },
   { key: 'whatif', label: 'What-if simulator', desc: 'Change one input and see the new estimate' },
-  { key: 'analysis', label: 'Market analysis', desc: 'Distributions, correlations, model fit' },
+  { key: 'analysis', label: 'Dataset analysis', desc: 'Distributions, correlations, model fit' },
   { key: 'investment', label: 'Investment calculator', desc: 'Mortgage, cash flow, ROI' },
   { key: 'model', label: 'Model performance', desc: 'Comparison, cross-validation, errors' },
 ]
@@ -129,18 +129,18 @@ export default function Layout({ view, setView, children, user, onLogout }) {
                 <span className="hv-app-footer__brand-name">
                   Home<span className="hv-brand__accent">Value</span>
                 </span>
-                <span className="hv-app-footer__eyebrow">AI Real Estate Intelligence</span>
+                <span className="hv-app-footer__eyebrow">California housing valuation model</span>
               </div>
             </div>
             <p className="hv-app-footer__tagline">
-              Predict a property's value, see why, and decide with real numbers. One real trained
-              model, not a black box.
+              Model estimates for California census block groups, with the inputs and
+              contributions behind every number.
             </p>
           </div>
 
           <div className="hv-app-footer__col">
             <p className="hv-app-footer__heading">Explore</p>
-            <Link to="/predict">Predict</Link>
+            <Link to="/predict">Estimate a property</Link>
             <Link to="/compare">Compare</Link>
             <Link to="/what-if">What-If Simulator</Link>
             <Link to="/investment">Investment Calculator</Link>

@@ -1,5 +1,5 @@
 .limitations {
-  padding: 18px 22px;
+  padding: 16px 20px;
 }
 
 .limitations__summary {
@@ -14,21 +14,31 @@
   display: none;
 }
 
+.limitations__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--hv-text);
+}
+
 .limitations__chevron {
-  color: var(--hv-text-tertiary);
-  transition: transform 0.2s ease;
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid var(--hv-text-tertiary);
+  border-bottom: 1.5px solid var(--hv-text-tertiary);
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform var(--duration-fast) ease;
 }
 
 .limitations[open] .limitations__chevron {
-  transform: rotate(180deg);
+  transform: rotate(-135deg) translateY(-2px);
 }
 
 .limitations__list {
   margin: 16px 0 4px;
   padding-left: 20px;
   color: var(--hv-text-secondary);
-  font-size: 0.92rem;
-  line-height: 1.6;
+  font-size: 0.86rem;
+  line-height: 1.55;
   display: flex;
   flex-direction: column;
   gap: 8px;

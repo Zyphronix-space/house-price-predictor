@@ -20,8 +20,24 @@ export function rangeWarning(name, value, ranges) {
   const num = Number(value)
   if (Number.isNaN(num)) return null
   if (num < bounds.p1 || num > bounds.p99) {
-    const meta = FIELD_META[name]
-    return `This value is outside the range seen in the training dataset (${bounds.p1}–${bounds.p99} ${meta.unit}).`
+    const fmt = (v) => Number(v.toPrecision(4)).toLocaleString()
+    return `Unusual for the training data (most block groups fall between ${fmt(bounds.p1)} and ${fmt(bounds.p99)}). The estimate may be less reliable.`
+  }
+  return null
+}
+
+// Values no real block group can have. These block submission; merely
+// unusual values only warn (see rangeWarning).
+const MUST_BE_POSITIVE = ['MedInc', 'AveRooms', 'AveBedrms', 'Population', 'AveOccup']
+
+export function impossibleValue(name, value, values) {
+  const num = Number(value)
+  if (MUST_BE_POSITIVE.includes(name) && num <= 0) return 'Must be greater than 0.'
+  if (name === 'HouseAge' && num < 0) return 'Cannot be negative.'
+  if (name === 'Latitude' && (num < -90 || num > 90)) return 'Latitude must be between -90 and 90.'
+  if (name === 'Longitude' && (num < -180 || num > 180)) return 'Longitude must be between -180 and 180.'
+  if (name === 'AveBedrms' && Number(values?.AveRooms) > 0 && num > Number(values.AveRooms)) {
+    return 'Cannot exceed rooms per household (bedrooms are counted as rooms).'
   }
   return null
 }
@@ -32,7 +48,7 @@ export function validateFeatures(values, ranges) {
   const errors = {}
   const warnings = {}
   for (const name of Object.keys(FIELD_META)) {
-    const err = validateRequired(values[name])
+    const err = validateRequired(values[name]) ?? impossibleValue(name, values[name], values)
     if (err) {
       errors[name] = err
       continue

@@ -1,36 +1,97 @@
+.dataset-chart {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dataset-chart__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.dataset-chart__grid {
+  stroke: var(--hv-grid);
+  stroke-width: 1;
+}
+
+.dataset-chart__axis {
+  stroke: var(--hv-axis);
+  stroke-width: 1;
+}
+
+.dataset-chart__bar {
+  fill: color-mix(in srgb, var(--hv-text) 14%, transparent);
+  transition: fill var(--duration-fast) ease;
+}
+
+.dataset-chart__bar:hover {
+  fill: color-mix(in srgb, var(--hv-text) 26%, transparent);
+}
+
+.dataset-chart__tick {
+  font-size: 11px;
+  fill: var(--hv-text-tertiary);
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+.dataset-chart__tick--y {
+  text-anchor: end;
+  dominant-baseline: middle;
+}
+
+.dataset-chart__marker line {
+  stroke: var(--hv-accent);
+  stroke-width: 1.5;
+  opacity: 0.55;
+}
+
+.dataset-chart__marker.is-emphasis line {
+  stroke-width: 2;
+  opacity: 1;
+}
+
+.dataset-chart__marker-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  fill: var(--hv-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.dataset-chart__caption {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--hv-text-tertiary);
+}
+
+/* Bar chart used by the admin overview (AdminChart). */
 .dashboard-chart {
-  padding: 20px 20px 14px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .dashboard-chart__svg {
   width: 100%;
   height: auto;
-  margin-top: 10px;
-  overflow: visible;
+  display: block;
 }
 
 .dashboard-chart__bar {
   fill: var(--hv-chart-primary);
-  transition: fill 0.15s ease;
-}
-
-.dashboard-chart__bar--accent2 {
-  fill: var(--hv-chart-secondary);
 }
 
 .dashboard-chart__bar:hover {
-  fill: var(--hv-text);
+  fill: var(--hv-accent-strong);
 }
 
 .dashboard-chart__tick {
-  font-size: 10px;
+  font-size: 11px;
   fill: var(--hv-text-tertiary);
   text-anchor: middle;
-}
-
-.dashboard-chart--empty {
-  padding: 32px 20px;
-  text-align: center;
-  color: var(--hv-text-secondary);
-  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
 }

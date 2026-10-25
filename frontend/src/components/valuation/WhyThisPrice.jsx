@@ -1,62 +1,60 @@
+import { FIELD_META } from '../../lib/fields'
+import { formatSignedUsd, formatUsd } from '../../lib/format'
 import './WhyThisPrice.css'
 
-const fmtUsd = (v) => `${v >= 0 ? '+' : '-'}$${Math.abs(Math.round(v)).toLocaleString()}`
-
-function ContributorBar({ item, maxAbs }) {
-  const width = maxAbs > 0 ? (Math.abs(item.shap_usd) / maxAbs) * 100 : 0
-  return (
-    <li className={`why-price__row why-price__row--${item.direction}`}>
-      <span className="why-price__row-label">{item.label}</span>
-      <span className="why-price__row-track">
-        <span className="why-price__row-fill" style={{ width: `${width}%` }} />
-      </span>
-      <span className="why-price__row-value">{fmtUsd(item.shap_usd)}</span>
-    </li>
-  )
-}
-
+// All eight tree-path contributions as one diverging bar chart around
+// zero, largest effect first. baseline + sum(contributions) reconstructs
+// the estimate exactly, so the chart ends with that reconciliation.
 export default function WhyThisPrice({ explanation }) {
   if (!explanation) return null
 
-  const { top_positive: positives, top_negative: negatives, contributions } = explanation
-  const maxAbs = Math.max(...contributions.map((c) => Math.abs(c.shap_usd)), 1)
+  const rows = [...explanation.contributions].sort((a, b) => Math.abs(b.shap_usd) - Math.abs(a.shap_usd))
+  const maxAbs = Math.max(...rows.map((c) => Math.abs(c.shap_usd)), 1)
+  const total = explanation.base_value_usd + rows.reduce((sum, c) => sum + c.shap_usd, 0)
 
   return (
-    <section className="hv-card why-price">
-      <p className="hv-label">Why this price?</p>
+    <section className="why-price" aria-labelledby="why-price-title">
+      <h2 id="why-price-title" className="why-price__title">What moved the estimate</h2>
       <p className="why-price__note">
-        Computed directly from the served Random Forest's decision trees for this specific
-        input (a tree-path contribution breakdown, sometimes called the Saabas method): each
-        bar is that feature's real dollar contribution above or below the model's baseline
-        expected value, it explains this model's reasoning, not a causal claim about what
-        actually drives real-world prices.
+        How far each input moved this estimate above or below the model's baseline, traced through
+        the Random Forest's decision trees for these exact inputs. It describes the model's
+        reasoning, not what causes real prices.
       </p>
 
-      <div className="why-price__columns">
-        <div>
-          <p className="why-price__col-title why-price__col-title--positive">Pushed price up</p>
-          <ul className="why-price__list">
-            {positives.length === 0 && <li className="why-price__empty">No positive factors.</li>}
-            {positives.map((item) => (
-              <ContributorBar key={item.feature} item={item} maxAbs={maxAbs} />
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="why-price__col-title why-price__col-title--negative">Pushed price down</p>
-          <ul className="why-price__list">
-            {negatives.length === 0 && <li className="why-price__empty">No negative factors.</li>}
-            {negatives.map((item) => (
-              <ContributorBar key={item.feature} item={item} maxAbs={maxAbs} />
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ul className="why-price__list">
+        {rows.map((item) => {
+          const pct = (Math.abs(item.shap_usd) / maxAbs) * 50
+          const positive = item.shap_usd >= 0
+          return (
+            <li key={item.feature} className={`why-price__row ${positive ? 'is-positive' : 'is-negative'}`}>
+              <span className="why-price__row-label">{FIELD_META[item.feature]?.label ?? item.label}</span>
+              <span className="why-price__row-track" aria-hidden="true">
+                <span className="why-price__row-zero" />
+                <span
+                  className="why-price__row-fill"
+                  style={positive ? { left: '50%', width: `${pct}%` } : { right: '50%', width: `${pct}%` }}
+                />
+              </span>
+              <span className="why-price__row-value hv-tabular">{formatSignedUsd(item.shap_usd)}</span>
+            </li>
+          )
+        })}
+      </ul>
 
-      <p className="why-price__base">
-        Model baseline (average prediction over the training data): $
-        {Math.round(explanation.base_value_usd).toLocaleString()}
-      </p>
+      <dl className="why-price__sum">
+        <div>
+          <dt>Model baseline (average over training data)</dt>
+          <dd className="hv-tabular">{formatUsd(explanation.base_value_usd)}</dd>
+        </div>
+        <div>
+          <dt>Sum of input effects</dt>
+          <dd className="hv-tabular">{formatSignedUsd(total - explanation.base_value_usd)}</dd>
+        </div>
+        <div className="why-price__sum-total">
+          <dt>Estimate</dt>
+          <dd className="hv-tabular">{formatUsd(total)}</dd>
+        </div>
+      </dl>
     </section>
   )
 }
