@@ -1,11 +1,10 @@
 """
-SQLite persistence for user accounts, saved properties, predictions, and
-model evaluation snapshots.
+Persistence for user accounts, saved properties, predictions, and model
+evaluation snapshots.
 
-The path is overridable via the DATABASE_URL env var. On Vercel the code
-directory is read-only and the filesystem is ephemeral, so the deployment
-points DATABASE_URL at a SQLite file under /tmp: accounts and saved data
-reset whenever the instance is recycled (see README, Deployment).
+DATABASE_URL picks the backend. Locally it defaults to a SQLite file; the
+Vercel deployment points it at a Postgres database (Neon), which needs the
+psycopg driver from requirements.txt.
 """
 
 import os
@@ -15,7 +14,12 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./house_price.db")
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+if DATABASE_URL.startswith("sqlite"):
+    # SQLite connections are thread-bound by default; FastAPI uses a pool.
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    # pool_pre_ping drops connections the serverless Postgres closed while idle.
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

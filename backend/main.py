@@ -33,7 +33,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from sqlalchemy import text
+from sqlalchemy import inspect, text
 
 import db_models
 import llm_service
@@ -63,15 +63,16 @@ def _ensure_schema() -> None:
     """`create_all` only creates missing tables -- it never alters an
     existing one. The `users` table already exists in any pre-existing
     house_price.db, so a column added to db_models.User after that (like
-    display_name) needs a real, if tiny, migration step here."""
+    display_name) needs a real, if tiny, migration step here. The DDL is
+    kept to what both SQLite (local) and Postgres (Vercel) accept."""
     with engine.begin() as conn:
-        existing_cols = {row[1] for row in conn.execute(text("PRAGMA table_info(users)"))}
+        existing_cols = {col["name"] for col in inspect(conn).get_columns("users")}
         if "display_name" not in existing_cols:
             conn.execute(text("ALTER TABLE users ADD COLUMN display_name VARCHAR"))
         if "is_admin" not in existing_cols:
-            conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE"))
         if "deleted_at" not in existing_cols:
-            conn.execute(text("ALTER TABLE users ADD COLUMN deleted_at DATETIME"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN deleted_at TIMESTAMP"))
 
 
 def _sync_model_evaluations() -> None:

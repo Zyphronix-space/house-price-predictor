@@ -11,3 +11,4 @@ sqlalchemy
 pyjwt
 email-validator
 slowapi
+psycopg[binary]
