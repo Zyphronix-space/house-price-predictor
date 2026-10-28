@@ -2,35 +2,49 @@ import WhatIfSimulator from './WhatIfSimulator'
 import ErrorState from '../ErrorState'
 import { api, ApiError } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
+import { useAuth } from '../../lib/authContext'
+import { getLastEstimate } from '../../lib/storage'
 import './WhatIfPage.css'
 
-// Standalone nav destination for the simulator, driven by the most recent
-// saved prediction. The same WhatIfSimulator also appears inline right
-// after a fresh prediction in ValuationFlow -- this just gives it a
-// top-level home too, per the platform's IA.
+// Standalone nav destination for the simulator. Signed-in users start from
+// their most recent saved prediction; guests (and users with nothing saved
+// yet) start from the last estimate made in this tab. The same
+// WhatIfSimulator also appears inline right after a fresh prediction in
+// ValuationFlow.
 export default function WhatIfPage({ setView }) {
-  const { data, error, loading } = useAsync(() => api.predictions.list(), [])
-  const latest = data?.predictions?.[0]
+  const { user } = useAuth()
+  const { data, error, loading } = useAsync(() => (user ? api.predictions.list() : Promise.resolve(null)), [user])
+  const saved = data?.predictions?.[0]
+  const local = getLastEstimate()
+  const base = saved
+    ? { features: saved.features, value: saved.predicted_price_usd, note: "Starting from your most recent saved estimate's figures." }
+    : local
+      ? {
+          features: local.resultInputs,
+          value: local.result.predicted_price_usd,
+          note: `Starting from your last estimate${local.area?.shortLabel ? ` (${local.area.shortLabel})` : ''}.`,
+        }
+      : null
 
   if (loading) {
     return <div className="hv-card hv-skeleton whatif-page whatif-page--loading" aria-hidden="true" />
   }
 
-  if (error) {
+  if (error && !local) {
     return <ErrorState message={error instanceof ApiError ? error.message : 'Could not load your prediction history.'} />
   }
 
-  if (!latest) {
+  if (!base) {
     return (
       <section className="hv-card whatif-page whatif-page--empty">
         <span className="hv-empty-icon" aria-hidden="true">+</span>
-        <p className="hv-label">What-If Simulator</p>
+        <h1 className="whatif-page__heading">What-if simulator</h1>
         <p className="whatif-page__empty-copy">
-          Run a valuation first, the simulator explores scenarios starting from your most
-          recent prediction's inputs.
+          Estimate an area first. The simulator then lets you change one figure at a time and see
+          how the estimate moves. No account needed.
         </p>
         <button type="button" className="hv-btn hv-btn-primary" onClick={() => setView('predict')}>
-          Start a Valuation
+          Estimate an area
         </button>
       </section>
     )
@@ -38,12 +52,12 @@ export default function WhatIfPage({ setView }) {
 
   return (
     <section className="whatif-page">
-      <p className="hv-label whatif-page__title">What-If Simulator</p>
-      <p className="whatif-page__note">Starting from your most recent prediction's inputs.</p>
+      <h1 className="whatif-page__heading whatif-page__title">What-if simulator</h1>
+      <p className="whatif-page__note">{base.note}</p>
       <WhatIfSimulator
-        baseFeatures={latest.features}
-        baseValue={latest.predicted_price_usd}
-        onClose={() => setView('dashboard')}
+        baseFeatures={base.features}
+        baseValue={base.value}
+        onClose={() => setView(user ? 'dashboard' : 'predict')}
       />
     </section>
   )

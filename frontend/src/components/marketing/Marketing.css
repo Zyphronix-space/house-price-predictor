@@ -210,6 +210,145 @@
   margin-top: 10px;
 }
 
+.marketing-hero__primary {
+  padding-left: 28px;
+  padding-right: 28px;
+  font-size: 1rem;
+}
+
+.marketing-quick {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.marketing-quick__label {
+  font-size: 0.85rem;
+  color: var(--hv-text-secondary);
+}
+
+.marketing-quick__chip {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--hv-text);
+  text-decoration: none;
+  padding: 6px 12px;
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border);
+  border-radius: 999px;
+  transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.marketing-quick__chip:hover {
+  border-color: var(--hv-accent);
+  color: var(--hv-accent);
+}
+
+/* The honest-limits box sits right under the hero on purpose. */
+.marketing-honest {
+  padding: 24px 28px;
+  background: var(--hv-accent-soft);
+  border: 1px solid var(--hv-accent-border);
+  border-radius: var(--hv-radius-md);
+}
+
+.marketing-honest__title {
+  font-size: 1.1rem;
+  font-weight: 650;
+  margin: 0 0 14px;
+  color: var(--hv-text);
+}
+
+.marketing-honest__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--hv-text-secondary);
+}
+
+.marketing-honest__grid p {
+  margin: 0;
+}
+
+.marketing-honest__label {
+  font-weight: 650;
+  color: var(--hv-text) !important;
+  margin-bottom: 4px !important;
+}
+
+.marketing-account__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin: 0 0 20px;
+  color: var(--hv-text);
+}
+
+.marketing-account__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.marketing-account__col {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.marketing-account__col ul {
+  margin: 0;
+  padding-left: 18px;
+  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--hv-text-secondary);
+}
+
+.marketing-account__label {
+  font-weight: 650;
+  margin: 0;
+  color: var(--hv-text);
+}
+
+.marketing-feature__access {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  color: var(--hv-text-secondary);
+  border: 1px solid var(--hv-border);
+}
+
+.marketing-feature__access.is-free {
+  color: var(--hv-accent-strong);
+  background: var(--hv-accent-soft);
+  border-color: var(--hv-accent-border);
+}
+
+@media (max-width: 640px) {
+  .marketing-honest {
+    padding: 20px;
+  }
+  .marketing-honest__grid,
+  .marketing-account__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
 @media (max-width: 640px) {
   .marketing-main {
     gap: 48px;

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { login } from '../../lib/auth'
 import { useAuth } from '../../lib/authContext'
+import { safeReturnPath } from '../../lib/nav'
 import { showToast } from '../../lib/toast'
 import { EyeIcon, EyeOffIcon } from '../icons'
 import AuthShell from './AuthShell'
@@ -26,7 +27,7 @@ export default function Login() {
       const data = await login(email, password)
       signIn(data, rememberMe)
       showToast('Signed in successfully', 'success')
-      navigate(location.state?.from || '/dashboard', { replace: true })
+      navigate(safeReturnPath(location.state?.from) || '/dashboard', { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {
@@ -35,7 +36,7 @@ export default function Login() {
   }
 
   return (
-    <AuthShell title="Welcome back" tagline="Sign in to continue to your dashboard.">
+    <AuthShell title="Welcome back" tagline="Sign in to see your saved estimates and properties.">
       <form onSubmit={handleSubmit} className="auth-page__form">
         <label className="auth-page__field">
           <span className="hv-label">Email</span>
@@ -92,7 +93,10 @@ export default function Login() {
       </form>
 
       <p className="auth-page__switch">
-        Don't have an account? <Link to="/signup">Sign up</Link>
+        Don't have an account? <Link to="/signup" state={location.state}>Sign up</Link>
+      </p>
+      <p className="auth-page__switch">
+        <Link to="/predict">Continue without an account</Link>
       </p>
     </AuthShell>
   )

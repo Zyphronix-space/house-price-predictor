@@ -1,0 +1,59 @@
+.account-gate {
+  max-width: 560px;
+  margin: 48px auto;
+  padding: 32px;
+  background: var(--hv-bg-elevated);
+  border: 1px solid var(--hv-border);
+  border-radius: var(--hv-radius-md);
+}
+
+.account-gate__eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hv-accent);
+}
+
+.account-gate__title {
+  margin-top: 8px;
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.account-gate__copy {
+  margin-top: 12px;
+  color: var(--hv-text-secondary);
+  line-height: 1.55;
+}
+
+.account-gate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.account-gate__alt {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hv-border);
+  font-size: 0.88rem;
+  color: var(--hv-text-secondary);
+}
+
+.account-gate__alt a {
+  color: var(--hv-accent);
+}
+
+@media (max-width: 480px) {
+  .account-gate {
+    margin: 16px 0;
+    padding: 24px 20px;
+  }
+
+  .account-gate__actions .hv-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

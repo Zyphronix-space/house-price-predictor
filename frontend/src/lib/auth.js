@@ -38,7 +38,11 @@ export function authHeaders(extra = {}) {
 
 async function parseErrorOrThrow(res, fallback) {
   const data = await res.json().catch(() => ({}))
-  throw new Error(data.detail || fallback)
+  // A 422 from FastAPI carries a list of field errors in `detail`, not a
+  // sentence -- only show detail when it is one.
+  if (typeof data.detail === 'string') throw new Error(data.detail)
+  if (res.status === 422) throw new Error('Check the email address and password, then try again.')
+  throw new Error(fallback)
 }
 
 export async function signup(email, password, displayName) {

@@ -101,3 +101,32 @@
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
+
+.comparison__title {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.comparison__note {
+  margin-top: 6px;
+  font-size: 0.88rem;
+  color: var(--hv-text-secondary);
+  max-width: 60ch;
+}
+
+.comparison__card-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--hv-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.comparison__account {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--hv-text-secondary);
+}
+
+.comparison__account a {
+  color: var(--hv-accent);
+}

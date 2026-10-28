@@ -39,3 +39,39 @@
 .model-hub__limitations {
   margin-top: 24px;
 }
+
+.model-hub__header {
+  margin-bottom: 24px;
+}
+
+.model-hub__title {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.model-hub__lede {
+  margin-top: 8px;
+  max-width: 65ch;
+  color: var(--hv-text-secondary);
+  line-height: 1.55;
+}
+
+.model-hub__guest {
+  padding: 24px;
+  color: var(--hv-text-secondary);
+  line-height: 1.55;
+}
+
+.model-hub__guest-title {
+  font-weight: 600;
+  color: var(--hv-text);
+  margin-bottom: 6px;
+}
+
+.model-hub__guest-actions {
+  margin-top: 12px;
+}
+
+.model-hub__guest-actions a {
+  color: var(--hv-accent);
+}

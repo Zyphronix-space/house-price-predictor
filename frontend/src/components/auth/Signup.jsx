@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { safeReturnPath } from '../../lib/nav'
 import { signup } from '../../lib/auth'
 import { useAuth } from '../../lib/authContext'
 import { showToast } from '../../lib/toast'
@@ -19,6 +20,8 @@ export default function Signup() {
 
   const { signIn } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const returnTo = safeReturnPath(location.state?.from)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,9 +40,11 @@ export default function Signup() {
     try {
       const data = await signup(email, password, name.trim())
       signIn(data, true)
-      markOnboardingPending()
+      // Someone who signed up to keep an estimate goes straight back to
+      // it; the dashboard tour is for people who arrived without a task.
+      if (!returnTo) markOnboardingPending()
       showToast('Account created. Welcome aboard.', 'success')
-      navigate('/dashboard', { replace: true })
+      navigate(returnTo || '/dashboard', { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {
@@ -48,7 +53,7 @@ export default function Signup() {
   }
 
   return (
-    <AuthShell title="Create your account" tagline="Start predicting, comparing, and analyzing property values.">
+    <AuthShell title="Create your account" tagline="Keep your estimates in a history you can open from any device. Estimating itself never needs an account.">
       <form onSubmit={handleSubmit} className="auth-page__form">
         <label className="auth-page__field">
           <span className="hv-label">Name</span>
@@ -135,7 +140,10 @@ export default function Signup() {
       </form>
 
       <p className="auth-page__switch">
-        Already have an account? <Link to="/login">Sign in</Link>
+        Already have an account? <Link to="/login" state={location.state}>Sign in</Link>
+      </p>
+      <p className="auth-page__switch">
+        <Link to="/predict">Continue without an account</Link>
       </p>
     </AuthShell>
   )

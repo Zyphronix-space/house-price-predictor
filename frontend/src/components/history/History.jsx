@@ -81,11 +81,15 @@ export default function History({ setView }) {
   const compareSelected = () => {
     clearComparison()
     let lastError = null
+    let added = 0
     for (const entry of entries.filter((e) => checkedIds.has(e.id))) {
       const outcome = addToComparison({ features: entry.features, predictedPriceUsd: entry.predicted_price_usd })
-      if (!outcome.ok) lastError = outcome.error
+      if (outcome.ok) added += 1
+      else lastError = outcome.error
     }
-    if (lastError) {
+    // Two saved estimates for the same area are listed once; only stop
+    // here if nothing could be added at all.
+    if (lastError && added === 0) {
       setCompareNotice(lastError)
       return
     }

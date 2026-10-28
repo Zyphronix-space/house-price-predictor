@@ -32,3 +32,8 @@
   color: var(--hv-text-secondary);
   margin: 0 0 16px;
 }
+
+.whatif-page__heading {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}

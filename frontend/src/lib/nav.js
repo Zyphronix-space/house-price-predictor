@@ -24,6 +24,14 @@ export const VIEW_PATHS = {
 
 const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_PATHS).map(([key, path]) => [path, key]))
 
+// Where sign-in / sign-up send someone afterwards. Only same-site paths
+// count ("//evil.example" is protocol-relative, so it's refused too).
+export function safeReturnPath(from) {
+  if (typeof from !== 'string' || !from.startsWith('/') || from.startsWith('//')) return null
+  if (['/login', '/signup', '/forgot-password', '/reset-password'].includes(from)) return null
+  return from
+}
+
 export function useSetView() {
   const navigate = useNavigate()
   return useCallback((key) => navigate(VIEW_PATHS[key] ?? '/dashboard'), [navigate])

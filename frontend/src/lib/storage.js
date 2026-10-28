@@ -1,5 +1,6 @@
 const COMPARISON_KEY = 'hv:comparison'
 const THEME_KEY = 'hv:theme'
+const LAST_ESTIMATE_KEY = 'hv:last-estimate'
 const MAX_COMPARISON = 4
 
 function readJson(key, fallback) {
@@ -30,12 +31,21 @@ export function getComparison() {
   return readJson(COMPARISON_KEY, [])
 }
 
-export function addToComparison({ features, predictedPriceUsd }) {
+const sameFeatures = (a, b) => Object.keys(a).every((k) => Number(a[k]) === Number(b?.[k]))
+
+export function isInComparison(features) {
+  return getComparison().some((e) => sameFeatures(features, e.features))
+}
+
+export function addToComparison({ features, predictedPriceUsd, label }) {
   const current = getComparison()
-  if (current.length >= MAX_COMPARISON) {
-    return { ok: false, error: `You can compare up to ${MAX_COMPARISON} properties at a time.` }
+  if (current.some((e) => sameFeatures(features, e.features))) {
+    return { ok: false, error: 'This area is already in your comparison.' }
   }
-  const entry = { id: makeId(), features, predictedPriceUsd }
+  if (current.length >= MAX_COMPARISON) {
+    return { ok: false, error: `You can compare up to ${MAX_COMPARISON} areas at a time. Remove one first.` }
+  }
+  const entry = { id: makeId(), features, predictedPriceUsd, label: label || null }
   writeJson(COMPARISON_KEY, [...current, entry])
   return { ok: true, entry }
 }
@@ -49,6 +59,29 @@ export function clearComparison() {
 }
 
 export const MAX_COMPARISON_PROPERTIES = MAX_COMPARISON
+
+// --- Last estimate (this tab only) ------------------------------------
+// The most recent /predict result, kept in sessionStorage so it survives
+// a detour through sign-in or sign-up and is gone when the tab closes.
+// Only model inputs, the area label and the result: nothing personal.
+
+export function getLastEstimate() {
+  try {
+    const raw = window.sessionStorage.getItem(LAST_ESTIMATE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+export function setLastEstimate(estimate) {
+  try {
+    if (estimate) window.sessionStorage.setItem(LAST_ESTIMATE_KEY, JSON.stringify(estimate))
+    else window.sessionStorage.removeItem(LAST_ESTIMATE_KEY)
+  } catch {
+    // ignore -- the estimate just won't be restored after sign-in
+  }
+}
 
 // --- Theme preference ------------------------------------------------
 

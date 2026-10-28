@@ -70,6 +70,10 @@
 
 .hv-topnav__link {
   position: relative;
+  /* Links are stretched to the bar's height; centre the label in it.
+     <button>s already do this, the public nav's <a>s don't. */
+  display: inline-flex;
+  align-items: center;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 500;
@@ -313,6 +317,21 @@
     right: 22%;
     height: 2px;
     background: var(--hv-accent);
+  }
+}
+
+/* Guest bar on phones: brand, theme toggle, Sign in and Sign up need
+   tighter spacing to fit without overflowing. */
+@media (max-width: 480px) {
+  .hv-topnav {
+    gap: 12px;
+  }
+  .hv-topnav__meta {
+    gap: 4px;
+  }
+  .hv-topnav__meta .hv-btn {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
 

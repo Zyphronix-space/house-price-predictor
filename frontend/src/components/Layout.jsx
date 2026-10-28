@@ -5,6 +5,7 @@ import NotificationCenter from './NotificationCenter'
 import UserMenu from './UserMenu'
 import { SunIcon, MoonIcon, LogoMark } from './icons'
 import { useTheme } from '../lib/hooks'
+import { VIEW_PATHS } from '../lib/nav'
 import './Layout.css'
 import './UserMenu.css'
 import './NotificationCenter.css'
@@ -18,6 +19,15 @@ const CORE_TABS = [
   { key: 'predict', label: 'Estimate' },
   { key: 'properties', label: 'Properties' },
   { key: 'history', label: 'History' },
+]
+
+// What a guest can use without an account. Account-only pages are still
+// reachable (footer, links) and explain themselves via AccountGate.
+const GUEST_TABS = [
+  { key: 'predict', label: 'Estimate' },
+  { key: 'compare', label: 'Compare' },
+  { key: 'whatif', label: 'What-if' },
+  { key: 'model', label: 'The model' },
 ]
 
 const INSIGHT_TABS = [
@@ -63,6 +73,22 @@ export default function Layout({ view, setView, children, user, onLogout }) {
             </Link>
           )}
 
+          {!user && (
+            <nav className="hv-topnav__links" aria-label="Primary">
+              {GUEST_TABS.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  className={`hv-topnav__link ${view === tab.key ? 'is-active' : ''}`}
+                  aria-current={view === tab.key ? 'page' : undefined}
+                  onClick={() => go(tab.key)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          )}
+
           {user && (
             <nav className="hv-topnav__links" aria-label="Primary">
               {CORE_TABS.map((tab) => (
@@ -105,11 +131,11 @@ export default function Layout({ view, setView, children, user, onLogout }) {
               </>
             ) : (
               <>
-                <Link to="/login" className="hv-btn hv-btn-ghost">
+                <Link to="/login" state={{ from: VIEW_PATHS[view] }} className="hv-btn hv-btn-ghost">
                   Sign in
                 </Link>
-                <Link to="/signup" className="hv-btn hv-btn-primary">
-                  Get started
+                <Link to="/signup" state={{ from: VIEW_PATHS[view] }} className="hv-btn hv-btn-secondary">
+                  Sign up
                 </Link>
               </>
             )}
@@ -140,19 +166,30 @@ export default function Layout({ view, setView, children, user, onLogout }) {
 
           <div className="hv-app-footer__col">
             <p className="hv-app-footer__heading">Explore</p>
-            <Link to="/predict">Estimate a property</Link>
-            <Link to="/compare">Compare</Link>
-            <Link to="/what-if">What-If Simulator</Link>
-            <Link to="/investment">Investment Calculator</Link>
-            <Link to="/model-insights">Model Insights</Link>
+            <Link to="/predict">Estimate an area</Link>
+            <Link to="/compare">Compare areas</Link>
+            <Link to="/what-if">What-if simulator</Link>
+            <Link to="/model-insights">How the model works</Link>
+            <Link to="/investment">Investment calculator</Link>
           </div>
 
           <div className="hv-app-footer__col">
             <p className="hv-app-footer__heading">Account</p>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/properties">Properties</Link>
-            <Link to="/history">History</Link>
-            <Link to="/settings">Settings</Link>
+            {user ? (
+              <>
+                <Link to="/dashboard">Dashboard</Link>
+                <Link to="/properties">Properties</Link>
+                <Link to="/history">History</Link>
+                <Link to="/settings">Settings</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/history">Saved estimates</Link>
+                <Link to="/properties">Saved properties</Link>
+                <Link to="/login">Sign in</Link>
+                <Link to="/signup">Create a free account</Link>
+              </>
+            )}
           </div>
 
           <div className="hv-app-footer__col">
@@ -195,6 +232,22 @@ export default function Layout({ view, setView, children, user, onLogout }) {
             ))}
           </div>
         </div>
+      )}
+
+      {!user && (
+        <nav className="hv-bottomnav" aria-label="Primary">
+          {GUEST_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={`hv-bottomnav__link ${view === tab.key ? 'is-active' : ''}`}
+              aria-current={view === tab.key ? 'page' : undefined}
+              onClick={() => go(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
       )}
 
       {user && (

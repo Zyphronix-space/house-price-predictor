@@ -28,7 +28,7 @@ export default function About() {
         <p className="hv-label">The model</p>
         <p className="marketing-about-copy">
           Several regression models are trained and cross-validated against the same held-out test
-          set (see Model Insights after signing in for the real metrics); the best performer is
+          set (the real metrics are on the How the model works page, no account needed); the best performer is
           served in production. Explanations use a tree-path feature-contribution method (the
           Saabas method), a mathematically exact decomposition of each individual prediction, not
           an approximation. It is deliberately labeled that way rather than as "SHAP," since this

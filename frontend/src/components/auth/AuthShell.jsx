@@ -40,7 +40,10 @@ export default function AuthShell({ title, tagline, children }) {
         <div className="hv-card auth-page__card">
           <Link to="/" className="auth-page__brand-link">
             <span className="hv-brand__mark" aria-hidden="true"><LogoMark width={20} height={20} /></span>
-            Home<span className="hv-brand__accent">Value</span>
+            {/* One flex item, so the link's gap doesn't split the word. */}
+            <span>
+              Home<span className="hv-brand__accent">Value</span>
+            </span>
           </Link>
           <h1 className="auth-page__headline">{title}</h1>
           {tagline && <p className="auth-page__tagline">{tagline}</p>}

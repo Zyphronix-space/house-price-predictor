@@ -20,6 +20,9 @@ export default function PublicNav() {
           <NavLink to="/" end className={({ isActive }) => `hv-topnav__link ${isActive ? 'is-active' : ''}`}>
             Home
           </NavLink>
+          <NavLink to="/predict" className={({ isActive }) => `hv-topnav__link ${isActive ? 'is-active' : ''}`}>
+            Estimate
+          </NavLink>
           <NavLink to="/features" className={({ isActive }) => `hv-topnav__link ${isActive ? 'is-active' : ''}`}>
             Features
           </NavLink>
@@ -38,8 +41,8 @@ export default function PublicNav() {
               <Link to="/login" className="hv-btn hv-btn-ghost">
                 Sign in
               </Link>
-              <Link to="/signup" className="hv-btn hv-btn-primary">
-                Get started
+              <Link to="/predict" className="hv-btn hv-btn-primary">
+                Estimate an area
               </Link>
             </>
           )}

@@ -2,10 +2,13 @@ import { API_URL } from './apiUrl'
 import { authHeaders, setToken } from './auth'
 
 class ApiError extends Error {
-  constructor(message, cause) {
+  // status is the HTTP status when the server answered, else null
+  // (network failure or timeout).
+  constructor(message, cause, status = null) {
     super(message)
     this.name = 'ApiError'
     this.cause = cause
+    this.status = status
   }
 }
 
@@ -44,7 +47,11 @@ async function request(path, options = {}, timeoutMs = 8000) {
     } catch {
       // body wasn't JSON -- fall through to the generic message
     }
-    throw new ApiError(typeof detail === 'string' ? detail : `The model engine responded with an error (${res.status}).`)
+    throw new ApiError(
+      typeof detail === 'string' ? detail : `The model engine responded with an error (${res.status}).`,
+      null,
+      res.status
+    )
   }
 
   if (res.status === 204) return null

@@ -1,34 +1,32 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import { useAsync } from '../../lib/hooks'
-import { FEATURE_ORDER, FIELD_META } from '../../lib/fields'
 import { formatUsd } from '../../lib/format'
+import { describeFactor, topFactors } from '../../lib/plainLanguage'
 import Select from '../Select'
 import './PredictionResult.css'
 
-const fmtInput = (name, v) => {
-  const n = Number(v)
-  if (name === 'MedInc') return `${formatUsd(n * 10_000)}`
-  if (name === 'Population') return Math.round(n).toLocaleString()
-  if (name === 'Latitude' || name === 'Longitude') return n.toFixed(2)
-  return Number(n.toFixed(2)).toLocaleString()
-}
-
 export default function PredictionResult({
   result,
-  inputs,
+  areaLabel,
+  unusual,
   stale,
   isGuest,
+  returnPath,
+  inComparison,
+  onViewComparison,
   onWhatIf,
   onSaveComparison,
   onSaveHistory,
   onReport,
 }) {
-  const { data: modelInfo } = useAsync(() => api.modelInfo(), [])
   const { data: housesRes } = useAsync(() => (isGuest ? Promise.resolve(null) : api.houses.list()), [isGuest])
   const [houseId, setHouseId] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  // A guest who asks to save sees why it needs an account, in place.
+  const [showSavePrompt, setShowSavePrompt] = useState(false)
 
   const handleSaveHistory = async () => {
     setSaving(true)
@@ -44,59 +42,65 @@ export default function PredictionResult({
   }
 
   const range = result.estimated_range
+  const factors = topFactors(result.explanation)
 
   return (
-    <section className={`hv-glass prediction-result${stale ? ' is-stale' : ''}`} aria-labelledby="prediction-result-label" aria-live="polite">
+    <section className={`prediction-result${stale ? ' is-stale' : ''}`} aria-labelledby="prediction-result-label">
       <p id="prediction-result-label" className="prediction-result__label">
-        Estimated median home value
+        Estimated typical home value
       </p>
-      <p className="hv-stat-value prediction-result__value">{formatUsd(result.predicted_price_usd)}</p>
+      <p className="prediction-result__value hv-tabular">{formatUsd(result.predicted_price_usd)}</p>
       <p className="prediction-result__qualifier">
-        {modelInfo?.model_name ?? 'Model'} estimate for this block group, in 1990 US dollars. Not an
-        appraisal or a sale price.
+        The model's estimate of the median home value in the neighbourhood
+        {areaLabel ? ` near ${areaLabel}` : ''}, in 1990 prices. It is not an appraisal of a
+        specific home and not today's market price.
       </p>
 
       {stale && (
         <p className="prediction-result__stale" role="status">
-          Inputs have changed since this estimate. Run the estimate again to update it.
+          You've changed the figures since this estimate. Select "Update estimate" to refresh it.
         </p>
       )}
 
       {range && (
         <div className="prediction-result__range">
-          <div className="prediction-result__range-row">
-            <span>Typical error range</span>
+          <p className="prediction-result__range-row">
+            <span>Likely range</span>
             <span className="hv-tabular">
               {formatUsd(range.low_usd)} – {formatUsd(range.high_usd)}
             </span>
-          </div>
+          </p>
           <p className="prediction-result__range-basis">
-            The middle 80% of this model's errors on held-out test data, applied to this estimate.
-            It is an empirical range, not a statistical confidence interval.
+            Based on how far off the model usually is: when it was tested on areas it hadn't seen,
+            8 in 10 real values fell within a band like this around its estimate.
           </p>
         </div>
       )}
 
-      {result.warnings?.length > 0 && (
+      {unusual?.length > 0 && (
         <div className="prediction-result__warnings" role="note">
-          {result.warnings.map((w) => (
+          <p className="prediction-result__warnings-title">Some figures are unusual, so this estimate is less reliable</p>
+          {unusual.map((w) => (
             <p key={w}>{w}</p>
           ))}
         </div>
       )}
 
-      {inputs && (
-        <details className="prediction-result__inputs">
-          <summary>Inputs used</summary>
-          <dl>
-            {FEATURE_ORDER.map((name) => (
-              <div key={name}>
-                <dt>{FIELD_META[name].label}</dt>
-                <dd className="hv-tabular">{fmtInput(name, inputs[name])}</dd>
-              </div>
+      {factors.length > 0 && (
+        <div className="prediction-result__factors">
+          <p className="prediction-result__factors-title">What mattered most</p>
+          <ul>
+            {factors.map((f) => (
+              <li key={f.key} className={f.usd >= 0 ? 'is-up' : 'is-down'}>
+                <span className="prediction-result__factor-mark" aria-hidden="true">{f.usd >= 0 ? '+' : '−'}</span>
+                {describeFactor(f)}
+              </li>
             ))}
-          </dl>
-        </details>
+          </ul>
+          <p className="prediction-result__factors-note">
+            This shows how the model weighed each detail, not proof of what drives prices.
+          </p>
+        </div>
       )}
 
       {!isGuest && housesRes?.houses.length > 0 && !saved && (
@@ -127,18 +131,57 @@ export default function PredictionResult({
             {saved ? 'Saved to history' : saving ? 'Saving' : 'Save to history'}
           </button>
         )}
-        {!isGuest && (
+        {isGuest && (
+          <button
+            type="button"
+            className="hv-btn hv-btn-primary"
+            onClick={() => setShowSavePrompt((s) => !s)}
+            aria-expanded={showSavePrompt}
+            aria-controls="prediction-result-save-prompt"
+            disabled={stale}
+          >
+            Save to history
+          </button>
+        )}
+        {inComparison ? (
+          <button type="button" className="hv-btn hv-btn-secondary" onClick={onViewComparison}>
+            View comparison
+          </button>
+        ) : (
           <button type="button" className="hv-btn hv-btn-secondary" onClick={onSaveComparison} disabled={stale}>
             Add to comparison
           </button>
         )}
         <button type="button" className="hv-btn hv-btn-secondary" onClick={onWhatIf} disabled={stale}>
-          What-if
+          Try what-if changes
         </button>
-        <button type="button" className="hv-btn hv-btn-secondary" onClick={onReport} disabled={stale}>
-          Report
+        <button type="button" className="hv-btn hv-btn-ghost" onClick={onReport} disabled={stale}>
+          Printable report
         </button>
       </div>
+
+      {isGuest && showSavePrompt && (
+        <div id="prediction-result-save-prompt" className="prediction-result__save-prompt" role="region" aria-label="Save to history">
+          <p className="prediction-result__save-title">Saving to history needs a free account</p>
+          <p>
+            Your history is stored in your account, so you can return to these estimates from any
+            device. This estimate will still be here after you sign in. Then select "Save to
+            history" again.
+          </p>
+          <p className="prediction-result__save-alt">
+            Just comparing a few areas today? "Add to comparison" works without an account and
+            keeps them on this device.
+          </p>
+          <div className="prediction-result__save-actions">
+            <Link to="/signup" state={{ from: returnPath }} className="hv-btn hv-btn-primary">
+              Create a free account
+            </Link>
+            <Link to="/login" state={{ from: returnPath }} className="hv-btn hv-btn-ghost">
+              Sign in
+            </Link>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

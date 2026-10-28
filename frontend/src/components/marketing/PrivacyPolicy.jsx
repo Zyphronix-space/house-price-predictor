@@ -52,8 +52,12 @@ export default function PrivacyPolicy() {
           HomeValue does not set cookies and does not use any analytics, advertising, or tracking
           scripts. Your session token is kept in your browser's localStorage (if "remember me" is
           checked at login) or sessionStorage (if not), so the app can tell the backend who you are on
-          each request. A small amount of localStorage also holds your UI preferences and a temporary
-          property-comparison list. None of this is shared with any third party or used to track you
+          each request. A small amount of localStorage also holds your UI preferences and your comparison list
+          (the areas you choose to compare, whether or not you have an account). Your most recent
+          estimate (the neighbourhood figures and the result, nothing personal) is kept in
+          sessionStorage so it survives signing in, and is cleared when you close the tab. You can
+          use HomeValue's estimates without an account; estimates made without an account are not saved to
+          our database. None of this is shared with any third party or used to track you
           across other sites.
         </p>
       </section>
